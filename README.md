@@ -104,6 +104,71 @@ ArduinoSimulator/
 └── .github/workflows/       # CI/CD (build, test, deploy)
 ```
 
+### Backend Server & Admin Panel
+
+The project includes a backend server for tracking student sessions and an admin panel for viewing reports.
+
+#### Server Setup
+
+```bash
+# Navigate to the server directory
+cd server
+
+# Install dependencies
+npm install
+
+# Copy environment variables template
+cp .env.example .env
+
+# Edit .env and set a strong JWT_SECRET
+
+# Run database migrations
+npm run db:migrate
+
+# Create default admin user
+npm run db:seed
+
+# Start the development server
+npm run dev
+```
+
+The server runs on `http://localhost:3001` by default.
+
+#### Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `PORT` | Server port | `3001` |
+| `JWT_SECRET` | Secret key for JWT tokens (CHANGE IN PRODUCTION) | - |
+| `DATABASE_URL` | SQLite database path | `file:./dev.db` |
+| `CORS_ORIGINS` | Allowed origins (comma-separated) | `http://localhost:3000` |
+| `REACT_APP_BACKEND_URL` | Frontend API endpoint | `http://localhost:3001` |
+
+#### Admin Panel
+
+Access the admin panel at `http://localhost:3000/admin` (when running the frontend with the backend server).
+
+- **Default credentials**: `admin` / `admin123` (change after first login!)
+- **Features**:
+  - Dashboard with session statistics
+  - Activity report (sessions over time)
+  - Performance report (completion rates, errors)
+  - Pin usage report (most-used pins)
+  - Progress report (student progress)
+  - Session browser with pagination
+
+#### Tracking System
+
+The tracking system automatically records:
+- Session start/end times
+- Board type changes
+- Simulation starts/stops
+- File operations (new, open, save)
+- Pin interactions
+- Serial monitor usage
+
+All data is stored in SQLite and viewable through the admin panel.
+
 ---
 
 ## RU — Русский
@@ -190,6 +255,71 @@ ArduinoSimulator/
 ├── .github/pages/           # GitHub Pages (демо-страницы)
 └── .github/workflows/       # CI/CD (сборка, тесты, деплой)
 ```
+
+### Бэкенд-сервер и Админ-панель
+
+Проект включает бэкенд-сервер для отслеживания сессий студентов и админ-панель для просмотра отчётов.
+
+#### Настройка сервера
+
+```bash
+# Перейдите в директорию сервера
+cd server
+
+# Установите зависимости
+npm install
+
+# Скопируйте шаблон переменных окружения
+cp .env.example .env
+
+# Отредактируйте .env и задайте надёжный JWT_SECRET
+
+# Примените миграции базы данных
+npm run db:migrate
+
+# Создайте администратора по умолчанию
+npm run db:seed
+
+# Запустите сервер разработки
+npm run dev
+```
+
+Сервер работает на `http://localhost:3001` по умолчанию.
+
+#### Переменные окружения
+
+| Переменная | Описание | По умолчанию |
+|---|---|---|
+| `PORT` | Порт сервера | `3001` |
+| `JWT_SECRET` | Секретный ключ для JWT (ИЗМЕНИТЕ В ПРОДАКШЕНЕ) | - |
+| `DATABASE_URL` | Путь к SQLite базе | `file:./dev.db` |
+| `CORS_ORIGINS` | Разрешённые origin (через запятую) | `http://localhost:3000` |
+| `REACT_APP_BACKEND_URL` | API endpoint фронтенда | `http://localhost:3001` |
+
+#### Админ-панель
+
+Доступна по адресу `http://localhost:3000/admin` (при запущенном фронтенде с бэкендом).
+
+- **Учётные данные по умолчанию**: `admin` / `admin123` (смените после первого входа!)
+- **Возможности**:
+  - Дашборд со статистикой сессий
+  - Отчёт по активности (сессии во времени)
+  - Отчёт по производительности (завершения, ошибки)
+  - Отчёт по использованию пинов
+  - Отчёт по прогрессу студентов
+  - Браузер сессий с пагинацией
+
+#### Система отслеживания
+
+Система автоматически записывает:
+- Время начала/окончания сессий
+- Изменения типа платы
+- Запуски/остановки симуляции
+- Операции с файлами (создание, открытие, сохранение)
+- Взаимодействия с пинами
+- Использование монитора порта
+
+Все данные хранятся в SQLite и доступны через админ-панель.
 
 ---
 

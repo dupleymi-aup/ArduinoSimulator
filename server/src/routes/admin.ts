@@ -21,6 +21,14 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "username and password are required" })
     }
 
+    if (typeof username !== "string" || typeof password !== "string") {
+      return res.status(400).json({ error: "Invalid input format" })
+    }
+
+    if (username.length > 100 || password.length > 200) {
+      return res.status(400).json({ error: "Input too long" })
+    }
+
     const user = await prisma.adminUser.findUnique({ where: { username } })
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" })
@@ -81,8 +89,8 @@ router.get("/reports/pins", authenticate, async (req, res) => {
 
 router.get("/sessions", authenticate, async (req, res) => {
   try {
-    const page = parseInt(req.query.page as string) || 1
-    const limit = parseInt(req.query.limit as string) || 20
+    const page = Math.max(1, parseInt(req.query.page as string) || 1)
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20))
     const result = await getSessions(page, limit, { start: req.query.start as string, end: req.query.end as string })
     res.json(result)
   } catch (err) {

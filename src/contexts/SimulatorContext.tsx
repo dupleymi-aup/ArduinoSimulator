@@ -5,9 +5,9 @@ import { Gpio, Gpio_Analog } from "../utils/interfaces"
 
 interface SimulatorContextType {
   filename: null | string
-  setFilename: React.Dispatch<string>
+  setFilename: React.Dispatch<React.SetStateAction<string | null>>
   boardType: null | string
-  setBoardType: React.Dispatch<string>
+  setBoardType: React.Dispatch<React.SetStateAction<string | null>>
   digitalPins: null | Gpio[]
   setDigitalPins: React.Dispatch<React.SetStateAction<null | Gpio[]>>
   handleSetDigitalPins: (index: number, state: boolean) => void
@@ -15,14 +15,14 @@ interface SimulatorContextType {
   setAnalogPins: React.Dispatch<React.SetStateAction<null | Gpio_Analog[]>>
   handleSetAnalogPins: (index: number, duty: number) => void
   outputData: null | string
-  setOutputData: React.Dispatch<string>
+  setOutputData: React.Dispatch<React.SetStateAction<string>>
   simulatorRunning: boolean
-  setSimulatorRunning: React.Dispatch<boolean>
+  setSimulatorRunning: React.Dispatch<React.SetStateAction<boolean>>
   runtimeError: string | null
-  setRuntimeError: React.Dispatch<string | null>
+  setRuntimeError: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const initializeDigitalPins = Array(54)
+export const initializeDigitalPins = Array(54)
   .fill(null)
   .map((_, index) => ({
     pinNumber: index,
@@ -30,7 +30,7 @@ const initializeDigitalPins = Array(54)
     isEnabled: false,
   }))
 
-const initializeAnalogPins = Array(16)
+export const initializeAnalogPins = Array(16)
   .fill(null)
   .map((_, index) => ({
     pinNumber: index,
@@ -51,7 +51,7 @@ const SimulatorContext = React.createContext<SimulatorContextType>({
   handleSetAnalogPins: (s, e) => {},
   outputData: null,
   setOutputData: () => {},
-  simulatorRunning: null,
+  simulatorRunning: false,
   setSimulatorRunning: () => {},
   runtimeError: null,
   setRuntimeError: () => {},
@@ -67,55 +67,46 @@ export function SimulatorContextProvider({ children }) {
   const [simulatorRunning, setSimulatorRunning] = React.useState<boolean>(false)
   const [runtimeError, setRuntimeError] = React.useState<string | null>(null)
 
-  const updateDigitalPin = (pinIndex: number, updatedPin: Gpio) => {
+  const handleSetDigitalPins = React.useCallback((pinIndex: number, state: boolean) => {
     setDigitalPins((prevDigitalPins) => {
       const newDigitalPins = [...prevDigitalPins]
-      newDigitalPins[pinIndex] = updatedPin
+      newDigitalPins[pinIndex] = { ...newDigitalPins[pinIndex], isEnabled: state }
       return newDigitalPins
     })
-  }
+  }, [])
 
-  const handleSetDigitalPins = (pinIndex: number, state: boolean) => {
-    const updatedPin = { ...digitalPins[pinIndex] }
-    updatedPin.isEnabled = state
-    updateDigitalPin(pinIndex, updatedPin)
-  }
-
-  const updateAnalogPin = (pinIndex: number, updatedPin: Gpio_Analog) => {
+  const handleSetAnalogPins = React.useCallback((pinIndex: number, duty: number) => {
     setAnalogPins((prevAnalogPins) => {
       const newAnalogPins = [...prevAnalogPins]
-      newAnalogPins[pinIndex] = updatedPin
+      newAnalogPins[pinIndex] = { ...newAnalogPins[pinIndex], duty }
       return newAnalogPins
     })
-  }
+  }, [])
 
-  const handleSetAnalogPins = (pinIndex: number, duty: number) => {
-    const updatedPin = { ...analogPins[pinIndex] }
-    updatedPin.duty = duty
-    updateAnalogPin(pinIndex, updatedPin)
-  }
+  const contextValue = React.useMemo(
+    () => ({
+      filename,
+      setFilename,
+      boardType,
+      setBoardType,
+      digitalPins,
+      setDigitalPins,
+      handleSetDigitalPins,
+      analogPins,
+      setAnalogPins,
+      handleSetAnalogPins,
+      outputData,
+      setOutputData,
+      simulatorRunning,
+      setSimulatorRunning,
+      runtimeError,
+      setRuntimeError,
+    }),
+    [filename, boardType, digitalPins, analogPins, outputData, simulatorRunning, runtimeError, handleSetDigitalPins, handleSetAnalogPins]
+  )
 
   return (
-    <SimulatorContext.Provider
-      value={{
-        filename: filename,
-        setFilename: setFilename,
-        boardType: boardType,
-        setBoardType: setBoardType,
-        digitalPins,
-        setDigitalPins,
-        handleSetDigitalPins,
-        analogPins,
-        setAnalogPins,
-        handleSetAnalogPins,
-        outputData: outputData,
-        setOutputData: setOutputData,
-        simulatorRunning: simulatorRunning,
-        setSimulatorRunning: setSimulatorRunning,
-        runtimeError: runtimeError,
-        setRuntimeError: setRuntimeError,
-      }}
-    >
+    <SimulatorContext.Provider value={contextValue}>
       {children}
     </SimulatorContext.Provider>
   )

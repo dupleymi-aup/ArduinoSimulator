@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars, no-console */
 import { editorEnable, editorGetValue } from "./editor"
 import { trackEvent, isBackendAvailable, getActiveSessionId } from "./tracking"
 
@@ -11,8 +11,7 @@ const startSimulator = (
   setSimulatorRunning: (state: boolean) => void,
   handleSetDigitalPins: (index: number, state: boolean) => void,
   handleSetAnalogPins: (index: number, duty: number) => void,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setOutputData: any,
+  setOutputData: (data: string) => void,
   setRuntimeError: (error: string | null) => void
 ) => {
   accumulatedError = ""
@@ -478,19 +477,22 @@ const convertSketch = (sketch: string) => {
 
 const stopSimulator = () => {
   try {
-    myWorker.terminate()
+    if (myWorker) {
+      myWorker.terminate()
+      myWorker = null
+    }
   } catch (err) {
-    //
+    console.error("Error stopping simulator:", err)
   }
 }
 
 const sendSerialData = (serialDataValue: string) => {
   try {
-    if (serialDataValue !== "") {
+    if (myWorker && serialDataValue !== "") {
       myWorker.postMessage("SEND_SERIAL_DATA_ARDUINO_SIMULATOR=" + serialDataValue)
     }
   } catch (err) {
-    //
+    console.error("Error sending serial data:", err)
   }
 }
 
@@ -500,7 +502,7 @@ const sendPinInput = (pinType: "digital" | "analog", pin: number, value: number)
       myWorker.postMessage(`USER_PIN_INPUT=${pinType}_${pin}_${value}`)
     }
   } catch (err) {
-    //
+    console.error("Error sending pin input:", err)
   }
 }
 

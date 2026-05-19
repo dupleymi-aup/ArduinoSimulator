@@ -14,7 +14,7 @@ import ToolbarSeparator from "./ToolbarSeparator"
 import ToolbarExamples from "./ToolbarExamples"
 import Loading from "./Loading"
 import ConfirmBox from "./ConfirmBox"
-import { useSimulatorContext } from "../contexts/SimulatorContext"
+import { useSimulatorContext, initializeDigitalPins, initializeAnalogPins } from "../contexts/SimulatorContext"
 import { useEventTracking } from "../hooks/useEventTracking"
 import {
   editorNew,
@@ -65,6 +65,7 @@ const Toolbar = ({
     setOutputData,
     setRuntimeError,
     filename,
+    setFilename,
   } = useSimulatorContext()
   const track = useEventTracking()
 
@@ -72,24 +73,6 @@ const Toolbar = ({
     React.useState<boolean>(false)
   const NEW_FILE = 1
   const OPEN_FILE = 2
-
-  // eslint-disable-next-line no-unused-vars
-  const initializeDigitalPins = Array(54)
-    .fill(null)
-    .map((_: null, index: number) => ({
-      pinNumber: index,
-      isInput: false,
-      isEnabled: false,
-    }))
-
-  // eslint-disable-next-line no-unused-vars
-  const initializeAnalogPins = Array(16)
-    .fill(null)
-    .map((_: null, index: number) => ({
-      pinNumber: index,
-      isInput: false,
-      duty: 0,
-    }))
 
   const newFile = () => {
     if (editorIsDirty()) {
@@ -179,7 +162,11 @@ const Toolbar = ({
   const acceptCallback = showConfirmMessage === NEW_FILE ? cleanEditor : uploadFile
 
   React.useEffect(() => {
+    const styleId = "arduinosimulator-toolbar-styles"
+    if (document.getElementById(styleId)) return
+
     const styleNode = document.createElement("style")
+    styleNode.id = styleId
     const styleText = `
       .arduinosimulator_menu_item:hover{background-color:#E3E3E3 !important;border:thin solid #D3D3D3 !important;cursor:pointer !important}
       @media (pointer: coarse) { .arduinosimulator_menu_item:hover{background-color:#F2F2F2 !important;border:thin solid #F2F2F2 !important}
@@ -187,6 +174,11 @@ const Toolbar = ({
     const styleTextNode = document.createTextNode(styleText)
     styleNode.appendChild(styleTextNode)
     document.getElementsByTagName("head")[0].appendChild(styleNode)
+
+    return () => {
+      const el = document.getElementById(styleId)
+      if (el) el.remove()
+    }
   }, [])
 
   return (

@@ -7,7 +7,7 @@ import PinsDigitalBar from "../components/PinsDigitalBar"
 import PinsAnalogBar from "../components/PinsAnalogBar"
 import SerialMonitor from "../components/SerialMonitor"
 import WelcomeModal from "../components/WelcomeModal"
-import { useSimulatorContext } from "../contexts/SimulatorContext"
+import { useSimulatorContext, initializeDigitalPins, initializeAnalogPins } from "../contexts/SimulatorContext"
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts"
 import { useEventTracking } from "../hooks/useEventTracking"
 import {
@@ -38,20 +38,6 @@ const Editor = () => {
   const [showConfirmMessage, setShowConfirmMessage] = React.useState<number | null>(null)
   const refUploader = React.useRef<HTMLInputElement>(null)
   const [showWelcome, setShowWelcome] = React.useState<boolean>(false)
-
-  // eslint-disable-next-line no-unused-vars
-  const initializeDigitalPins = [...Array(54)].map((_unused, index) => ({
-    pinNumber: index,
-    isInput: false,
-    isEnabled: false,
-  }))
-
-  // eslint-disable-next-line no-unused-vars
-  const initializeAnalogPins = [...Array(16)].map((_unused, index) => ({
-    pinNumber: index,
-    isInput: false,
-    duty: 0,
-  }))
 
   // Welcome modal on first visit
   React.useEffect(() => {
