@@ -2,7 +2,7 @@ import React from "react"
 import PinsDigitalLabel from "./PinsDigitalLabel"
 import PinsDigitalItem from "./PinsDigitalItem"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
-import { isMega } from "../../src/utils/service"
+import { isMega } from "../utils/service"
 
 const PinsDigitalBar = () => {
   const { digitalPins, boardType } = useSimulatorContext()
@@ -18,13 +18,13 @@ const PinsDigitalBar = () => {
           }}
         >
           <PinsDigitalLabel />
-          {digitalPins.slice(0, 14).map((pin, index) => (
-            <PinsDigitalItem key={index} gpio={pin} />
+          {digitalPins.slice(0, 14).map((pin) => (
+            <PinsDigitalItem key={pin.pinNumber} gpio={pin} />
           ))}
           {isMegaBoard && (
             <>
-              {digitalPins.slice(14, 54).map((pin, index) => (
-                <PinsDigitalItem key={index} gpio={pin} />
+              {digitalPins.slice(14, 54).map((pin) => (
+                <PinsDigitalItem key={pin.pinNumber} gpio={pin} />
               ))}
             </>
           )}

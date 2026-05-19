@@ -1,21 +1,42 @@
 import React from "react"
 import StatCard from "../components/StatCard"
+import ErrorDisplay from "../components/ErrorDisplay"
 import { useReports } from "../hooks/useReports"
+
+interface PinUsageData {
+  digitalPins: Record<number, number>
+  analogPins: Record<number, number>
+}
 
 const DIGITAL_PIN_COUNT = 54
 const ANALOG_PIN_COUNT = 16
 
 const PinUsageReport = () => {
   const { fetchPinUsage } = useReports()
-  const [data, setData] = React.useState(null)
+  const [data, setData] = React.useState<PinUsageData | null>(null)
   const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
-  React.useEffect(() => {
+  const loadData = React.useCallback(() => {
     setLoading(true)
-    fetchPinUsage().then(setData).finally(() => setLoading(false))
+    setError(null)
+    fetchPinUsage()
+      .then((d) => {
+        setData(d)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load pin usage data")
+        setLoading(false)
+      })
   }, [fetchPinUsage])
 
+  React.useEffect(() => {
+    loadData()
+  }, [loadData])
+
   if (loading) return <p>Loading...</p>
+  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   const maxDigital = Math.max(1, ...Object.values(data.digitalPins || {}))

@@ -10,7 +10,7 @@ export function useEventTracking() {
   const { backendAvailable } = useTracking()
 
   const track = React.useCallback(
-    (type: TrackEventType, payload: object = {}) => {
+    (type: TrackEventType, payload: Record<string, unknown> = {}) => {
       if (backendAvailable) {
         trackEvent(type, payload)
       }

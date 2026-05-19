@@ -11,20 +11,43 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import StatCard from "../components/StatCard"
+import ErrorDisplay from "../components/ErrorDisplay"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
+interface ActivityData {
+  totalSessions: number
+  avgDurationMs: number
+  topExamples: { name: string; count: number }[]
+  sessionsByDay: { day: string; count: number }[]
+}
+
 const ActivityReport = () => {
   const { dateRange, setDateRange, fetchActivity } = useReports()
-  const [data, setData] = React.useState(null)
+  const [data, setData] = React.useState<ActivityData | null>(null)
   const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
-  React.useEffect(() => {
+  const loadData = React.useCallback(() => {
     setLoading(true)
-    fetchActivity().then(setData).finally(() => setLoading(false))
+    setError(null)
+    fetchActivity()
+      .then((d) => {
+        setData(d)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load activity data")
+        setLoading(false)
+      })
   }, [fetchActivity])
 
+  React.useEffect(() => {
+    loadData()
+  }, [loadData])
+
   if (loading) return <p>Loading...</p>
+  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   const formatDuration = (ms: number) => {

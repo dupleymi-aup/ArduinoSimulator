@@ -9,20 +9,45 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import StatCard from "../components/StatCard"
+import ErrorDisplay from "../components/ErrorDisplay"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
+interface PerformanceData {
+  totalSessions: number
+  simStartedCount: number
+  simCompletedCount: number
+  successRate: number
+  topErrors: { error: string; count: number }[]
+  simAttemptsOverTime: { day: string; count: number }[]
+}
+
 const PerformanceReport = () => {
   const { dateRange, setDateRange, fetchPerformance } = useReports()
-  const [data, setData] = React.useState(null)
+  const [data, setData] = React.useState<PerformanceData | null>(null)
   const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
-  React.useEffect(() => {
+  const loadData = React.useCallback(() => {
     setLoading(true)
-    fetchPerformance().then(setData).finally(() => setLoading(false))
+    setError(null)
+    fetchPerformance()
+      .then((d) => {
+        setData(d)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load performance data")
+        setLoading(false)
+      })
   }, [fetchPerformance])
 
+  React.useEffect(() => {
+    loadData()
+  }, [loadData])
+
   if (loading) return <p>Loading...</p>
+  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   return (

@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-console */
+/* eslint-disable no-console */
 import { editorEnable, editorGetValue } from "./editor"
 import { trackEvent, isBackendAvailable, getActiveSessionId } from "./tracking"
 

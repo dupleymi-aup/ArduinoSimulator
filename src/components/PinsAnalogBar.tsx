@@ -2,7 +2,7 @@ import React from "react"
 import PinsAnalogLabel from "./PinsAnalogLabel"
 import PinsAnalogItem from "./PinsAnalogItem"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
-import { isMega, isNano } from "../../src/utils/service"
+import { isMega, isNano } from "../utils/service"
 
 const PinsAnalogBar = () => {
   const { analogPins, boardType } = useSimulatorContext()
@@ -15,20 +15,20 @@ const PinsAnalogBar = () => {
       <div style={styles.noScrollbar}>
         <div style={{ width: isMegaBoard ? "850px" : "550px", ...styles.wrapper }}>
           <PinsAnalogLabel />
-          {analogPins.slice(0, 6).map((pin, index) => (
-            <PinsAnalogItem key={index} gpioAnalog={pin} />
+          {analogPins.slice(0, 6).map((pin) => (
+            <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
           ))}
           {(isMegaBoard || isNanoBoard) && (
             <>
-              {analogPins.slice(6, 8).map((pin, index) => (
-                <PinsAnalogItem key={index} gpioAnalog={pin} />
+              {analogPins.slice(6, 8).map((pin) => (
+                <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
               ))}
             </>
           )}
           {isMegaBoard && (
             <>
-              {analogPins.slice(8, 14).map((pin, index) => (
-                <PinsAnalogItem key={index} gpioAnalog={pin} />
+              {analogPins.slice(8, 14).map((pin) => (
+                <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
               ))}
             </>
           )}

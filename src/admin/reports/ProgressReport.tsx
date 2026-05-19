@@ -9,19 +9,40 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import StatCard from "../components/StatCard"
+import ErrorDisplay from "../components/ErrorDisplay"
 import { useReports } from "../hooks/useReports"
+
+interface ProgressData {
+  totalStudents: number
+  examples: { name: string; completions: number }[]
+}
 
 const ProgressReport = () => {
   const { fetchProgress } = useReports()
-  const [data, setData] = React.useState(null)
+  const [data, setData] = React.useState<ProgressData | null>(null)
   const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
-  React.useEffect(() => {
+  const loadData = React.useCallback(() => {
     setLoading(true)
-    fetchProgress().then(setData).finally(() => setLoading(false))
+    setError(null)
+    fetchProgress()
+      .then((d) => {
+        setData(d)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load progress data")
+        setLoading(false)
+      })
   }, [fetchProgress])
 
+  React.useEffect(() => {
+    loadData()
+  }, [loadData])
+
   if (loading) return <p>Loading...</p>
+  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   return (

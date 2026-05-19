@@ -109,9 +109,8 @@ const editorRedo = () => {
 const editorSearch = () => {
   try {
     editor.execCommand("find")
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err)
+  } catch {
+    // Search dialog failed to open — non-critical, silently ignore
   }
 }
 
