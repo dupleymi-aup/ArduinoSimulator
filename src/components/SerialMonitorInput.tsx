@@ -3,7 +3,6 @@ import React from "react"
 interface SerialMonitorInputProps {
   sendSerialData: () => void
   value: string
-  // eslint-disable-next-line no-unused-vars
   onChange: (value: string) => void
   simulatorRunning: boolean
 }

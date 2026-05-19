@@ -14,14 +14,18 @@ const AdminLayout = ({ activeTab, onTabChange, onLogout, children }: AdminLayout
     <div style={styles.container}>
       <header style={styles.header}>
         <h1 style={styles.logo}>Arduino Simulator Admin</h1>
-        <button onClick={onLogout} style={styles.logoutBtn}>
+        <button onClick={onLogout} style={styles.logoutBtn} aria-label="Logout of admin panel">
           Logout
         </button>
       </header>
-      <nav style={styles.nav}>
+      <nav style={styles.nav} role="tablist" aria-label="Admin reports">
         {TABS.map((tab) => (
           <button
             key={tab}
+            role="tab"
+            aria-selected={activeTab === tab}
+            aria-controls={`panel-${tab.toLowerCase().replace(/\s+/g, "-")}`}
+            id={`tab-${tab.toLowerCase().replace(/\s+/g, "-")}`}
             onClick={() => onTabChange(tab)}
             style={{
               ...styles.tab,
@@ -32,7 +36,9 @@ const AdminLayout = ({ activeTab, onTabChange, onLogout, children }: AdminLayout
           </button>
         ))}
       </nav>
-      <main style={styles.main}>{children}</main>
+      <main style={styles.main} role="tabpanel" aria-labelledby={`tab-${activeTab.toLowerCase().replace(/\s+/g, "-")}`} id={`panel-${activeTab.toLowerCase().replace(/\s+/g, "-")}`}>
+        {children}
+      </main>
     </div>
   )
 }

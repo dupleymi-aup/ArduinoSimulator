@@ -25,13 +25,12 @@ const ToolbarExamples = ({ onLoadExample, onClose }: ToolbarExamplesProps) => {
       </button>
       {isOpen && (
         <div style={styles.dropdown}>
-          {examples.map((category, catIdx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <div key={catIdx} style={styles.category}>
+          {examples.map((category) => (
+            <div key={category.category} style={styles.category}>
               <div style={styles.categoryTitle}>{category.category}</div>
-              {category.sketches.map((sketch, sketchIdx) => (
+              {category.sketches.map((sketch) => (
                 <div
-                  key={sketchIdx}
+                  key={`${category.category}-${sketch.name}`}
                   style={styles.sketch}
                   onClick={() => handleSelect(sketch.content, sketch.name)}
                 >

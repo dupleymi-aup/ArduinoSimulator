@@ -4,8 +4,10 @@ export function useAuth() {
   const [token, setToken] = React.useState<string | null>(
     localStorage.getItem("arduino-sim-admin-token")
   )
+  const [loginError, setLoginError] = React.useState<string | null>(null)
 
   const login = async (username: string, password: string): Promise<boolean> => {
+    setLoginError(null)
     try {
       const res = await fetch(
         `${process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"}/api/admin/login`,
@@ -22,17 +24,26 @@ export function useAuth() {
         setToken(data.token)
         return true
       }
+
+      if (res.status === 401) {
+        setLoginError("Invalid username or password")
+        return false
+      }
+
+      setLoginError("Server error. Please try again later.")
+      return false
     } catch {
-      // login failed
+      setLoginError("Network error. Check your connection and try again.")
+      return false
     }
-    return false
   }
 
   const logout = () => {
     localStorage.removeItem("arduino-sim-admin-token")
     setToken(null)
+    setLoginError(null)
     window.location.href = "/admin/login"
   }
 
-  return { token, login, logout, isAuthenticated: !!token }
+  return { token, login, logout, loginError, isAuthenticated: !!token }
 }

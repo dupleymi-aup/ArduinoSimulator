@@ -20,7 +20,7 @@ const TrackingContext = React.createContext<TrackingContextType>({
   backendAvailable: false,
 })
 
-export function TrackingProvider({ children }) {
+export function TrackingProvider({ children }: { children: React.ReactNode }) {
   const [studentId, setStudentId] = React.useState<string | null>(null)
   const [sessionId, setSessionId] = React.useState<string | null>(null)
   const [backendAvailable, setBackendAvailable] = React.useState<boolean>(false)
@@ -28,21 +28,30 @@ export function TrackingProvider({ children }) {
 
   // Initialize: check backend, generate student ID, start session
   React.useEffect(() => {
+    let cancelled = false
+
     ;(async () => {
       const healthy = await checkBackendHealth()
+      if (cancelled) return
       setBackendAvailable(healthy)
 
       if (!healthy) return
 
       const id = generateStudentId()
+      if (cancelled) return
       setStudentId(id)
 
       const sessId = await startSession(id)
+      if (cancelled) return
       if (sessId) {
         setSessionId(sessId)
         sessionStartRef.current = Date.now()
       }
     })()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // Heartbeat every 60s
@@ -66,10 +75,13 @@ export function TrackingProvider({ children }) {
     }
   }, [backendAvailable, sessionId])
 
+  const contextValue = React.useMemo(
+    () => ({ studentId, sessionId, backendAvailable }),
+    [studentId, sessionId, backendAvailable]
+  )
+
   return (
-    <TrackingContext.Provider
-      value={{ studentId, sessionId, backendAvailable }}
-    >
+    <TrackingContext.Provider value={contextValue}>
       {children}
     </TrackingContext.Provider>
   )

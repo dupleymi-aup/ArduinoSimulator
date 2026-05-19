@@ -14,7 +14,6 @@ const LINE_ENDINGS = [
 ]
 
 const SerialMonitorLineEnding = ({
-  // eslint-disable-next-line no-unused-vars
   value,
   onChange,
 }: SerialMonitorLineEndingProps) => {

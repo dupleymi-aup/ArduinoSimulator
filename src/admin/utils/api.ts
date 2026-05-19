@@ -1,21 +1,31 @@
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
 
-export async function apiFetch(path, options = {}) {
+export async function apiFetch<T = unknown>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T | null> {
   const token = localStorage.getItem("arduino-sim-admin-token")
-  const headers = {
+
+  // Auth header always takes precedence
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   }
 
-  const res = await fetch(`${BACKEND_URL}${path}`, { ...options, headers })
+  try {
+    const res = await fetch(`${BACKEND_URL}${path}`, { ...options, headers })
 
-  if (res.status === 401) {
-    localStorage.removeItem("arduino-sim-admin-token")
-    window.location.href = "/admin/login"
+    if (res.status === 401) {
+      localStorage.removeItem("arduino-sim-admin-token")
+      window.location.href = "/admin/login"
+      return null
+    }
+
+    if (res.status === 204) return null
+    return (await res.json()) as T
+  } catch (err) {
+    console.error(`apiFetch ${path} failed:`, err)
     return null
   }
-
-  if (res.status === 204) return null
-  return res.json()
 }

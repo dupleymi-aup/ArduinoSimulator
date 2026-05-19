@@ -2,19 +2,15 @@ import React from "react"
 import { useAuth } from "./hooks/useAuth"
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
-  const { login } = useAuth()
+  const { login, loginError } = useAuth()
   const [username, setUsername] = React.useState("")
   const [password, setPassword] = React.useState("")
-  const [error, setError] = React.useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     const ok = await login(username, password)
     if (ok) {
       onLogin()
-    } else {
-      setError("Invalid username or password")
     }
   }
 
@@ -24,25 +20,29 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
         <h2 style={styles.title}>Arduino Simulator Admin</h2>
         <form onSubmit={handleSubmit}>
           <div style={styles.field}>
-            <label style={styles.label}>Username</label>
+            <label htmlFor="username" style={styles.label}>Username</label>
             <input
+              id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               style={styles.input}
+              autoComplete="username"
               autoFocus
             />
           </div>
           <div style={styles.field}>
-            <label style={styles.label}>Password</label>
+            <label htmlFor="password" style={styles.label}>Password</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
+              autoComplete="current-password"
             />
           </div>
-          {error && <p style={styles.error}>{error}</p>}
+          {loginError && <p style={styles.error} role="alert">{loginError}</p>}
           <button type="submit" style={styles.button}>
             Login
           </button>
