@@ -18,7 +18,7 @@ const declareLanguageData: () => void = () => {
   global.SEARCH_OF = t("SEARCH_OF")
 }
 
-const t: (stringName: string) => string = (stringName: string) => {
+const t: (_stringName: string) => string = (stringName: string) => {
   return serviceStrings[stringName] || ""
 }
 export { declareLanguageData, t }

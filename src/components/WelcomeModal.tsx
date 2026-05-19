@@ -2,7 +2,7 @@ import React from "react"
 import { t } from "../utils/languages"
 
 interface WelcomeModalProps {
-  onDismiss: (_dontShowAgain: boolean) => void
+  onDismiss: (_: boolean) => void
 }
 
 const WelcomeModal = ({ onDismiss }: WelcomeModalProps) => {

@@ -10,6 +10,16 @@ interface PinUsageData {
 
 const DIGITAL_PIN_COUNT = 54
 const ANALOG_PIN_COUNT = 16
+const DIGITAL_PINS = (() => {
+  const arr: number[] = []
+  for (let i = 0; i < DIGITAL_PIN_COUNT; i++) arr.push(i)
+  return arr
+})()
+const ANALOG_PINS = (() => {
+  const arr: number[] = []
+  for (let i = 0; i < ANALOG_PIN_COUNT; i++) arr.push(i)
+  return arr
+})()
 
 const PinUsageReport = () => {
   const { fetchPinUsage } = useReports()
@@ -26,7 +36,9 @@ const PinUsageReport = () => {
         setLoading(false)
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : "Failed to load pin usage data")
+        setError(
+          err instanceof Error ? err.message : "Failed to load pin usage data"
+        )
         setLoading(false)
       })
   }, [fetchPinUsage])
@@ -76,14 +88,15 @@ const PinUsageReport = () => {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Digital Pins (0-53)</h3>
         <div style={styles.pinGrid}>
-          {Array.from({ length: DIGITAL_PIN_COUNT }, (_, i) => {
+          {DIGITAL_PINS.map((i, _idx) => {
             const count = data.digitalPins[i] || 0
             return (
               <div
                 key={i}
                 style={{
                   ...styles.pinCell,
-                  backgroundColor: count > 0 ? getHeatColor(count, maxDigital) : "#eee",
+                  backgroundColor:
+                    count > 0 ? getHeatColor(count, maxDigital) : "#eee",
                 }}
                 title={`Pin ${i}: ${count} events`}
               >
@@ -98,14 +111,15 @@ const PinUsageReport = () => {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Analog Pins (A0-A15)</h3>
         <div style={styles.pinGrid}>
-          {Array.from({ length: ANALOG_PIN_COUNT }, (_, i) => {
+          {ANALOG_PINS.map((i, _idx) => {
             const count = data.analogPins[i] || 0
             return (
               <div
                 key={i}
                 style={{
                   ...styles.pinCell,
-                  backgroundColor: count > 0 ? getHeatColor(count, maxAnalog) : "#eee",
+                  backgroundColor:
+                    count > 0 ? getHeatColor(count, maxAnalog) : "#eee",
                 }}
                 title={`Pin A${i}: ${count} events`}
               >

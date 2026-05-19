@@ -1,5 +1,9 @@
 import React from "react"
-import { trackEvent, isBackendAvailable, getActiveSessionId } from "../utils/tracking"
+import {
+  trackEvent,
+  isBackendAvailable,
+  getActiveSessionId,
+} from "../utils/tracking"
 
 const AUTOSAVE_KEY = "arduino-sim-autosave"
 const AUTOSAVE_FILENAME_KEY = "arduino-sim-autosave-filename"

@@ -74,11 +74,8 @@ const ProgressReport = () => {
         </div>
       )}
       <div style={styles.grid}>
-        {data.examples.map((ex, i) => (
-          <div key={i} style={styles.card}>
-            <h4 style={styles.cardTitle}>{ex.name}</h4>
-            <p style={styles.cardValue}>{ex.completions} completions</p>
-          </div>
+        {data.examples.map((ex, _i) => (
+          <ExampleCard key={ex.name} name={ex.name} completions={ex.completions} />
         ))}
       </div>
     </div>
@@ -127,5 +124,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "#27ae60",
   },
 }
+
+const ExampleCard = ({
+  name,
+  completions,
+}: {
+  name: string
+  completions: number
+}) => (
+  <div style={styles.card}>
+    <h4 style={styles.cardTitle}>{name}</h4>
+    <p style={styles.cardValue}>{completions} completions</p>
+  </div>
+)
 
 export default ProgressReport

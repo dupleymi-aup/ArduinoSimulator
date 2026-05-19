@@ -3,7 +3,7 @@ import { t } from "../utils/languages"
 
 interface SerialMonitorLineEndingProps {
   value: string
-  onChange: (value: string) => void
+  onChange: (_value: string) => void
 }
 
 const LINE_ENDINGS = [

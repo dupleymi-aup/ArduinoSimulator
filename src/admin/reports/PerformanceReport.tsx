@@ -37,7 +37,9 @@ const PerformanceReport = () => {
         setLoading(false)
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : "Failed to load performance data")
+        setError(
+          err instanceof Error ? err.message : "Failed to load performance data"
+        )
         setLoading(false)
       })
   }, [fetchPerformance])
@@ -54,7 +56,11 @@ const PerformanceReport = () => {
     <div>
       <DateRangeFilter value={dateRange} onChange={setDateRange} />
       <div style={styles.statsRow}>
-        <StatCard title="Total Sessions" value={data.totalSessions} color="#0066cc" />
+        <StatCard
+          title="Total Sessions"
+          value={data.totalSessions}
+          color="#0066cc"
+        />
         <StatCard
           title="Success Rate"
           value={`${data.successRate}%`}
@@ -73,11 +79,8 @@ const PerformanceReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topErrors.map((err, i) => (
-                <tr key={i}>
-                  <td style={styles.td}>{err.error}</td>
-                  <td style={{ ...styles.td, textAlign: "center" }}>{err.count}</td>
-                </tr>
+              {data.topErrors.map((err, _i) => (
+                <ErrorRow key={err.error} error={err.error} count={err.count} />
               ))}
             </tbody>
           </table>
@@ -92,7 +95,12 @@ const PerformanceReport = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="count" stroke="#e74c3c" name="Attempts" />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#e74c3c"
+                name="Attempts"
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -149,5 +157,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "#333",
   },
 }
+
+const ErrorRow = ({ error, count }: { error: string; count: number }) => (
+  <tr>
+    <td style={styles.td}>{error}</td>
+    <td style={{ ...styles.td, textAlign: "center" }}>{count}</td>
+  </tr>
+)
 
 export default PerformanceReport

@@ -59,7 +59,11 @@ const ActivityReport = () => {
     <div>
       <DateRangeFilter value={dateRange} onChange={setDateRange} />
       <div style={styles.statsRow}>
-        <StatCard title="Total Sessions" value={data.totalSessions} color="#0066cc" />
+        <StatCard
+          title="Total Sessions"
+          value={data.totalSessions}
+          color="#0066cc"
+        />
         <StatCard
           title="Avg. Duration"
           value={formatDuration(data.avgDurationMs)}
@@ -89,7 +93,12 @@ const ActivityReport = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="count" stroke="#27ae60" name="Sessions" />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#27ae60"
+                name="Sessions"
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

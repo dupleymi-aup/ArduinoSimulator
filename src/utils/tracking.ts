@@ -44,7 +44,10 @@ export type TrackEventType =
   | "serial_send"
   | "autosave"
 
-export function trackEvent(type: TrackEventType, payload: Record<string, unknown> = {}) {
+export function trackEvent(
+  type: TrackEventType,
+  payload: Record<string, unknown> = {}
+) {
   if (!backendAvailable || !activeSessionId) return
 
   const data = JSON.stringify({ sessionId: activeSessionId, type, payload })

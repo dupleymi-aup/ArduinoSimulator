@@ -8,7 +8,7 @@ const getBoards: () => string[] = () => {
   return settings.BOARDS
 }
 
-const isMega: (boardType: string) => boolean = (boardType: string) => {
+const isMega: (_boardType: string) => boolean = (boardType: string) => {
   if (!boardType) {
     return false
   } else if (boardType.toLocaleLowerCase().indexOf("mega") > -1) {
@@ -17,7 +17,7 @@ const isMega: (boardType: string) => boolean = (boardType: string) => {
   return false
 }
 
-const isNano: (boardType: string) => boolean = (boardType: string) => {
+const isNano: (_boardType: string) => boolean = (boardType: string) => {
   if (!boardType) {
     return false
   } else if (boardType.toLocaleLowerCase().indexOf("nano") > -1) {

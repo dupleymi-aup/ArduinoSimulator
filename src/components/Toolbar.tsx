@@ -32,7 +32,7 @@ interface ToolbarProps {
   onNewFile: () => void
   onOpenFile: () => void
   onSaveFile: () => void
-  onLoadExample: (_content: string, _name: string) => void
+  onLoadExample: (_: string, __: string) => void
   onStart: () => void
   onStop: () => void
   onCleanEditor: () => void
@@ -40,8 +40,8 @@ interface ToolbarProps {
   refUploader: React.RefObject<HTMLInputElement>
   showConfirmMessage: number | null
   showLoading: boolean
-  setShowConfirmMessage: (v: number | null) => void
-  openFileConfirmed: (event: React.ChangeEvent<HTMLInputElement>) => void
+  setShowConfirmMessage: (_v: number | null) => void
+  openFileConfirmed: (_event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const Toolbar = ({
@@ -59,11 +59,7 @@ const Toolbar = ({
   setShowConfirmMessage,
   openFileConfirmed,
 }: ToolbarProps) => {
-  const {
-    simulatorRunning,
-    boardType,
-    setBoardType,
-  } = useSimulatorContext()
+  const { simulatorRunning, boardType, setBoardType } = useSimulatorContext()
   const track = useEventTracking()
 
   const NEW_FILE = 1
@@ -121,7 +117,8 @@ const Toolbar = ({
     onStop()
   }
 
-  const acceptCallback = showConfirmMessage === NEW_FILE ? onCleanEditor : onUploadFile
+  const acceptCallback =
+    showConfirmMessage === NEW_FILE ? onCleanEditor : onUploadFile
 
   React.useEffect(() => {
     const styleId = "arduinosimulator-toolbar-styles"

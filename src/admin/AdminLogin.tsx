@@ -20,7 +20,9 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
         <h2 style={styles.title}>Arduino Simulator Admin</h2>
         <form onSubmit={handleSubmit}>
           <div style={styles.field}>
-            <label htmlFor="username" style={styles.label}>Username</label>
+            <label htmlFor="username" style={styles.label}>
+              Username
+            </label>
             <input
               id="username"
               type="text"
@@ -32,7 +34,9 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
             />
           </div>
           <div style={styles.field}>
-            <label htmlFor="password" style={styles.label}>Password</label>
+            <label htmlFor="password" style={styles.label}>
+              Password
+            </label>
             <input
               id="password"
               type="password"
@@ -42,7 +46,11 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
               autoComplete="current-password"
             />
           </div>
-          {loginError && <p style={styles.error} role="alert">{loginError}</p>}
+          {loginError && (
+            <p style={styles.error} role="alert">
+              {loginError}
+            </p>
+          )}
           <button type="submit" style={styles.button}>
             Login
           </button>

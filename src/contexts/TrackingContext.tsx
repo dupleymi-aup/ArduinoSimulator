@@ -5,7 +5,6 @@ import {
   startSession,
   endSession,
   sendHeartbeat,
-  isBackendAvailable,
 } from "../utils/tracking"
 
 interface TrackingContextType {

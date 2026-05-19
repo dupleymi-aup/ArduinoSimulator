@@ -3,7 +3,7 @@ import { examples } from "../examples"
 import { t } from "../utils/languages"
 
 interface ToolbarExamplesProps {
-  onLoadExample: (_content: string, _name: string) => void
+  onLoadExample: (_: string, __: string) => void
   onClose: () => void
 }
 
@@ -25,19 +25,13 @@ const ToolbarExamples = ({ onLoadExample, onClose }: ToolbarExamplesProps) => {
       </button>
       {isOpen && (
         <div style={styles.dropdown}>
-          {examples.map((category) => (
-            <div key={category.category} style={styles.category}>
-              <div style={styles.categoryTitle}>{category.category}</div>
-              {category.sketches.map((sketch) => (
-                <div
-                  key={`${category.category}-${sketch.name}`}
-                  style={styles.sketch}
-                  onClick={() => handleSelect(sketch.content, sketch.name)}
-                >
-                  {sketch.name}
-                </div>
-              ))}
-            </div>
+          {examples.map((category, _i) => (
+            <CategorySection
+              key={category.category}
+              category={category.category}
+              sketches={category.sketches}
+              onSelect={handleSelect}
+            />
           ))}
         </div>
       )}
@@ -93,5 +87,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "#333333",
   },
 }
+
+const CategorySection = ({
+  category,
+  sketches,
+  onSelect,
+}: {
+  category: string
+  sketches: { name: string; content: string }[]
+  onSelect: (_content: string, _name: string) => void
+}) => (
+  <div style={styles.category}>
+    <div style={styles.categoryTitle}>{category}</div>
+    {sketches.map((sketch, _j) => (
+      <div
+        key={`${category}-${sketch.name}`}
+        onClick={() => onSelect(sketch.content, sketch.name)}
+        style={styles.sketch}
+      >
+        {sketch.name}
+      </div>
+    ))}
+  </div>
+)
 
 export default ToolbarExamples

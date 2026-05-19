@@ -18,12 +18,12 @@ const PinsDigitalBar = () => {
           }}
         >
           <PinsDigitalLabel />
-          {digitalPins.slice(0, 14).map((pin) => (
+          {digitalPins.slice(0, 14).map((pin, _i) => (
             <PinsDigitalItem key={pin.pinNumber} gpio={pin} />
           ))}
           {isMegaBoard && (
             <>
-              {digitalPins.slice(14, 54).map((pin) => (
+              {digitalPins.slice(14, 54).map((pin, _i) => (
                 <PinsDigitalItem key={pin.pinNumber} gpio={pin} />
               ))}
             </>

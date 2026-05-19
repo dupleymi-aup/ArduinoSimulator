@@ -50,7 +50,9 @@ const Editor = () => {
     setSimulatorRunning(false)
   }, [setDigitalPins, setAnalogPins, setSimulatorRunning])
 
-  const [showConfirmMessage, setShowConfirmMessage] = React.useState<number | null>(null)
+  const [showConfirmMessage, setShowConfirmMessage] = React.useState<number | null>(
+    null
+  )
   const refUploader = React.useRef<HTMLInputElement>(null)
   const [showWelcome, setShowWelcome] = React.useState<boolean>(false)
   const [showLoading, setShowLoading] = React.useState<boolean>(false)

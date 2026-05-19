@@ -42,10 +42,7 @@ class ErrorBoundary extends React.Component<Props, State> {
             <p style={styles.message}>
               The application encountered an unexpected error.
               {isProduction && (
-                <span>
-                  {" "}
-                  Please try refreshing the page or contact support.
-                </span>
+                <span> Please try refreshing the page or contact support.</span>
               )}
             </p>
             {!isProduction && this.state.error && (

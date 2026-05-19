@@ -5,7 +5,10 @@ interface ErrorDisplayProps {
   onRetry?: () => void
 }
 
-const ErrorDisplay = ({ message = "Failed to load data.", onRetry }: ErrorDisplayProps) => (
+const ErrorDisplay = ({
+  message = "Failed to load data.",
+  onRetry,
+}: ErrorDisplayProps) => (
   <div style={styles.container}>
     <p style={styles.message}>{message}</p>
     {onRetry && (

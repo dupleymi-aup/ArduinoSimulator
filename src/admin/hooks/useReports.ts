@@ -28,7 +28,10 @@ export function useReports() {
 
   const fetchSessions = React.useCallback(
     async (page = 1, limit = 20) => {
-      const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+      })
       if (dateRange.start) params.set("start", dateRange.start)
       if (dateRange.end) params.set("end", dateRange.end)
       return apiFetch(`/api/admin/sessions?${params}`)

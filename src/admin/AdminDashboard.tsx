@@ -17,7 +17,11 @@ const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
   const ReportComponent = TAB_MAP[activeTab] || ActivityReport
 
   return (
-    <AdminLayout activeTab={activeTab} onTabChange={setActiveTab} onLogout={onLogout}>
+    <AdminLayout
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      onLogout={onLogout}
+    >
       <ReportComponent />
     </AdminLayout>
   )

@@ -2,7 +2,7 @@ import React from "react"
 
 interface DateRangeFilterProps {
   value: { start: string; end: string }
-  onChange: (range: { start: string; end: string }) => void
+  onChange: (_range: { start: string; end: string }) => void
 }
 
 export const DateRangeFilter = ({ value, onChange }: DateRangeFilterProps) => {

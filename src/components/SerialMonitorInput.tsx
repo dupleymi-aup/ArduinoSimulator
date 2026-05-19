@@ -3,7 +3,7 @@ import React from "react"
 interface SerialMonitorInputProps {
   sendSerialData: () => void
   value: string
-  onChange: (value: string) => void
+  onChange: (_value: string) => void
   simulatorRunning: boolean
 }
 

@@ -4,22 +4,31 @@ const TABS = ["Activity", "Performance", "Progress", "Pin Usage"]
 
 interface AdminLayoutProps {
   activeTab: string
-  onTabChange: (tab: string) => void
+  onTabChange: (_tab: string) => void
   onLogout: () => void
   children: React.ReactNode
 }
 
-const AdminLayout = ({ activeTab, onTabChange, onLogout, children }: AdminLayoutProps) => {
+const AdminLayout = ({
+  activeTab,
+  onTabChange,
+  onLogout,
+  children,
+}: AdminLayoutProps) => {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <h1 style={styles.logo}>Arduino Simulator Admin</h1>
-        <button onClick={onLogout} style={styles.logoutBtn} aria-label="Logout of admin panel">
+        <button
+          onClick={onLogout}
+          style={styles.logoutBtn}
+          aria-label="Logout of admin panel"
+        >
           Logout
         </button>
       </header>
       <nav style={styles.nav} role="tablist" aria-label="Admin reports">
-        {TABS.map((tab) => (
+        {TABS.map((tab, _index) => (
           <button
             key={tab}
             role="tab"
@@ -36,7 +45,12 @@ const AdminLayout = ({ activeTab, onTabChange, onLogout, children }: AdminLayout
           </button>
         ))}
       </nav>
-      <main style={styles.main} role="tabpanel" aria-labelledby={`tab-${activeTab.toLowerCase().replace(/\s+/g, "-")}`} id={`panel-${activeTab.toLowerCase().replace(/\s+/g, "-")}`}>
+      <main
+        style={styles.main}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab.toLowerCase().replace(/\s+/g, "-")}`}
+        id={`panel-${activeTab.toLowerCase().replace(/\s+/g, "-")}`}
+      >
         {children}
       </main>
     </div>

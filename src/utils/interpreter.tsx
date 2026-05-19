@@ -7,12 +7,12 @@ const myWorkerTimestamp = Date.now()
 let accumulatedError = ""
 
 const startSimulator = (
-  setShowLoading: (state: boolean) => void,
-  setSimulatorRunning: (state: boolean) => void,
-  handleSetDigitalPins: (index: number, state: boolean) => void,
-  handleSetAnalogPins: (index: number, duty: number) => void,
-  setOutputData: (data: string) => void,
-  setRuntimeError: (error: string | null) => void
+  setShowLoading: (_state: boolean) => void,
+  setSimulatorRunning: (_state: boolean) => void,
+  handleSetDigitalPins: (_index: number, _state: boolean) => void,
+  handleSetAnalogPins: (_index: number, _duty: number) => void,
+  setOutputData: (_data: string) => void,
+  setRuntimeError: (_error: string | null) => void
 ) => {
   accumulatedError = ""
   myWorker = new Worker("ArduinoSimulatorInterpreter.min.js?v=" + myWorkerTimestamp)
@@ -73,7 +73,10 @@ const startSimulator = (
           EVENT_DIGITAL_PIN_TRUE
         )
         if (isBackendAvailable() && getActiveSessionId()) {
-          trackEvent("digital_pin_change", { pin: parseInt(EVENT_DIGITAL_PIN_NUMBER), state: EVENT_DIGITAL_PIN_TRUE })
+          trackEvent("digital_pin_change", {
+            pin: parseInt(EVENT_DIGITAL_PIN_NUMBER),
+            state: EVENT_DIGITAL_PIN_TRUE,
+          })
         }
       } else if (EVENT_ANALOG_PIN) {
         const analogPinNumber = receivedStr
@@ -86,7 +89,10 @@ const startSimulator = (
         )
         handleSetAnalogPins(parseInt(analogPinNumber), parseInt(analogPinValue))
         if (isBackendAvailable() && getActiveSessionId()) {
-          trackEvent("analog_pin_change", { pin: parseInt(analogPinNumber), value: parseInt(analogPinValue) })
+          trackEvent("analog_pin_change", {
+            pin: parseInt(analogPinNumber),
+            value: parseInt(analogPinValue),
+          })
         }
       } else {
         setOutputData((prevState: string) => prevState + String(myReceivedData))
@@ -204,10 +210,7 @@ const convertSketch = (sketch: string) => {
   // JSCPP does not support C++ static local variables. Stripping `static` means these
   // variables lose their persistence across function calls, which may cause incorrect
   // behavior for sketches that rely on static state. This is a known interpreter limitation.
-  sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic\s+/g,
-    ""
-  )
+  sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic\s+/g, "")
 
   // FINDING AND REPLACING ALL THE REFERENCES TO THE STRING TYPE
   sketch = sketch.replace(

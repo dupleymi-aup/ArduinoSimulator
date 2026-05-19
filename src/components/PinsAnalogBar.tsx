@@ -15,19 +15,19 @@ const PinsAnalogBar = () => {
       <div style={styles.noScrollbar}>
         <div style={{ width: isMegaBoard ? "850px" : "550px", ...styles.wrapper }}>
           <PinsAnalogLabel />
-          {analogPins.slice(0, 6).map((pin) => (
+          {analogPins.slice(0, 6).map((pin, _i) => (
             <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
           ))}
           {(isMegaBoard || isNanoBoard) && (
             <>
-              {analogPins.slice(6, 8).map((pin) => (
+              {analogPins.slice(6, 8).map((pin, _i) => (
                 <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
               ))}
             </>
           )}
           {isMegaBoard && (
             <>
-              {analogPins.slice(8, 14).map((pin) => (
+              {analogPins.slice(8, 14).map((pin, _i) => (
                 <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
               ))}
             </>

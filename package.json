@@ -102,6 +102,7 @@
           "args": "all",
           "caughtErrors": "all",
           "caughtErrorsIgnorePattern": "err",
+          "argsIgnorePattern": "^_",
           "ignoreRestSiblings": false
         }
       ],

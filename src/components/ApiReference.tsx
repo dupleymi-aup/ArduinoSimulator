@@ -14,21 +14,6 @@ const ApiReference = ({ onClose }: ApiReferenceProps) => {
     if (!newState) onClose()
   }
 
-  const getBadgeStyle = (status: string): React.CSSProperties => ({
-    backgroundColor:
-      status === "supported"
-        ? "#33CC33"
-        : status === "partial"
-          ? "#FFCC00"
-          : "#CC3333",
-    color: status === "partial" ? "#333333" : "#FFFFFF",
-    display: "inline-block",
-    padding: "1px 6px",
-    borderRadius: "3px",
-    fontSize: "10px",
-    fontWeight: "bold",
-  })
-
   const functions = [
     {
       name: "pinMode(pin, mode)",
@@ -102,22 +87,13 @@ const ApiReference = ({ onClose }: ApiReferenceProps) => {
             </tr>
           </thead>
           <tbody>
-            {functions.map((fn, idx) => (
-              <tr key={idx}>
-                <td style={styles.tdName}>{fn.name}</td>
-                <td style={styles.tdStatus}>
-                  <span
-                    style={getBadgeStyle(fn.status)}
-                  >
-                    {fn.status === "supported"
-                      ? t("API_SUPPORTED")
-                      : fn.status === "partial"
-                        ? t("API_PARTIAL")
-                        : t("API_NOT_SUPPORTED")}
-                  </span>
-                </td>
-                <td style={styles.td}>{fn.notes}</td>
-              </tr>
+            {functions.map((fn, _i) => (
+              <FunctionRow
+                key={fn.name}
+                name={fn.name}
+                status={fn.status}
+                notes={fn.notes}
+              />
             ))}
           </tbody>
         </table>
@@ -192,5 +168,44 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "#666666",
   },
 }
+
+const getBadgeStyle = (status: string): React.CSSProperties => ({
+  backgroundColor:
+    status === "supported"
+      ? "#33CC33"
+      : status === "partial"
+        ? "#FFCC00"
+        : "#CC3333",
+  color: status === "partial" ? "#333333" : "#FFFFFF",
+  display: "inline-block",
+  padding: "1px 6px",
+  borderRadius: "3px",
+  fontSize: "10px",
+  fontWeight: "bold",
+})
+
+const FunctionRow = ({
+  name,
+  status,
+  notes,
+}: {
+  name: string
+  status: string
+  notes: string
+}) => (
+  <tr>
+    <td style={styles.tdName}>{name}</td>
+    <td style={styles.tdStatus}>
+      <span style={getBadgeStyle(status)}>
+        {status === "supported"
+          ? t("API_SUPPORTED")
+          : status === "partial"
+            ? t("API_PARTIAL")
+            : t("API_NOT_SUPPORTED")}
+      </span>
+    </td>
+    <td style={styles.td}>{notes}</td>
+  </tr>
+)
 
 export default ApiReference

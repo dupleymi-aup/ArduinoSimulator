@@ -2,7 +2,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
 
 export async function apiFetch<T = unknown>(
   path: string,
-  options: RequestInit = {}
+  options: Parameters<typeof fetch>[1] = {}
 ): Promise<T | null> {
   const token = localStorage.getItem("arduino-sim-admin-token")
 
