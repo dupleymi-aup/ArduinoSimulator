@@ -1,4 +1,5 @@
 import React from "react"
+import { trackEvent, isBackendAvailable, getActiveSessionId } from "../utils/tracking"
 
 const AUTOSAVE_KEY = "arduino-sim-autosave"
 const AUTOSAVE_FILENAME_KEY = "arduino-sim-autosave-filename"
@@ -15,6 +16,9 @@ export const useAutosave = (
         localStorage.setItem(AUTOSAVE_KEY, content)
         if (filename) {
           localStorage.setItem(AUTOSAVE_FILENAME_KEY, filename)
+        }
+        if (isBackendAvailable() && getActiveSessionId()) {
+          trackEvent("autosave", { filename: filename || "untitled" })
         }
       }
     }, AUTOSAVE_INTERVAL)

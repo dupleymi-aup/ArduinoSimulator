@@ -1,0 +1,127 @@
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
+
+let activeSessionId: string | null = null
+let backendAvailable = false
+
+export async function checkBackendHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/health`, {
+      method: "GET",
+      signal: AbortSignal.timeout(3000),
+    })
+    backendAvailable = res.ok
+  } catch {
+    backendAvailable = false
+  }
+  return backendAvailable
+}
+
+export function isBackendAvailable(): boolean {
+  return backendAvailable
+}
+
+export function getActiveSessionId(): string | null {
+  return activeSessionId
+}
+
+export function setActiveSessionId(id: string | null) {
+  activeSessionId = id
+}
+
+export type TrackEventType =
+  | "sim_start"
+  | "sim_stop"
+  | "sim_crash"
+  | "digital_pin_change"
+  | "analog_pin_change"
+  | "serial_output"
+  | "runtime_error"
+  | "file_new"
+  | "file_open"
+  | "file_save"
+  | "file_example_load"
+  | "board_change"
+  | "serial_send"
+  | "autosave"
+
+export function trackEvent(type: TrackEventType, payload: object = {}) {
+  if (!backendAvailable || !activeSessionId) return
+
+  const data = JSON.stringify({ sessionId: activeSessionId, type, payload })
+
+  try {
+    navigator.sendBeacon(`${BACKEND_URL}/api/track/event`, data)
+  } catch {
+    // sendBeacon failed, try fetch as fallback
+    fetch(`${BACKEND_URL}/api/track/event`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: data,
+    }).catch(() => {})
+  }
+}
+
+export async function startSession(
+  studentId: string,
+  sketchName?: string,
+  boardType?: string
+): Promise<string | null> {
+  if (!backendAvailable) return null
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/track/session/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ studentId, sketchName, boardType }),
+    })
+
+    if (res.ok) {
+      const data = await res.json()
+      activeSessionId = data.sessionId
+      return data.sessionId
+    }
+  } catch {
+    // tracking unavailable, continue silently
+  }
+  return null
+}
+
+export async function endSession(
+  durationMs: number,
+  endReason: string
+): Promise<boolean> {
+  if (!backendAvailable || !activeSessionId) return false
+
+  const data = JSON.stringify({
+    sessionId: activeSessionId,
+    durationMs,
+    endReason,
+  })
+
+  try {
+    navigator.sendBeacon(`${BACKEND_URL}/api/track/session/end`, data)
+    return true
+  } catch {
+    fetch(`${BACKEND_URL}/api/track/session/end`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: data,
+      keepalive: true,
+    }).catch(() => {})
+  }
+  return false
+}
+
+export function sendHeartbeat(): boolean {
+  if (!backendAvailable || !activeSessionId) return false
+
+  try {
+    navigator.sendBeacon(
+      `${BACKEND_URL}/api/track/heartbeat`,
+      JSON.stringify({ sessionId: activeSessionId })
+    )
+    return true
+  } catch {
+    return false
+  }
+}

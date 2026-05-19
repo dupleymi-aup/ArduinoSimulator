@@ -1,5 +1,7 @@
 import React from "react"
+import { Routes, Route } from "react-router-dom"
 import Editor from "./screens/Editor"
+import AdminApp from "./admin/AdminApp"
 import { declareLanguageData } from "./utils/languages"
 
 const App = () => {
@@ -20,7 +22,12 @@ const App = () => {
     return null
   }
 
-  return <Editor />
+  return (
+    <Routes>
+      <Route path="/admin/*" element={<AdminApp />} />
+      <Route path="/*" element={<Editor />} />
+    </Routes>
+  )
 }
 
 export default App

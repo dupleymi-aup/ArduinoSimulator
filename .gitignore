@@ -9,3 +9,8 @@
 
 # logs
 npm-debug.log*
+
+# server db
+server/prisma/*.db
+server/prisma/*.db-journal
+.env

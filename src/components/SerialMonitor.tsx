@@ -6,14 +6,17 @@ import SerialMonitorData from "./SerialMonitorData"
 import SerialMonitorLineEnding from "./SerialMonitorLineEnding"
 import { sendSerialData } from "../utils/interpreter"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
+import { useEventTracking } from "../hooks/useEventTracking"
 
 const SerialMonitor = () => {
   const { simulatorRunning } = useSimulatorContext()
+  const track = useEventTracking()
   const [inputValue, setInputValue] = React.useState<string>("")
   const [lineEnding, setLineEnding] = React.useState<string>("")
 
   const _sendSerialData = () => {
     sendSerialData(inputValue + lineEnding)
+    track("serial_send", { data: inputValue + lineEnding })
     setInputValue("")
   }
 

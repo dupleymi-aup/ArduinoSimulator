@@ -9,6 +9,7 @@ import SerialMonitor from "../components/SerialMonitor"
 import WelcomeModal from "../components/WelcomeModal"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts"
+import { useEventTracking } from "../hooks/useEventTracking"
 import {
   useAutosave,
   getAutosavedContent,
@@ -30,7 +31,9 @@ const Editor = () => {
     setFilename,
     setDigitalPins,
     setAnalogPins,
+    boardType,
   } = useSimulatorContext()
+  const track = useEventTracking()
 
   const [showConfirmMessage, setShowConfirmMessage] = React.useState<number | null>(null)
   const refUploader = React.useRef<HTMLInputElement>(null)
@@ -84,6 +87,8 @@ const Editor = () => {
 
   const newFileAction = () => {
     stopSimulator()
+    track("file_new")
+    track("sim_stop")
     setSimulatorRunning(false)
     setDigitalPins(initializeDigitalPins)
     setAnalogPins(initializeAnalogPins)
@@ -107,6 +112,7 @@ const Editor = () => {
     if (!selectedFileForUploading) return
     const documentName = selectedFileForUploading.name
     setFilename(documentName)
+    track("file_open", { filename: documentName })
 
     const filereader = new FileReader()
     filereader.onload = function () {
@@ -119,6 +125,7 @@ const Editor = () => {
 
   const saveFileAction = () => {
     editorSave(filename)
+    track("file_save", { filename })
     clearAutosave()
   }
 
@@ -141,6 +148,7 @@ const Editor = () => {
         onLoadExample={(content, name) => {
           editorSetValue(content)
           setFilename(name + ".ino")
+          track("file_example_load", { exampleName: name })
           editorFocus()
         }}
         refUploader={refUploader}

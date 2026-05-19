@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { editorEnable, editorGetValue } from "./editor"
+import { trackEvent, isBackendAvailable, getActiveSessionId } from "./tracking"
 
 let myWorker: Worker = null
 const myWorkerTimestamp = Date.now()
@@ -27,6 +28,9 @@ const startSimulator = (
         setSimulatorRunning(false)
         editorEnable()
         setRuntimeError("Simulation crashed or encountered a fatal error.")
+        if (isBackendAvailable() && getActiveSessionId()) {
+          trackEvent("sim_crash")
+        }
         return
       }
 
@@ -44,6 +48,9 @@ const startSimulator = (
           ? accumulatedError + "\n" + cleanError
           : cleanError
         setRuntimeError(accumulatedError)
+        if (isBackendAvailable() && getActiveSessionId()) {
+          trackEvent("runtime_error", { error: cleanError })
+        }
         return
       }
 
@@ -66,6 +73,9 @@ const startSimulator = (
           parseInt(EVENT_DIGITAL_PIN_NUMBER),
           EVENT_DIGITAL_PIN_TRUE
         )
+        if (isBackendAvailable() && getActiveSessionId()) {
+          trackEvent("digital_pin_change", { pin: parseInt(EVENT_DIGITAL_PIN_NUMBER), state: EVENT_DIGITAL_PIN_TRUE })
+        }
       } else if (EVENT_ANALOG_PIN) {
         const analogPinNumber = receivedStr
           .substring(0, receivedStr.lastIndexOf("_"))
@@ -76,6 +86,9 @@ const startSimulator = (
           receivedStr.length
         )
         handleSetAnalogPins(parseInt(analogPinNumber), parseInt(analogPinValue))
+        if (isBackendAvailable() && getActiveSessionId()) {
+          trackEvent("analog_pin_change", { pin: parseInt(analogPinNumber), value: parseInt(analogPinValue) })
+        }
       } else {
         setOutputData((prevState: string) => prevState + String(myReceivedData))
       }
@@ -85,6 +98,9 @@ const startSimulator = (
         ? accumulatedError + "\n" + errorMsg
         : errorMsg
       setRuntimeError(accumulatedError)
+      if (isBackendAvailable() && getActiveSessionId()) {
+        trackEvent("runtime_error", { error: errorMsg })
+      }
     }
 
     return true

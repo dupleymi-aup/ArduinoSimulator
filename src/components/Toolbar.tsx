@@ -15,6 +15,7 @@ import ToolbarExamples from "./ToolbarExamples"
 import Loading from "./Loading"
 import ConfirmBox from "./ConfirmBox"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
+import { useEventTracking } from "../hooks/useEventTracking"
 import {
   editorNew,
   editorUndo,
@@ -63,7 +64,9 @@ const Toolbar = ({
     handleSetAnalogPins,
     setOutputData,
     setRuntimeError,
+    filename,
   } = useSimulatorContext()
+  const track = useEventTracking()
 
   const [showLoadingInternal, setShowLoadingInternal] =
     React.useState<boolean>(false)
@@ -112,6 +115,7 @@ const Toolbar = ({
 
   const cleanEditor = () => {
     stopSimulator()
+    track("sim_stop")
     setSimulatorRunning(false)
     setDigitalPins(initializeDigitalPins)
     setAnalogPins(initializeAnalogPins)
@@ -147,11 +151,13 @@ const Toolbar = ({
     })
 
     setBoardType(nextBoard)
+    track("board_change", { boardType: nextBoard })
   }
 
   const startSketch = () => {
     setShowLoadingInternal(true)
     editorDisable()
+    track("sim_start", { sketchName: filename, boardType })
     startSimulator(
       setShowLoadingInternal,
       setSimulatorRunning,
@@ -164,6 +170,7 @@ const Toolbar = ({
 
   const stopSketch = () => {
     stopSimulator()
+    track("sim_stop")
     setDigitalPins(initializeDigitalPins)
     setAnalogPins(initializeAnalogPins)
     setSimulatorRunning(false)
