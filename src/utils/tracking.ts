@@ -44,15 +44,14 @@ export type TrackEventType =
   | "serial_send"
   | "autosave"
 
-export function trackEvent(type: TrackEventType, payload: object = {}) {
+export function trackEvent(type: TrackEventType, payload: Record<string, unknown> = {}) {
   if (!backendAvailable || !activeSessionId) return
 
   const data = JSON.stringify({ sessionId: activeSessionId, type, payload })
 
-  try {
-    navigator.sendBeacon(`${BACKEND_URL}/api/track/event`, data)
-  } catch {
-    // sendBeacon failed, try fetch as fallback
+  const sent = navigator.sendBeacon(`${BACKEND_URL}/api/track/event`, data)
+  if (!sent) {
+    // sendBeacon queue full or blocked, fallback to fetch
     fetch(`${BACKEND_URL}/api/track/event`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -98,30 +97,30 @@ export async function endSession(
     endReason,
   })
 
-  try {
-    navigator.sendBeacon(`${BACKEND_URL}/api/track/session/end`, data)
-    return true
-  } catch {
-    fetch(`${BACKEND_URL}/api/track/session/end`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: data,
-      keepalive: true,
-    }).catch(() => {})
+  const sent = navigator.sendBeacon(`${BACKEND_URL}/api/track/session/end`, data)
+  if (!sent) {
+    // sendBeacon failed, fallback to fetch
+    try {
+      await fetch(`${BACKEND_URL}/api/track/session/end`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: data,
+        keepalive: true,
+      })
+      return true
+    } catch {
+      return false
+    }
   }
-  return false
+  return true
 }
 
 export function sendHeartbeat(): boolean {
   if (!backendAvailable || !activeSessionId) return false
 
-  try {
-    navigator.sendBeacon(
-      `${BACKEND_URL}/api/track/heartbeat`,
-      JSON.stringify({ sessionId: activeSessionId })
-    )
-    return true
-  } catch {
-    return false
-  }
+  const sent = navigator.sendBeacon(
+    `${BACKEND_URL}/api/track/heartbeat`,
+    JSON.stringify({ sessionId: activeSessionId })
+  )
+  return sent
 }

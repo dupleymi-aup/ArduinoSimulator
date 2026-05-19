@@ -1,19 +1,14 @@
-/* eslint-disable no-unused-vars */
 import settings from "./service.json"
-
-type getBoardsType = () => string[]
-type isMegaType = (_value: string) => boolean
-type isNanoType = (_value: string) => boolean
 
 const getFallbackLanguage: () => string = () => {
   return settings.LANGUAGE_FALLBACK
 }
 
-const getBoards: getBoardsType = () => {
+const getBoards: () => string[] = () => {
   return settings.BOARDS
 }
 
-const isMega: isMegaType = (boardType: string) => {
+const isMega: (boardType: string) => boolean = (boardType: string) => {
   if (!boardType) {
     return false
   } else if (boardType.toLocaleLowerCase().indexOf("mega") > -1) {
@@ -22,7 +17,7 @@ const isMega: isMegaType = (boardType: string) => {
   return false
 }
 
-const isNano: isNanoType = (boardType: string) => {
+const isNano: (boardType: string) => boolean = (boardType: string) => {
   if (!boardType) {
     return false
   } else if (boardType.toLocaleLowerCase().indexOf("nano") > -1) {

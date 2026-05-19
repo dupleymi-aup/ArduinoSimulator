@@ -28,7 +28,7 @@ export async function heartbeatSession(sessionId: string) {
   })
 }
 
-export async function recordEvent(sessionId: string, type: string, payload?: object) {
+export async function recordEvent(sessionId: string, type: string, payload?: Record<string, unknown>) {
   const updates: Record<string, unknown> = {}
 
   if (type === "sim_start") {

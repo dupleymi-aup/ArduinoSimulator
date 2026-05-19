@@ -32,7 +32,7 @@ const CodeEditor = () => {
     document.getElementsByTagName("head")[0].appendChild(styleNode)
 
     editorInit()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Intentionally runs once on mount: style injection and editorInit are singleton setup
   }, [])
 
   return (

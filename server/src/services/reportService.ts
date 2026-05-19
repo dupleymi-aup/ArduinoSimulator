@@ -5,21 +5,21 @@ interface DateRange {
   end?: string
 }
 
-function dateFilter(range?: DateRange) {
+function dateFilter(range?: DateRange): Record<string, unknown> {
   if (!range?.start && !range?.end) return {}
-  const where: Record<string, unknown> = {}
-  if (range.start) where.gte = new Date(range.start)
-  if (range.end) where.lte = new Date(range.end)
-  return where
+  const dateConditions: Record<string, Date> = {}
+  if (range.start) dateConditions.gte = new Date(range.start)
+  if (range.end) dateConditions.lte = new Date(range.end)
+  return { startedAt: dateConditions }
 }
 
 export async function getActivityReport(range?: DateRange) {
   const filter = dateFilter(range)
 
-  const totalSessions = await prisma.session.count({ where: filter.startedAt ? { startedAt: filter } : {} })
+  const totalSessions = await prisma.session.count({ where: filter })
 
   const sessionsWithDuration = await prisma.session.findMany({
-    where: filter.startedAt ? { startedAt: filter } : {},
+    where: filter,
     select: { durationMs: true },
   })
 
@@ -32,19 +32,29 @@ export async function getActivityReport(range?: DateRange) {
 
   const topExamples = await prisma.session.groupBy({
     by: ["sketchName"],
-    where: { ...filter, sketchName: { not: null } },
+    where: { sketchName: { not: null }, ...filter },
     _count: { sketchName: true },
     orderBy: { _count: { sketchName: "desc" } },
     take: 5,
   })
 
-  const sessionsByDay = await prisma.$queryRaw`
-    SELECT date(startedAt) as day, count(*) as count
-    FROM Session
-    WHERE startedAt >= datetime('now', '-30 days')
-    GROUP BY day
-    ORDER BY day
-  `
+  // Use Prisma findMany instead of SQLite-specific raw SQL for portability
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const recentSessions = await prisma.session.findMany({
+    where: { startedAt: { gte: thirtyDaysAgo } },
+    select: { startedAt: true },
+    orderBy: { startedAt: "asc" },
+  })
+
+  // Group by day in application code
+  const dayMap = new Map<string, number>()
+  for (const s of recentSessions) {
+    const day = s.startedAt.toISOString().split("T")[0]
+    dayMap.set(day, (dayMap.get(day) || 0) + 1)
+  }
+  const sessionsByDay = Array.from(dayMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([day, count]) => ({ day, count }))
 
   return {
     totalSessions,
@@ -59,32 +69,51 @@ export async function getActivityReport(range?: DateRange) {
 
 export async function getPerformanceReport(range?: DateRange) {
   const filter = dateFilter(range)
-  const baseWhere = filter.startedAt ? { startedAt: filter } : {}
 
-  const totalSessions = await prisma.session.count({ where: baseWhere })
-  const simStarted = await prisma.session.count({ where: { ...baseWhere, simStarted: true } })
-  const simCompleted = await prisma.session.count({ where: { ...baseWhere, simCompleted: true } })
+  const totalSessions = await prisma.session.count({ where: filter })
+  const simStarted = await prisma.session.count({ where: { simStarted: true, ...filter } })
+  const simCompleted = await prisma.session.count({ where: { simCompleted: true, ...filter } })
 
   const errorEvents = await prisma.event.findMany({
-    where: { type: "runtime_error" },
+    where: { type: "runtime_error", ...filter },
     select: { payload: true },
     take: 200,
   })
 
   const errorCounts: Record<string, number> = {}
   for (const e of errorEvents) {
-    const key = e.payload || "unknown"
-    errorCounts[key] = (errorCounts[key] || 0) + 1
+    // payload is stored as JSON string, parse it to extract the error message
+    if (e.payload) {
+      try {
+        const parsed = JSON.parse(e.payload) as { message?: string; error?: string }
+        const key = parsed?.message || parsed?.error || e.payload.slice(0, 80)
+        errorCounts[key] = (errorCounts[key] || 0) + 1
+      } catch {
+        const key = e.payload.slice(0, 80) || "unknown"
+        errorCounts[key] = (errorCounts[key] || 0) + 1
+      }
+    } else {
+      errorCounts["unknown"] = (errorCounts["unknown"] || 0) + 1
+    }
   }
 
-  const simAttemptsOverTime = await prisma.$queryRaw`
-    SELECT date(timestamp) as day, count(*) as count
-    FROM Event
-    WHERE type = 'sim_start'
-    AND timestamp >= datetime('now', '-30 days')
-    GROUP BY day
-    ORDER BY day
-  `
+  // Use Prisma findMany instead of SQLite-specific raw SQL for portability
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const simStartEvents = await prisma.event.findMany({
+    where: { type: "sim_start", timestamp: { gte: thirtyDaysAgo } },
+    select: { timestamp: true },
+    orderBy: { timestamp: "asc" },
+  })
+
+  // Group by day in application code
+  const dayMap = new Map<string, number>()
+  for (const e of simStartEvents) {
+    const day = e.timestamp.toISOString().split("T")[0]
+    dayMap.set(day, (dayMap.get(day) || 0) + 1)
+  }
+  const simAttemptsOverTime = Array.from(dayMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([day, count]) => ({ day, count }))
 
   return {
     totalSessions,
@@ -162,8 +191,7 @@ export async function getPinUsageReport() {
 
 export async function getSessions(page: number, limit: number, range?: DateRange) {
   const skip = (page - 1) * limit
-  const filter = dateFilter(range)
-  const where = filter.startedAt ? { startedAt: filter } : {}
+  const where = dateFilter(range)
 
   const [sessions, total] = await Promise.all([
     prisma.session.findMany({
