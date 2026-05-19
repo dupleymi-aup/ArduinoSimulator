@@ -1,15 +1,8 @@
 import puppeteer from "puppeteer"
 import { t } from "../src/utils/languages"
 
-const sleep = (milliseconds) => {
-  const timestamp = Date.now() + milliseconds
-  while (timestamp > Date.now()) {
-    //
-  }
-}
-
-const searchIcon =
-  "#root > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(8) > div:nth-child(1)"
+const sleep = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds))
 
 describe("Editor End-To-End", () => {
   let browser
@@ -19,7 +12,7 @@ describe("Editor End-To-End", () => {
     browser = await puppeteer.launch({ headless: "new" })
     page = await browser.newPage()
     page.setUserAgent("test-agent")
-    await page.evaluateOnNewDocument(() => {
+    page.evaluateOnNewDocument(() => {
       Object.defineProperty(navigator, "language", {
         get: function () {
           return "en-US"
@@ -34,17 +27,16 @@ describe("Editor End-To-End", () => {
   })
 
   test("Checking if the Code Editor is mounted and working", async () => {
-    await page.waitForSelector(searchIcon)
+    await page.waitForSelector(".ace_search")
 
-    sleep(5000)
+    await sleep(500)
 
-    await page.click(searchIcon)
+    const bodyContent = await page.$eval(
+      ".ace_search_field",
+      (el) => el.placeholder
+    )
 
-    sleep(5000)
-
-    const bodyContent = await page.$eval(".ace_search_field", (el) => el.placeholder)
-
-    sleep(200)
+    await sleep(200)
 
     expect(bodyContent).toContain(t("SEARCH_FOR"))
   })

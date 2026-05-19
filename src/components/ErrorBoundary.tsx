@@ -19,8 +19,11 @@ class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("ErrorBoundary caught:", error, errorInfo.componentStack)
+  componentDidCatch(_error: Error, _errorInfo: React.ErrorInfo) {
+    // Error is stored in state and displayed to the user.
+    // Detailed logging is intentionally suppressed in production builds.
+    void _error
+    void _errorInfo
   }
 
   handleReset = () => {
@@ -30,17 +33,23 @@ class ErrorBoundary extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      const isProduction = process.env.NODE_ENV === "production"
+
       return (
         <div style={styles.container}>
           <div style={styles.content}>
             <h1 style={styles.title}>Something went wrong</h1>
             <p style={styles.message}>
               The application encountered an unexpected error.
+              {isProduction && (
+                <span>
+                  {" "}
+                  Please try refreshing the page or contact support.
+                </span>
+              )}
             </p>
-            {this.state.error && (
-              <pre style={styles.error}>
-                {this.state.error.message}
-              </pre>
+            {!isProduction && this.state.error && (
+              <pre style={styles.error}>{this.state.error.message}</pre>
             )}
             <button style={styles.button} onClick={this.handleReset}>
               Return to Home

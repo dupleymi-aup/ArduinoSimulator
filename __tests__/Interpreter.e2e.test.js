@@ -2,25 +2,16 @@ import React from "react"
 import renderer from "react-test-renderer"
 import puppeteer from "puppeteer"
 
-const sleep = (milliseconds) => {
-  const timestamp = Date.now() + milliseconds
-  while (timestamp > Date.now()) {
-    //
-  }
-}
+const sleep = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds))
 
 const runIcon = "#arduino_simulator_start_icon"
 const stopIcon = "#arduino_simulator_stop_icon"
-const pinDigital0 =
-  "#root > div:nth-child(4) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)"
-const pinAnalog0 =
-  "#root > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)"
-const serialInput =
-  "#root > div:nth-child(4) > div:nth-child(3) > div:nth-child(2) > input:nth-child(1)"
-const serialSubmit =
-  "#root > div:nth-child(4) > div:nth-child(3) > div:nth-child(2) > input:nth-child(2)"
-const serialOutputData =
-  "#root > div:nth-child(4) > div:nth-child(3) > div:nth-child(3) > div:nth-child(1)"
+const pinDigital0 = ".pin-digital[data-pin=\"0\"]"
+const pinAnalog0 = ".pin-analog[data-pin=\"0\"]"
+const serialInput = ".serial-input"
+const serialSubmit = ".serial-submit"
+const serialOutputData = ".serial-output"
 
 describe("Interpreter End-To-End", () => {
   let browser
@@ -49,13 +40,13 @@ describe("Interpreter End-To-End", () => {
   test("Running a Sketch and checking the Digital Pin 0", async () => {
     await page.waitForSelector(runIcon)
 
-    sleep(5000)
+    await sleep(5000)
 
     await page.click(runIcon)
 
     await page.waitForSelector(stopIcon)
 
-    sleep(7000)
+    await sleep(7000)
 
     const digitalPinStatus = await page.$eval(
       pinDigital0,
@@ -72,31 +63,31 @@ describe("Interpreter End-To-End", () => {
   })
 
   test("Reading the Serial data", async () => {
-    sleep(5000)
+    await sleep(5000)
 
     const serialData = await page.$eval(serialOutputData, (el) => el.innerText)
 
-    sleep(200)
+    await sleep(200)
 
     const tree = renderer.create(<>{serialData}</>).toJSON()
     expect(tree).toMatchSnapshot()
   })
 
   test("Inputting Serial data, sending the data to the Interpreter and reading it back on the Serial Monitor", async () => {
-    sleep(200)
+    await sleep(200)
 
     await page.focus(serialInput)
     await page.keyboard.type("This is a test")
 
-    sleep(2000)
+    await sleep(2000)
 
     await page.click(serialSubmit)
 
-    sleep(5000)
+    await sleep(5000)
 
     const serialData = await page.$eval(serialOutputData, (el) => el.innerText)
 
-    sleep(200)
+    await sleep(200)
 
     expect(serialData).toContain("This is a test")
   })

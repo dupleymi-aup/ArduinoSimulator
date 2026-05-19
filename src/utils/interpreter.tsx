@@ -201,26 +201,12 @@ const convertSketch = (sketch: string) => {
   sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bbyte \b/g, "unsigned char ")
 
   // FINDING AND REMOVING ALL THE REFERENCES TO THE STATIC VARIABLES (TEMP WORKAROUND)
+  // JSCPP does not support C++ static local variables. Stripping `static` means these
+  // variables lose their persistence across function calls, which may cause incorrect
+  // behavior for sketches that rely on static state. This is a known interpreter limitation.
   sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic unsigned char \b/g,
-    "unsigned char "
-  )
-  sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic int \b/g, "int ")
-  sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic long \b/g, "long ")
-  sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic bool \b/g, "bool ")
-  sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic float \b/g, "float ")
-  sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic double \b/g,
-    "double "
-  )
-  sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic String \b/g,
-    "String "
-  )
-  sketch = sketch.replace(/(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic char \b/g, "char ")
-  sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic unsigned \b/g,
-    "unsigned "
+    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bstatic\s+/g,
+    ""
   )
 
   // FINDING AND REPLACING ALL THE REFERENCES TO THE STRING TYPE

@@ -14,10 +14,9 @@ import ToolbarSeparator from "./ToolbarSeparator"
 import ToolbarExamples from "./ToolbarExamples"
 import Loading from "./Loading"
 import ConfirmBox from "./ConfirmBox"
-import { useSimulatorContext, initializeDigitalPins, initializeAnalogPins } from "../contexts/SimulatorContext"
+import { useSimulatorContext } from "../contexts/SimulatorContext"
 import { useEventTracking } from "../hooks/useEventTracking"
 import {
-  editorNew,
   editorUndo,
   editorRedo,
   editorSearch,
@@ -26,7 +25,6 @@ import {
   editorDisable,
   editorFocus,
 } from "../utils/editor"
-import { startSimulator, stopSimulator } from "../utils/interpreter"
 import { getBoards } from "../../src/utils/service"
 import { t } from "../utils/languages"
 
@@ -35,6 +33,10 @@ interface ToolbarProps {
   onOpenFile: () => void
   onSaveFile: () => void
   onLoadExample: (_content: string, _name: string) => void
+  onStart: () => void
+  onStop: () => void
+  onCleanEditor: () => void
+  onUploadFile: () => void
   refUploader: React.RefObject<HTMLInputElement>
   showConfirmMessage: number | null
   showLoading: boolean
@@ -47,6 +49,10 @@ const Toolbar = ({
   onOpenFile,
   onSaveFile,
   onLoadExample,
+  onStart,
+  onStop,
+  onCleanEditor,
+  onUploadFile,
   refUploader,
   showConfirmMessage,
   showLoading,
@@ -55,22 +61,11 @@ const Toolbar = ({
 }: ToolbarProps) => {
   const {
     simulatorRunning,
-    setSimulatorRunning,
     boardType,
     setBoardType,
-    setDigitalPins,
-    handleSetDigitalPins,
-    setAnalogPins,
-    handleSetAnalogPins,
-    setOutputData,
-    setRuntimeError,
-    filename,
-    setFilename,
   } = useSimulatorContext()
   const track = useEventTracking()
 
-  const [showLoadingInternal, setShowLoadingInternal] =
-    React.useState<boolean>(false)
   const NEW_FILE = 1
   const OPEN_FILE = 2
 
@@ -96,26 +91,6 @@ const Toolbar = ({
     onSaveFile()
   }
 
-  const cleanEditor = () => {
-    stopSimulator()
-    track("sim_stop")
-    setSimulatorRunning(false)
-    setDigitalPins(initializeDigitalPins)
-    setAnalogPins(initializeAnalogPins)
-    setFilename(null)
-    editorNew()
-    setShowConfirmMessage(null)
-  }
-
-  const uploadFile = () => {
-    stopSimulator()
-    setDigitalPins(initializeDigitalPins)
-    setAnalogPins(initializeAnalogPins)
-    setSimulatorRunning(false)
-    refUploader.current.click()
-    setShowConfirmMessage(null)
-  }
-
   const hideConfirmMessageInternal = () => {
     editorEnable()
     setShowConfirmMessage(null)
@@ -138,28 +113,15 @@ const Toolbar = ({
   }
 
   const startSketch = () => {
-    setShowLoadingInternal(true)
     editorDisable()
-    track("sim_start", { sketchName: filename, boardType })
-    startSimulator(
-      setShowLoadingInternal,
-      setSimulatorRunning,
-      handleSetDigitalPins,
-      handleSetAnalogPins,
-      setOutputData,
-      setRuntimeError
-    )
+    onStart()
   }
 
   const stopSketch = () => {
-    stopSimulator()
-    track("sim_stop")
-    setDigitalPins(initializeDigitalPins)
-    setAnalogPins(initializeAnalogPins)
-    setSimulatorRunning(false)
+    onStop()
   }
 
-  const acceptCallback = showConfirmMessage === NEW_FILE ? cleanEditor : uploadFile
+  const acceptCallback = showConfirmMessage === NEW_FILE ? onCleanEditor : onUploadFile
 
   React.useEffect(() => {
     const styleId = "arduinosimulator-toolbar-styles"
@@ -241,7 +203,7 @@ const Toolbar = ({
         style={styles.uploader}
         onChange={openFileConfirmed}
       />
-      {(showLoading || showLoadingInternal) && <Loading />}
+      {showLoading && <Loading />}
       {showConfirmMessage && (
         <ConfirmBox
           title={t("LOSECHANGES_TITLE")}

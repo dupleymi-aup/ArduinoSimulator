@@ -24,8 +24,8 @@ export async function apiFetch<T = unknown>(
 
     if (res.status === 204) return null
     return (await res.json()) as T
-  } catch (err) {
-    console.error(`apiFetch ${path} failed:`, err)
+  } catch {
+    // Network or parsing errors are silently handled; caller receives null.
     return null
   }
 }

@@ -45,9 +45,9 @@ const SimulatorContext = React.createContext<SimulatorContextType>({
   digitalPins: initializeDigitalPins,
   setDigitalPins: () => {},
   analogPins: initializeAnalogPins,
-  handleSetDigitalPins: (s, e) => {},
+  handleSetDigitalPins: (_index: number, _state: boolean) => {},
   setAnalogPins: () => {},
-  handleSetAnalogPins: (s, e) => {},
+  handleSetAnalogPins: (_index: number, _duty: number) => {},
   outputData: null,
   setOutputData: () => {},
   simulatorRunning: false,
@@ -56,7 +56,7 @@ const SimulatorContext = React.createContext<SimulatorContextType>({
   setRuntimeError: () => {},
 })
 
-export function SimulatorContextProvider({ children }) {
+export function SimulatorContextProvider({ children }: { children: React.ReactNode }) {
   const [filename, setFilename] = React.useState<string | null>(null)
   const [boardType, setBoardType] = React.useState<string | null>(null)
   const [digitalPins, setDigitalPins] = React.useState<Gpio[]>(initializeDigitalPins)

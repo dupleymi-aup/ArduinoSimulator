@@ -7,7 +7,11 @@ import PinsDigitalBar from "../components/PinsDigitalBar"
 import PinsAnalogBar from "../components/PinsAnalogBar"
 import SerialMonitor from "../components/SerialMonitor"
 import WelcomeModal from "../components/WelcomeModal"
-import { useSimulatorContext, initializeDigitalPins, initializeAnalogPins } from "../contexts/SimulatorContext"
+import {
+  useSimulatorContext,
+  initializeDigitalPins,
+  initializeAnalogPins,
+} from "../contexts/SimulatorContext"
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts"
 import { useEventTracking } from "../hooks/useEventTracking"
 import {
@@ -22,7 +26,7 @@ import {
   editorSave,
   editorFocus,
 } from "../utils/editor"
-import { stopSimulator } from "../utils/interpreter"
+import { startSimulator, stopSimulator } from "../utils/interpreter"
 
 const Editor = () => {
   const {
@@ -32,12 +36,24 @@ const Editor = () => {
     setDigitalPins,
     setAnalogPins,
     boardType,
+    handleSetDigitalPins,
+    handleSetAnalogPins,
+    setOutputData,
+    setRuntimeError,
   } = useSimulatorContext()
   const track = useEventTracking()
+
+  const resetSimulatorState = React.useCallback(() => {
+    stopSimulator()
+    setDigitalPins(initializeDigitalPins)
+    setAnalogPins(initializeAnalogPins)
+    setSimulatorRunning(false)
+  }, [setDigitalPins, setAnalogPins, setSimulatorRunning])
 
   const [showConfirmMessage, setShowConfirmMessage] = React.useState<number | null>(null)
   const refUploader = React.useRef<HTMLInputElement>(null)
   const [showWelcome, setShowWelcome] = React.useState<boolean>(false)
+  const [showLoading, setShowLoading] = React.useState<boolean>(false)
 
   // Welcome modal on first visit
   React.useEffect(() => {
@@ -72,12 +88,9 @@ const Editor = () => {
   }
 
   const newFileAction = () => {
-    stopSimulator()
+    resetSimulatorState()
     track("file_new")
     track("sim_stop")
-    setSimulatorRunning(false)
-    setDigitalPins(initializeDigitalPins)
-    setAnalogPins(initializeAnalogPins)
     setFilename(null)
     editorNew()
     clearAutosave()
@@ -85,10 +98,7 @@ const Editor = () => {
   }
 
   const openFileAction = () => {
-    stopSimulator()
-    setDigitalPins(initializeDigitalPins)
-    setAnalogPins(initializeAnalogPins)
-    setSimulatorRunning(false)
+    resetSimulatorState()
     refUploader.current.click()
     setShowConfirmMessage(null)
   }
@@ -115,10 +125,37 @@ const Editor = () => {
     clearAutosave()
   }
 
+  const stopSketch = React.useCallback(() => {
+    resetSimulatorState()
+    track("sim_stop")
+  }, [resetSimulatorState, track])
+
+  const startSketch = React.useCallback(() => {
+    setShowLoading(true)
+    track("sim_start", { sketchName: filename, boardType })
+    startSimulator(
+      () => setShowLoading(false),
+      setSimulatorRunning,
+      handleSetDigitalPins,
+      handleSetAnalogPins,
+      setOutputData,
+      setRuntimeError
+    )
+  }, [
+    track,
+    filename,
+    boardType,
+    setSimulatorRunning,
+    handleSetDigitalPins,
+    handleSetAnalogPins,
+    setOutputData,
+    setRuntimeError,
+  ])
+
   useKeyboardShortcuts({
     onSave: saveFileAction,
-    onRun: () => {},
-    onStop: () => {},
+    onRun: startSketch,
+    onStop: stopSketch,
     onNew: newFileAction,
     onOpen: openFileAction,
   })
@@ -137,9 +174,13 @@ const Editor = () => {
           track("file_example_load", { exampleName: name })
           editorFocus()
         }}
+        onStart={startSketch}
+        onStop={stopSketch}
+        onCleanEditor={newFileAction}
+        onUploadFile={openFileAction}
         refUploader={refUploader}
         showConfirmMessage={showConfirmMessage}
-        showLoading={false}
+        showLoading={showLoading}
         setShowConfirmMessage={setShowConfirmMessage}
         openFileConfirmed={openFileConfirmed}
       />
