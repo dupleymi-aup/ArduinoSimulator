@@ -3,6 +3,7 @@ import { editorEnable, editorGetValue } from "./editor"
 
 let myWorker: Worker = null
 const myWorkerTimestamp = Date.now()
+let accumulatedError = ""
 
 const startSimulator = (
   setShowLoading: (state: boolean) => void,
@@ -10,47 +11,80 @@ const startSimulator = (
   handleSetDigitalPins: (index: number, state: boolean) => void,
   handleSetAnalogPins: (index: number, duty: number) => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setOutputData: any
+  setOutputData: any,
+  setRuntimeError: (error: string | null) => void
 ) => {
+  accumulatedError = ""
   myWorker = new Worker("ArduinoSimulatorInterpreter.min.js?v=" + myWorkerTimestamp)
 
   myWorker.onmessage = (e: MessageEvent) => {
     try {
-      const myReceivedData = e.data || ""
+      const myReceivedData = e.data
 
-      const EVENT_SIMULATION_STARTED = myReceivedData.includes(
+      // Handle simulation crash (null message from JSCPP)
+      if (myReceivedData === null || myReceivedData === "null") {
+        setShowLoading(false)
+        setSimulatorRunning(false)
+        editorEnable()
+        setRuntimeError("Simulation crashed or encountered a fatal error.")
+        return
+      }
+
+      const receivedStr = String(myReceivedData)
+
+      // Capture error messages from JSCPP
+      if (
+        receivedStr.startsWith("Error:") ||
+        receivedStr.startsWith("<br />Error:")
+      ) {
+        const cleanError = receivedStr
+          .replace(/<br \/>/g, "\n")
+          .replace(/^Error:\s*/i, "")
+        accumulatedError = accumulatedError
+          ? accumulatedError + "\n" + cleanError
+          : cleanError
+        setRuntimeError(accumulatedError)
+        return
+      }
+
+      const EVENT_SIMULATION_STARTED = receivedStr.includes(
         "ENABLE_SERIAL_MONITOR_ARDUINO_SIMULATOR"
       )
-      const EVENT_DIGITAL_PIN = myReceivedData.includes("_DIGITAL_PIN_STATUS_")
-      const EVENT_DIGITAL_PIN_NUMBER = myReceivedData.replace(/[^0-9]/g, "")
-      const EVENT_DIGITAL_PIN_TRUE = myReceivedData.includes("TRUE")
-      const EVENT_ANALOG_PIN = myReceivedData.includes("_ANALOG_PIN_STATUS_")
+      const EVENT_DIGITAL_PIN = receivedStr.includes("_DIGITAL_PIN_STATUS_")
+      const EVENT_DIGITAL_PIN_NUMBER = receivedStr.replace(/[^0-9]/g, "")
+      const EVENT_DIGITAL_PIN_TRUE = receivedStr.includes("TRUE")
+      const EVENT_ANALOG_PIN = receivedStr.includes("_ANALOG_PIN_STATUS_")
 
       if (EVENT_SIMULATION_STARTED) {
         setShowLoading(false)
         setSimulatorRunning(true)
         editorEnable()
         setOutputData("")
+        setRuntimeError(null)
       } else if (EVENT_DIGITAL_PIN) {
         handleSetDigitalPins(
           parseInt(EVENT_DIGITAL_PIN_NUMBER),
           EVENT_DIGITAL_PIN_TRUE
         )
       } else if (EVENT_ANALOG_PIN) {
-        const analogPinNumber = myReceivedData
-          .substring(0, myReceivedData.lastIndexOf("_"))
+        const analogPinNumber = receivedStr
+          .substring(0, receivedStr.lastIndexOf("_"))
           .replace(/[^0-9]/g, "")
 
-        const analogPinValue = myReceivedData.substring(
-          myReceivedData.lastIndexOf("_") + 1,
-          myReceivedData.length
+        const analogPinValue = receivedStr.substring(
+          receivedStr.lastIndexOf("_") + 1,
+          receivedStr.length
         )
-        handleSetAnalogPins(parseInt(analogPinNumber), analogPinValue)
+        handleSetAnalogPins(parseInt(analogPinNumber), parseInt(analogPinValue))
       } else {
         setOutputData((prevState: string) => prevState + String(myReceivedData))
       }
     } catch (err) {
-      //
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      accumulatedError = accumulatedError
+        ? accumulatedError + "\n" + errorMsg
+        : errorMsg
+      setRuntimeError(accumulatedError)
     }
 
     return true
@@ -198,6 +232,25 @@ const convertSketch = (sketch: string) => {
     "_intToChar($2)"
   )
 
+  // FINDING AND REPLACING COMMON STRING METHOD CALLS
+  // .toInt() -> atoi()
+  sketch = sketch.replace(
+    /(?=(?:[^"]*"[^"]*")*[^"]*$)([A-Za-z_]\w*)\.toInt\(\)/g,
+    "atoi($1)"
+  )
+
+  // .toFloat() -> atof()
+  sketch = sketch.replace(
+    /(?=(?:[^"]*"[^"]*")*[^"]*$)([A-Za-z_]\w*)\.toFloat\(\)/g,
+    "atof($1)"
+  )
+
+  // .charAt() -> array access
+  sketch = sketch.replace(
+    /(?=(?:[^"]*"[^"]*")*[^"]*$)([A-Za-z_]\w*)\.charAt\((\w+)\)/g,
+    "$1[$2]"
+  )
+
   // CREATING THE ARDUINO CODE INITIALIZER FOR JSCPP
   const codeInitializer = `#include <iostream>
     #include <ctime>
@@ -208,7 +261,7 @@ const convertSketch = (sketch: string) => {
     using namespace std;
 
     // MAIN IMPLEMENTATION THAT WILL EXECUTE SETUP AND LOOP
-    int main(){int internalLoopSystem=0;cout << fixed << setprecision(10);setup();while(true){loop();internalLoopSystem=internalLoopSystem+1;}return 0;}
+    int main(){int internalLoopSystem=0;cout << fixed << setprecision(10);unsigned long _sim_start_time=time(0);setup();while(true){loop();internalLoopSystem=internalLoopSystem+1;}return 0;}
 
     // SETUP AND LOOP PROTOTYPES IMPLEMENTATION
     void setup();
@@ -221,9 +274,13 @@ const convertSketch = (sketch: string) => {
     // ANALOG PINS IMPLEMENTATION
     int _analog_pins_state[14] = {0};
 
+    // USER INTERACTIVE PIN INPUTS
+    int _user_digital_input[54] = {0};
+    int _user_analog_input[14] = {0};
+
     // PINMODE IMPLEMENTATION
     int INPUT = 0;
-    int INPUT_PULLPUP = 0;
+    int INPUT_PULLUP = 0;
     int OUTPUT = 0;
 
     void pinMode(int selectedpin, int type);
@@ -251,12 +308,12 @@ const convertSketch = (sketch: string) => {
     void intToCharArray(int num, char* result) {
       if (num == 0) {
         result[0] = '0';
-        result[1] = '\0'; // Null-terminator
+        result[1] = '\\0'; // Null-terminator
           return;
       }
 
       int length = getLength(num);
-      result[length] = '\0'; // Null-terminator
+      result[length] = '\\0'; // Null-terminator
 
       while (num > 0) {
           result[--length] = '0' + num % 10;
@@ -269,6 +326,7 @@ const convertSketch = (sketch: string) => {
     void digitalWrite(int digitalpin, bool signal) {
       if(digitalpin >= 0 && digitalpin <= 54) {
         if (_digital_pins_active[digitalpin]) {
+          _digital_pins_state[digitalpin] = signal;
           char payload[30];
 
           char pinStr[3];
@@ -280,16 +338,13 @@ const convertSketch = (sketch: string) => {
           strcat(payload, signal ? "TRUE" : "FALSE");
 
           cout << payload;
-          return;
-
-          _digital_pins_state[digitalpin] = signal;
         }
       }
     }
 
     // DIGITALREAD IMPLEMENTATION
     int digitalRead(int digitalpin);
-    int digitalRead(int digitalpin){return _digital_pins_state[digitalpin];}
+    int digitalRead(int digitalpin){return _user_digital_input[digitalpin];}
 
     // ANALOGWRITE IMPLEMENTATION
     void analogWrite(int analogpin, int duty);
@@ -317,19 +372,28 @@ const convertSketch = (sketch: string) => {
 
     // ANALOGREAD IMPLEMENTATION
     int analogRead(int analogpin);
-    int analogRead(int analogpin){return _analog_pins_state[analogpin];}
+    int analogRead(int analogpin){return _user_analog_input[analogpin];}
 
     // DELAY IMPLEMENTATION
     void delay(int milliseconds);
     void delay(int milliseconds){int endingDelay=time(0)+(milliseconds/1000);while(time(0)<=endingDelay){}}
 
     // DELAYMICROSECONDS IMPLEMENTATION
-    void delayMicroseconds(int milliseconds);
-    void delayMicroseconds(int milliseconds){delay(milliseconds);}
+    void delayMicroseconds(int microseconds);
+    void delayMicroseconds(int microseconds){int ms=microseconds/1000;if(ms>0){delay(ms);}}
 
     // PULSEIN IMPLEMENTATION
-    unsigned long pulseIn(int pin, int signal);
-    unsigned long pulseIn(int pin, int signal){return 0;}
+    unsigned long pulseIn(int pin, int state);
+    unsigned long pulseIn(int pin, int state){return _user_digital_input[pin]==state?1000:0;}
+
+    // MILLIS AND MICROS IMPLEMENTATION
+    unsigned long millis(){return(unsigned long)((time(0)-_sim_start_time)*1000);}
+    unsigned long micros(){return(unsigned long)((time(0)-_sim_start_time)*1000000);}
+
+    // RANDOM IMPLEMENTATION
+    void randomSeed(unsigned long seed){srand((unsigned int)seed);}
+    long random(long max){return rand()%max;}
+    long random(long min,long max){return min+(rand()%(max-min));}
 
     // SERIAL IMPLEMENTATION
     int _SerialReceivedData = 0;
@@ -376,7 +440,7 @@ const convertSketch = (sketch: string) => {
       counter = counter + 1;toAdd = toAdd / 10;}
       answer[counter] = '.';
       counter = counter + 1;}
-        
+
       while (b > 0) {
         answer[counter] = (b % 10 + '0');
         counter = counter + 1;b = b / 10;
@@ -414,4 +478,14 @@ const sendSerialData = (serialDataValue: string) => {
   }
 }
 
-export { startSimulator, stopSimulator, sendSerialData, convertSketch }
+const sendPinInput = (pinType: "digital" | "analog", pin: number, value: number) => {
+  try {
+    if (myWorker) {
+      myWorker.postMessage(`USER_PIN_INPUT=${pinType}_${pin}_${value}`)
+    }
+  } catch (err) {
+    //
+  }
+}
+
+export { startSimulator, stopSimulator, sendSerialData, sendPinInput, convertSketch }

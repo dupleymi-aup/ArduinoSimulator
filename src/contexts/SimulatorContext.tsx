@@ -18,6 +18,8 @@ interface SimulatorContextType {
   setOutputData: React.Dispatch<string>
   simulatorRunning: boolean
   setSimulatorRunning: React.Dispatch<boolean>
+  runtimeError: string | null
+  setRuntimeError: React.Dispatch<string | null>
 }
 
 const initializeDigitalPins = Array(54)
@@ -51,6 +53,8 @@ const SimulatorContext = React.createContext<SimulatorContextType>({
   setOutputData: () => {},
   simulatorRunning: null,
   setSimulatorRunning: () => {},
+  runtimeError: null,
+  setRuntimeError: () => {},
 })
 
 export function SimulatorContextProvider({ children }) {
@@ -61,6 +65,7 @@ export function SimulatorContextProvider({ children }) {
     React.useState<Gpio_Analog[]>(initializeAnalogPins)
   const [outputData, setOutputData] = React.useState<string>("")
   const [simulatorRunning, setSimulatorRunning] = React.useState<boolean>(false)
+  const [runtimeError, setRuntimeError] = React.useState<string | null>(null)
 
   const updateDigitalPin = (pinIndex: number, updatedPin: Gpio) => {
     setDigitalPins((prevDigitalPins) => {
@@ -107,6 +112,8 @@ export function SimulatorContextProvider({ children }) {
         setOutputData: setOutputData,
         simulatorRunning: simulatorRunning,
         setSimulatorRunning: setSimulatorRunning,
+        runtimeError: runtimeError,
+        setRuntimeError: setRuntimeError,
       }}
     >
       {children}

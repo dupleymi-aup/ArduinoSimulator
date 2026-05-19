@@ -11,13 +11,12 @@ import ToolbarItem from "./ToolbarItem"
 import ToolbarBoard from "./ToolbarBoard"
 import ToolbarFilename from "./ToolbarFilename"
 import ToolbarSeparator from "./ToolbarSeparator"
+import ToolbarExamples from "./ToolbarExamples"
 import Loading from "./Loading"
 import ConfirmBox from "./ConfirmBox"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
 import {
   editorNew,
-  editorSetValue,
-  editorSave,
   editorUndo,
   editorRedo,
   editorSearch,
@@ -30,12 +29,32 @@ import { startSimulator, stopSimulator } from "../utils/interpreter"
 import { getBoards } from "../../src/utils/service"
 import { t } from "../utils/languages"
 
-const Toolbar = () => {
+interface ToolbarProps {
+  onNewFile: () => void
+  onOpenFile: () => void
+  onSaveFile: () => void
+  onLoadExample: (_content: string, _name: string) => void
+  refUploader: React.RefObject<HTMLInputElement>
+  showConfirmMessage: number | null
+  showLoading: boolean
+  setShowConfirmMessage: (v: number | null) => void
+  openFileConfirmed: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+const Toolbar = ({
+  onNewFile,
+  onOpenFile,
+  onSaveFile,
+  onLoadExample,
+  refUploader,
+  showConfirmMessage,
+  showLoading,
+  setShowConfirmMessage,
+  openFileConfirmed,
+}: ToolbarProps) => {
   const {
     simulatorRunning,
     setSimulatorRunning,
-    filename,
-    setFilename,
     boardType,
     setBoardType,
     setDigitalPins,
@@ -43,28 +62,27 @@ const Toolbar = () => {
     setAnalogPins,
     handleSetAnalogPins,
     setOutputData,
+    setRuntimeError,
   } = useSimulatorContext()
 
-  const [showConfirmMessage, setShowConfirmMessage] = React.useState<number | null>(
-    null
-  )
-  const [showLoading, setShowLoading] = React.useState<boolean>(false)
-  const refUploader = React.useRef<HTMLInputElement>(null)
+  const [showLoadingInternal, setShowLoadingInternal] =
+    React.useState<boolean>(false)
   const NEW_FILE = 1
   const OPEN_FILE = 2
 
-  /* eslint-disable no-unused-vars */
+  // eslint-disable-next-line no-unused-vars
   const initializeDigitalPins = Array(54)
     .fill(null)
-    .map((_, index) => ({
+    .map((_: null, index: number) => ({
       pinNumber: index,
       isInput: false,
       isEnabled: false,
     }))
 
+  // eslint-disable-next-line no-unused-vars
   const initializeAnalogPins = Array(16)
     .fill(null)
-    .map((_, index) => ({
+    .map((_: null, index: number) => ({
       pinNumber: index,
       isInput: false,
       duty: 0,
@@ -75,7 +93,7 @@ const Toolbar = () => {
       editorDisable()
       setShowConfirmMessage(NEW_FILE)
     } else {
-      cleanEditor()
+      onNewFile()
     }
   }
 
@@ -84,26 +102,12 @@ const Toolbar = () => {
       editorDisable()
       setShowConfirmMessage(OPEN_FILE)
     } else {
-      uploadFile()
+      onOpenFile()
     }
-  }
-
-  const openFileConfirmed = async (event) => {
-    const selectedFileForUploading = event.target.files[0]
-    const documentName = selectedFileForUploading.name
-    setFilename(documentName)
-
-    const filereader = new FileReader()
-    filereader.onload = function () {
-      editorSetValue(this.result)
-      editorFocus()
-      refUploader.current.value = null
-    }
-    filereader.readAsText(selectedFileForUploading)
   }
 
   const saveFile = () => {
-    editorSave(filename)
+    onSaveFile()
   }
 
   const cleanEditor = () => {
@@ -125,7 +129,7 @@ const Toolbar = () => {
     setShowConfirmMessage(null)
   }
 
-  const hideConfirmMessage = () => {
+  const hideConfirmMessageInternal = () => {
     editorEnable()
     setShowConfirmMessage(null)
     editorFocus()
@@ -133,7 +137,6 @@ const Toolbar = () => {
 
   const switchBoard = () => {
     const boardList = getBoards()
-
     const currentBoard = boardType ? boardType : boardList[0]
     let nextBoard = boardList[0]
 
@@ -147,14 +150,15 @@ const Toolbar = () => {
   }
 
   const startSketch = () => {
-    setShowLoading(true)
+    setShowLoadingInternal(true)
     editorDisable()
     startSimulator(
-      setShowLoading,
+      setShowLoadingInternal,
       setSimulatorRunning,
       handleSetDigitalPins,
       handleSetAnalogPins,
-      setOutputData
+      setOutputData,
+      setRuntimeError
     )
   }
 
@@ -164,6 +168,8 @@ const Toolbar = () => {
     setAnalogPins(initializeAnalogPins)
     setSimulatorRunning(false)
   }
+
+  const acceptCallback = showConfirmMessage === NEW_FILE ? cleanEditor : uploadFile
 
   React.useEffect(() => {
     const styleNode = document.createElement("style")
@@ -181,30 +187,33 @@ const Toolbar = () => {
       <div style={styles.container}>
         <div style={styles.menu_scroll}>
           <div style={styles.menu_wrapper}>
-            <ToolbarItem onClick={newFile}>
+            <ToolbarItem onClick={newFile} tooltip={t("TOOLTIP_NEW")}>
               <IconNew width={16} height={16} />
             </ToolbarItem>
-            <ToolbarItem onClick={openFile}>
+            <ToolbarItem onClick={openFile} tooltip={t("TOOLTIP_OPEN")}>
               <IconOpen width={16} height={16} />
             </ToolbarItem>
-            <ToolbarItem onClick={saveFile}>
+            <ToolbarItem onClick={saveFile} tooltip={t("TOOLTIP_SAVE")}>
               <IconSave width={16} height={16} />
             </ToolbarItem>
             <ToolbarSeparator />
-            <ToolbarItem onClick={editorUndo}>
+            <ToolbarItem onClick={editorUndo} tooltip={t("TOOLTIP_UNDO")}>
               <IconUndo width={16} height={16} />
             </ToolbarItem>
-            <ToolbarItem onClick={editorRedo}>
+            <ToolbarItem onClick={editorRedo} tooltip={t("TOOLTIP_REDO")}>
               <IconRedo width={16} height={16} />
             </ToolbarItem>
             <ToolbarSeparator />
-            <ToolbarItem onClick={editorSearch}>
+            <ToolbarItem onClick={editorSearch} tooltip={t("TOOLTIP_SEARCH")}>
               <IconSearch width={24} height={24} />
             </ToolbarItem>
+            <ToolbarSeparator />
+            <ToolbarExamples onLoadExample={onLoadExample} onClose={() => {}} />
             <ToolbarSeparator />
             <ToolbarItem
               onClick={simulatorRunning ? undefined : switchBoard}
               disabled={simulatorRunning}
+              tooltip={t("TOOLTIP_BOARD")}
             >
               <ToolbarBoard
                 boardType={boardType}
@@ -213,12 +222,12 @@ const Toolbar = () => {
             </ToolbarItem>
             <ToolbarSeparator />
             {simulatorRunning && (
-              <ToolbarItem onClick={stopSketch}>
+              <ToolbarItem onClick={stopSketch} tooltip={t("TOOLTIP_STOP")}>
                 <IconStop width={17} height={17} />
               </ToolbarItem>
             )}
             {!simulatorRunning && (
-              <ToolbarItem onClick={startSketch}>
+              <ToolbarItem onClick={startSketch} tooltip={t("TOOLTIP_START")}>
                 <IconStart width={17} height={17} />
               </ToolbarItem>
             )}
@@ -233,15 +242,15 @@ const Toolbar = () => {
         style={styles.uploader}
         onChange={openFileConfirmed}
       />
-      {showLoading && <Loading />}
+      {(showLoading || showLoadingInternal) && <Loading />}
       {showConfirmMessage && (
         <ConfirmBox
           title={t("LOSECHANGES_TITLE")}
           message={t("LOSECHANGES_MESSAGE")}
           accept={t("LOSECHANGES_YES")}
-          acceptCallback={showConfirmMessage === NEW_FILE ? cleanEditor : uploadFile}
+          acceptCallback={acceptCallback}
           cancel={t("LOSECHANGES_NO")}
-          cancelCallback={hideConfirmMessage}
+          cancelCallback={hideConfirmMessageInternal}
         />
       )}
     </>

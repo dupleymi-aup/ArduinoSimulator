@@ -3,16 +3,18 @@ import React from "react"
 interface ToolbarItemProps {
   onClick: () => void
   disabled?: boolean
+  tooltip?: string
   children: React.ReactNode
 }
 
-const ToolbarItem = ({ onClick, disabled, children }: ToolbarItemProps) => {
+const ToolbarItem = ({ onClick, disabled, tooltip, children }: ToolbarItemProps) => {
   return (
     <div style={styles.item}>
       <div
         style={styles.iconWrapper}
         onClick={onClick}
         className={disabled ? undefined : "arduinosimulator_menu_item"}
+        title={tooltip}
       >
         {children}
       </div>
