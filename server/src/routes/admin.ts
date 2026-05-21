@@ -10,6 +10,11 @@ import {
   getPinUsageReport,
   getSessions,
   getStudents,
+  getStudentEngagementReport,
+  getSketchDifficultyReport,
+  getErrorTrendReport,
+  getBoardUsageReport,
+  getStudentDetail,
 } from "../services/reportService"
 
 const router = Router()
@@ -106,6 +111,72 @@ router.get("/students", authenticate, async (req, res) => {
   } catch (err) {
     console.error("Error getting students:", err)
     res.status(500).json({ error: "Failed to get students" })
+  }
+})
+
+router.get("/reports/student-engagement", authenticate, async (req, res) => {
+  try {
+    const report = await getStudentEngagementReport({
+      start: req.query.start as string,
+      end: req.query.end as string,
+    })
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting student engagement report:", err)
+    res.status(500).json({ error: "Failed to get student engagement report" })
+  }
+})
+
+router.get("/reports/sketch-difficulty", authenticate, async (req, res) => {
+  try {
+    const report = await getSketchDifficultyReport({
+      start: req.query.start as string,
+      end: req.query.end as string,
+    })
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting sketch difficulty report:", err)
+    res.status(500).json({ error: "Failed to get sketch difficulty report" })
+  }
+})
+
+router.get("/reports/error-trends", authenticate, async (req, res) => {
+  try {
+    const report = await getErrorTrendReport({
+      start: req.query.start as string,
+      end: req.query.end as string,
+    })
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting error trends report:", err)
+    res.status(500).json({ error: "Failed to get error trends report" })
+  }
+})
+
+router.get("/reports/board-usage", authenticate, async (req, res) => {
+  try {
+    const report = await getBoardUsageReport({
+      start: req.query.start as string,
+      end: req.query.end as string,
+    })
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting board usage report:", err)
+    res.status(500).json({ error: "Failed to get board usage report" })
+  }
+})
+
+router.get("/students/:id", authenticate, async (req, res) => {
+  try {
+    const detail = await getStudentDetail(req.params.id, {
+      start: req.query.start as string,
+      end: req.query.end as string,
+    })
+    if (!detail) return res.status(404).json({ error: "Student not found" })
+    res.json(detail)
+  } catch (err) {
+    console.error("Error getting student detail:", err)
+    res.status(500).json({ error: "Failed to get student detail" })
   }
 })
 

@@ -1,6 +1,15 @@
 import React from "react"
 
-const TABS = ["Activity", "Performance", "Progress", "Pin Usage"]
+const TABS = [
+  "Activity",
+  "Performance",
+  "Progress",
+  "Pin Usage",
+  "Student Engagement",
+  "Sketch Difficulty",
+  "Error Trends",
+  "Board Usage",
+]
 
 interface AdminLayoutProps {
   activeTab: string

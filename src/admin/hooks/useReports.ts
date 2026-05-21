@@ -43,6 +43,44 @@ export function useReports() {
     return apiFetch("/api/admin/students")
   }, [])
 
+  const fetchStudentEngagement = React.useCallback(async () => {
+    const params = new URLSearchParams()
+    if (dateRange.start) params.set("start", dateRange.start)
+    if (dateRange.end) params.set("end", dateRange.end)
+    return apiFetch(`/api/admin/reports/student-engagement?${params}`)
+  }, [dateRange])
+
+  const fetchSketchDifficulty = React.useCallback(async () => {
+    const params = new URLSearchParams()
+    if (dateRange.start) params.set("start", dateRange.start)
+    if (dateRange.end) params.set("end", dateRange.end)
+    return apiFetch(`/api/admin/reports/sketch-difficulty?${params}`)
+  }, [dateRange])
+
+  const fetchErrorTrends = React.useCallback(async () => {
+    const params = new URLSearchParams()
+    if (dateRange.start) params.set("start", dateRange.start)
+    if (dateRange.end) params.set("end", dateRange.end)
+    return apiFetch(`/api/admin/reports/error-trends?${params}`)
+  }, [dateRange])
+
+  const fetchBoardUsage = React.useCallback(async () => {
+    const params = new URLSearchParams()
+    if (dateRange.start) params.set("start", dateRange.start)
+    if (dateRange.end) params.set("end", dateRange.end)
+    return apiFetch(`/api/admin/reports/board-usage?${params}`)
+  }, [dateRange])
+
+  const fetchStudentDetail = React.useCallback(
+    async (studentId: string) => {
+      const params = new URLSearchParams()
+      if (dateRange.start) params.set("start", dateRange.start)
+      if (dateRange.end) params.set("end", dateRange.end)
+      return apiFetch(`/api/admin/students/${studentId}?${params}`)
+    },
+    [dateRange]
+  )
+
   return {
     dateRange,
     setDateRange,
@@ -52,5 +90,10 @@ export function useReports() {
     fetchPinUsage,
     fetchSessions,
     fetchStudents,
+    fetchStudentEngagement,
+    fetchSketchDifficulty,
+    fetchErrorTrends,
+    fetchBoardUsage,
+    fetchStudentDetail,
   }
 }
