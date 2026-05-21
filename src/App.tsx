@@ -11,7 +11,7 @@ const App = () => {
     declareLanguageData()
 
     const checkAceEditor = setInterval(() => {
-      if (global.ace) {
+      if (window.ace) {
         setWebLoaded(true)
         clearInterval(checkAceEditor)
       }

@@ -18,16 +18,27 @@ const ConfirmBox = ({
   cancelCallback,
 }: ConfirmBoxProps) => {
   return (
-    <div style={styles.container}>
+    <div
+      style={styles.container}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+    >
       <div style={styles.form}>
-        <div style={styles.title}>{title}</div>
-        <div style={styles.message}>{message}</div>
+        <div style={styles.title} id="confirm-title">
+          {title}
+        </div>
+        <div style={styles.message} id="confirm-message">
+          {message}
+        </div>
         <div style={styles.buttonContainer}>
           <input
             type="button"
             style={styles.button}
             onClick={acceptCallback}
             value={accept}
+            aria-label={accept}
+            autoFocus
           />
           <div style={styles.spacing}></div>
           <input
@@ -35,6 +46,7 @@ const ConfirmBox = ({
             style={styles.button}
             onClick={cancelCallback}
             value={cancel}
+            aria-label={cancel}
           />
         </div>
       </div>

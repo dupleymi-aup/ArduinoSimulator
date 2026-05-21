@@ -1,7 +1,7 @@
 import React from "react"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
 
-const SerialMonitorData = () => {
+const SerialMonitorData = React.memo(() => {
   const { outputData } = useSimulatorContext()
   const refData = React.useRef<HTMLDivElement>(null)
 
@@ -13,11 +13,16 @@ const SerialMonitorData = () => {
   }, [outputData])
 
   return (
-    <div style={styles.container}>
+    <div
+      style={styles.container}
+      role="log"
+      aria-live="polite"
+      aria-label="Serial output"
+    >
       <div style={styles.data} ref={refData}></div>
     </div>
   )
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {

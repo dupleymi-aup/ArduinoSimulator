@@ -16,6 +16,7 @@ import ErrorDisplay from "../components/ErrorDisplay"
 import LoadingState from "../components/LoadingState"
 import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
+import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
 interface FileTypeEntry {
@@ -47,34 +48,10 @@ interface FileWorkflowData {
 
 const FileWorkflowReport = () => {
   const { dateRange, setDateRange, fetchFileWorkflow } = useReports()
-  const [data, setData] = React.useState<FileWorkflowData | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
-
-  const loadData = React.useCallback(() => {
-    setLoading(true)
-    setError(null)
-    fetchFileWorkflow()
-      .then((d) => {
-        setData(d)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load file workflow data"
-        )
-        setLoading(false)
-      })
-  }, [fetchFileWorkflow])
-
-  React.useEffect(() => {
-    loadData()
-  }, [loadData])
+  const { data, loading, error, reload } = useReportData(fetchFileWorkflow, [dateRange])
 
   if (loading) return <LoadingState />
-  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
+  if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
   return (

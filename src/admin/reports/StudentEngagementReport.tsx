@@ -53,7 +53,7 @@ const StudentEngagementReport = () => {
     setStudentDetail(null)
     fetchStudentEngagement()
       .then((d) => {
-        setData(d)
+        setData(d as StudentEngagementData)
         setLoading(false)
       })
       .catch((err) => {
@@ -77,7 +77,7 @@ const StudentEngagementReport = () => {
       setStudentDetail(null)
       fetchStudentDetail(studentId)
         .then((d) => {
-          setStudentDetail(d)
+          setStudentDetail(d as Record<string, unknown> | null)
           setDetailLoading(false)
         })
         .catch(() => {
@@ -113,7 +113,7 @@ const StudentEngagementReport = () => {
       <div style={styles.headerRow}>
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
         {data.students.length > 0 && (
-          <ExportButton data={data.students} filename="student-engagement" />
+          <ExportButton data={data.students as unknown as Record<string, unknown>[]} filename="student-engagement" />
         )}
       </div>
       <div style={styles.statsRow}>
@@ -404,7 +404,7 @@ const SessionRow = ({
           ? "Started"
           : "Not started"}
     </td>
-    <td style={{ ...styles.td, textAlign: "center" }}>{session.errorCount ?? 0}</td>
+    <td style={{ ...styles.td, textAlign: "center" }}>{(session.errorCount as number) ?? 0}</td>
   </tr>
 )
 

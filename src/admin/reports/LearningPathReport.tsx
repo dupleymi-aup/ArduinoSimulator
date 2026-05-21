@@ -14,6 +14,7 @@ import ErrorDisplay from "../components/ErrorDisplay"
 import LoadingState from "../components/LoadingState"
 import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
+import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
 interface LearningPathData {
@@ -38,30 +39,10 @@ interface LearningPathData {
 
 const LearningPathReport = () => {
   const { dateRange, setDateRange, fetchLearningPath } = useReports()
-  const [data, setData] = React.useState<LearningPathData | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
-
-  const loadData = React.useCallback(() => {
-    setLoading(true)
-    setError(null)
-    fetchLearningPath()
-      .then((d) => {
-        setData(d as LearningPathData | null)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(err instanceof Error ? err.message : "Failed to load learning path data")
-        setLoading(false)
-      })
-  }, [fetchLearningPath])
-
-  React.useEffect(() => {
-    loadData()
-  }, [loadData])
+  const { data, loading, error, reload } = useReportData(fetchLearningPath, [dateRange])
 
   if (loading) return <LoadingState />
-  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
+  if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
   const formatDuration = (ms: number) => {

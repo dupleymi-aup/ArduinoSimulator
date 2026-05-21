@@ -1,14 +1,15 @@
 import { t } from "./languages"
 import isMobileDevice from "./isMobileDevice"
+import logger from "./logger"
 
 const mobileDevice: boolean = isMobileDevice()
 
 let editor = null
 
 const editorInit = () => {
-  global.ace.config.set("basePath", ".")
+  window.ace.config.set("basePath", ".")
 
-  editor = global.ace.edit("arduinosimulator_textcode")
+  editor = window.ace.edit("arduinosimulator_textcode")
   editor.setOptions({
     fontSize: "14px",
     showPrintMargin: false,
@@ -21,7 +22,7 @@ const editorInit = () => {
   editor.session.setMode("ace/mode/arduino")
   editor.setTheme("ace/theme/arduino_light")
   editor.session.setUseWorker(false)
-  editor.setValue(global.DEFAULT_SKETCH ? global.DEFAULT_SKETCH : t("EMPTY_SKETCH"))
+  editor.setValue(window.DEFAULT_SKETCH ? window.DEFAULT_SKETCH : t("EMPTY_SKETCH"))
   editor.clearSelection()
   editor.selection.moveTo(0, 0)
   editor.session.getUndoManager().reset()
@@ -72,8 +73,7 @@ const editorSave = (filename: string) => {
     link.click()
     link.remove()
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error("Editor save failed:", err)
+    logger.error("Editor save failed:", err)
   }
 
   editor.session.getUndoManager().reset()
@@ -81,8 +81,7 @@ const editorSave = (filename: string) => {
   try {
     editor.searchBox.hide()
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error("Editor searchBox hide failed:", err)
+    logger.error("Editor searchBox hide failed:", err)
   }
 
   editorFocus()
@@ -94,8 +93,7 @@ const editorUndo = () => {
     editor.focus()
     editor.clearSelection()
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error("Editor undo failed:", err)
+    logger.error("Editor undo failed:", err)
   }
 }
 
@@ -105,8 +103,7 @@ const editorRedo = () => {
     editor.focus()
     editor.clearSelection()
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error("Editor redo failed:", err)
+    logger.error("Editor redo failed:", err)
   }
 }
 

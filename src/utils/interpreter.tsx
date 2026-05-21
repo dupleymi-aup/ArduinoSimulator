@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
 import { editorEnable, editorGetValue } from "./editor"
 import { trackEvent, isBackendAvailable, getActiveSessionId } from "./tracking"
+import logger from "./logger"
 
 let myWorker: Worker = null
 const myWorkerTimestamp = Date.now()
@@ -11,7 +11,7 @@ const startSimulator = (
   setSimulatorRunning: (_state: boolean) => void,
   handleSetDigitalPins: (_index: number, _state: boolean) => void,
   handleSetAnalogPins: (_index: number, _duty: number) => void,
-  setOutputData: (_data: string) => void,
+  setOutputData: (_data: string | ((_prev: string) => string)) => void,
   setRuntimeError: (_error: string | null) => void
 ) => {
   accumulatedError = ""
@@ -95,7 +95,7 @@ const startSimulator = (
           })
         }
       } else {
-        setOutputData((prevState: string) => prevState + String(myReceivedData))
+        setOutputData((prev) => prev + String(myReceivedData))
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err)
@@ -471,7 +471,7 @@ const stopSimulator = () => {
       myWorker = null
     }
   } catch (err) {
-    console.error("Error stopping simulator:", err)
+    logger.error("Error stopping simulator:", err)
   }
 }
 
@@ -481,7 +481,7 @@ const sendSerialData = (serialDataValue: string) => {
       myWorker.postMessage("SEND_SERIAL_DATA_ARDUINO_SIMULATOR=" + serialDataValue)
     }
   } catch (err) {
-    console.error("Error sending serial data:", err)
+    logger.error("Error sending serial data:", err)
   }
 }
 
@@ -491,7 +491,7 @@ const sendPinInput = (pinType: "digital" | "analog", pin: number, value: number)
       myWorker.postMessage(`USER_PIN_INPUT=${pinType}_${pin}_${value}`)
     }
   } catch (err) {
-    console.error("Error sending pin input:", err)
+    logger.error("Error sending pin input:", err)
   }
 }
 

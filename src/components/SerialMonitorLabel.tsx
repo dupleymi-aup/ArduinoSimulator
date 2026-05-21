@@ -1,9 +1,9 @@
 import React from "react"
 import { t } from "../utils/languages"
 
-const SerialMonitorLabel = () => {
+const SerialMonitorLabel = React.memo(() => {
   return <div style={styles.label}>{t("SERIAL_MONITOR")}</div>
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   label: {

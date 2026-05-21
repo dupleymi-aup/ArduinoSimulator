@@ -6,9 +6,11 @@ interface PinsDigitalItemProps {
   gpio: Gpio
 }
 
-const PinsDigitalItem = ({ gpio }: PinsDigitalItemProps) => {
+const PinsDigitalItem = React.memo(({ gpio }: PinsDigitalItemProps) => {
   return (
     <div
+      role="status"
+      aria-label={`Digital pin ${gpio.pinNumber} is ${gpio.isEnabled ? "high" : "low"}`}
       style={{
         backgroundColor: gpio.isEnabled ? "green" : "red",
         ...styles.container,
@@ -17,7 +19,7 @@ const PinsDigitalItem = ({ gpio }: PinsDigitalItemProps) => {
       {gpio.pinNumber}
     </div>
   )
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {

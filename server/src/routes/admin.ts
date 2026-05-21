@@ -1,9 +1,11 @@
 import { Router } from "express"
+import rateLimit from "express-rate-limit"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import prisma from "../utils/db"
 import { authenticate, JWT_SECRET } from "../middleware/auth"
 import { getCache, setCache } from "../services/cache"
+import { logger } from "../utils/logger"
 import {
   getActivityReport,
   getPerformanceReport,
@@ -28,6 +30,14 @@ import {
   getSkillsMasteryReport,
 } from "../services/reportService"
 
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: "Too many login attempts. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 function parseDateRange(query: Record<string, unknown>) {
   const start = query.start as string | undefined
   const end = query.end as string | undefined
@@ -49,7 +59,7 @@ function dateRangeParams(query: Record<string, unknown>): Record<string, string>
 
 const router = Router()
 
-router.post("/login", async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body
     if (!username || !password) {
@@ -77,7 +87,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ adminId: user.id }, JWT_SECRET, { expiresIn: "24h" })
     res.json({ token })
   } catch (err) {
-    console.error("Error during login:", err)
+    logger.error("Error during login:", err)
     res.status(500).json({ error: "Login failed" })
   }
 })
@@ -89,7 +99,7 @@ router.get("/reports/activity", authenticate, async (req, res) => {
     const report = await getActivityReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting activity report:", err)
+    logger.error("Error getting activity report:", err)
     res.status(500).json({ error: "Failed to get activity report" })
   }
 })
@@ -101,7 +111,7 @@ router.get("/reports/performance", authenticate, async (req, res) => {
     const report = await getPerformanceReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting performance report:", err)
+    logger.error("Error getting performance report:", err)
     res.status(500).json({ error: "Failed to get performance report" })
   }
 })
@@ -111,7 +121,7 @@ router.get("/reports/progress", authenticate, async (req, res) => {
     const report = await getProgressReport()
     res.json(report)
   } catch (err) {
-    console.error("Error getting progress report:", err)
+    logger.error("Error getting progress report:", err)
     res.status(500).json({ error: "Failed to get progress report" })
   }
 })
@@ -121,7 +131,7 @@ router.get("/reports/pins", authenticate, async (req, res) => {
     const report = await getPinUsageReport()
     res.json(report)
   } catch (err) {
-    console.error("Error getting pin usage report:", err)
+    logger.error("Error getting pin usage report:", err)
     res.status(500).json({ error: "Failed to get pin usage report" })
   }
 })
@@ -135,7 +145,7 @@ router.get("/sessions", authenticate, async (req, res) => {
     const result = await getSessions(page, limit, range)
     res.json(result)
   } catch (err) {
-    console.error("Error getting sessions:", err)
+    logger.error("Error getting sessions:", err)
     res.status(500).json({ error: "Failed to get sessions" })
   }
 })
@@ -145,7 +155,7 @@ router.get("/students", authenticate, async (req, res) => {
     const students = await getStudents()
     res.json(students)
   } catch (err) {
-    console.error("Error getting students:", err)
+    logger.error("Error getting students:", err)
     res.status(500).json({ error: "Failed to get students" })
   }
 })
@@ -157,7 +167,7 @@ router.get("/reports/student-engagement", authenticate, async (req, res) => {
     const report = await getStudentEngagementReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting student engagement report:", err)
+    logger.error("Error getting student engagement report:", err)
     res.status(500).json({ error: "Failed to get student engagement report" })
   }
 })
@@ -169,7 +179,7 @@ router.get("/reports/sketch-difficulty", authenticate, async (req, res) => {
     const report = await getSketchDifficultyReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting sketch difficulty report:", err)
+    logger.error("Error getting sketch difficulty report:", err)
     res.status(500).json({ error: "Failed to get sketch difficulty report" })
   }
 })
@@ -181,7 +191,7 @@ router.get("/reports/error-trends", authenticate, async (req, res) => {
     const report = await getErrorTrendReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting error trends report:", err)
+    logger.error("Error getting error trends report:", err)
     res.status(500).json({ error: "Failed to get error trends report" })
   }
 })
@@ -193,7 +203,7 @@ router.get("/reports/board-usage", authenticate, async (req, res) => {
     const report = await getBoardUsageReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting board usage report:", err)
+    logger.error("Error getting board usage report:", err)
     res.status(500).json({ error: "Failed to get board usage report" })
   }
 })
@@ -205,7 +215,7 @@ router.get("/reports/session-end", authenticate, async (req, res) => {
     const report = await getSessionEndReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting session end report:", err)
+    logger.error("Error getting session end report:", err)
     res.status(500).json({ error: "Failed to get session end report" })
   }
 })
@@ -217,7 +227,7 @@ router.get("/reports/file-workflow", authenticate, async (req, res) => {
     const report = await getFileWorkflowReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting file workflow report:", err)
+    logger.error("Error getting file workflow report:", err)
     res.status(500).json({ error: "Failed to get file workflow report" })
   }
 })
@@ -229,7 +239,7 @@ router.get("/reports/serial-usage", authenticate, async (req, res) => {
     const report = await getSerialUsageReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting serial usage report:", err)
+    logger.error("Error getting serial usage report:", err)
     res.status(500).json({ error: "Failed to get serial usage report" })
   }
 })
@@ -241,7 +251,7 @@ router.get("/reports/student-cohort", authenticate, async (req, res) => {
     const report = await getStudentCohortReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting student cohort report:", err)
+    logger.error("Error getting student cohort report:", err)
     res.status(500).json({ error: "Failed to get student cohort report" })
   }
 })
@@ -253,7 +263,7 @@ router.get("/reports/board-changes", authenticate, async (req, res) => {
     const report = await getBoardChangeReport(range)
     res.json(report)
   } catch (err) {
-    console.error("Error getting board change report:", err)
+    logger.error("Error getting board change report:", err)
     res.status(500).json({ error: "Failed to get board change report" })
   }
 })
@@ -269,7 +279,7 @@ router.get("/reports/student-scorecard", authenticate, async (req, res) => {
     setCache(cacheKey, report)
     res.json(report)
   } catch (err) {
-    console.error("Error getting student scorecard report:", err)
+    logger.error("Error getting student scorecard report:", err)
     res.status(500).json({ error: "Failed to get student scorecard report" })
   }
 })
@@ -285,7 +295,7 @@ router.get("/reports/learning-path", authenticate, async (req, res) => {
     setCache(cacheKey, report)
     res.json(report)
   } catch (err) {
-    console.error("Error getting learning path report:", err)
+    logger.error("Error getting learning path report:", err)
     res.status(500).json({ error: "Failed to get learning path report" })
   }
 })
@@ -301,7 +311,7 @@ router.get("/reports/error-impact", authenticate, async (req, res) => {
     setCache(cacheKey, report)
     res.json(report)
   } catch (err) {
-    console.error("Error getting error impact report:", err)
+    logger.error("Error getting error impact report:", err)
     res.status(500).json({ error: "Failed to get error impact report" })
   }
 })
@@ -317,7 +327,7 @@ router.get("/reports/comparative", authenticate, async (req, res) => {
     setCache(cacheKey, report)
     res.json(report)
   } catch (err) {
-    console.error("Error getting comparative report:", err)
+    logger.error("Error getting comparative report:", err)
     res.status(500).json({ error: "Failed to get comparative report" })
   }
 })
@@ -333,7 +343,7 @@ router.get("/reports/skills-mastery", authenticate, async (req, res) => {
     setCache(cacheKey, report)
     res.json(report)
   } catch (err) {
-    console.error("Error getting skills mastery report:", err)
+    logger.error("Error getting skills mastery report:", err)
     res.status(500).json({ error: "Failed to get skills mastery report" })
   }
 })
@@ -346,7 +356,7 @@ router.get("/students/:id", authenticate, async (req, res) => {
     if (!detail) return res.status(404).json({ error: "Student not found" })
     res.json(detail)
   } catch (err) {
-    console.error("Error getting student detail:", err)
+    logger.error("Error getting student detail:", err)
     res.status(500).json({ error: "Failed to get student detail" })
   }
 })

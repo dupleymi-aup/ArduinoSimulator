@@ -14,6 +14,7 @@ import ErrorDisplay from "../components/ErrorDisplay"
 import LoadingState from "../components/LoadingState"
 import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
+import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
 interface SketchEntry {
@@ -34,34 +35,10 @@ interface SketchDifficultyData {
 
 const SketchDifficultyReport = () => {
   const { dateRange, setDateRange, fetchSketchDifficulty } = useReports()
-  const [data, setData] = React.useState<SketchDifficultyData | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
-
-  const loadData = React.useCallback(() => {
-    setLoading(true)
-    setError(null)
-    fetchSketchDifficulty()
-      .then((d) => {
-        setData(d)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load sketch difficulty data"
-        )
-        setLoading(false)
-      })
-  }, [fetchSketchDifficulty])
-
-  React.useEffect(() => {
-    loadData()
-  }, [loadData])
+  const { data, loading, error, reload } = useReportData(fetchSketchDifficulty, [dateRange])
 
   if (loading) return <LoadingState />
-  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
+  if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
   const formatDuration = (ms: number) => {

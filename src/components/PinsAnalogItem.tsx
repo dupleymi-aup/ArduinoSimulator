@@ -5,9 +5,17 @@ interface PinsAnalogItemProps {
   gpioAnalog: Gpio_Analog
 }
 
-const PinsAnalogItem = ({ gpioAnalog }: PinsAnalogItemProps) => {
-  return <div style={styles.container}>{gpioAnalog.duty}</div>
-}
+const PinsAnalogItem = React.memo(({ gpioAnalog }: PinsAnalogItemProps) => {
+  return (
+    <div
+      role="status"
+      aria-label={`Analog pin A${gpioAnalog.pinNumber} duty cycle ${gpioAnalog.duty}`}
+      style={styles.container}
+    >
+      {gpioAnalog.duty}
+    </div>
+  )
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {

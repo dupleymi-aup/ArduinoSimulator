@@ -19,7 +19,12 @@ const ErrorConsole = ({ error, onClear }: ErrorConsoleProps) => {
   if (!error) return null
 
   return (
-    <div style={styles.container}>
+    <div
+      style={styles.container}
+      role="log"
+      aria-live="assertive"
+      aria-label={t("ERROR_CONSOLE_TITLE")}
+    >
       <div style={styles.header}>
         <span style={styles.title}>{t("ERROR_CONSOLE_TITLE")}</span>
         <button style={styles.clearButton} onClick={onClear}>

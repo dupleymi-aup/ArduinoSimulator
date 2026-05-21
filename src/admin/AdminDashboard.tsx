@@ -1,24 +1,25 @@
 import React from "react"
 import AdminLayout from "./AdminLayout"
-import ActivityReport from "./reports/ActivityReport"
-import PerformanceReport from "./reports/PerformanceReport"
-import ProgressReport from "./reports/ProgressReport"
-import PinUsageReport from "./reports/PinUsageReport"
-import StudentEngagementReport from "./reports/StudentEngagementReport"
-import SketchDifficultyReport from "./reports/SketchDifficultyReport"
-import ErrorTrendReport from "./reports/ErrorTrendReport"
-import BoardUsageReport from "./reports/BoardUsageReport"
-import SessionEndReport from "./reports/SessionEndReport"
-import FileWorkflowReport from "./reports/FileWorkflowReport"
-import SerialUsageReport from "./reports/SerialUsageReport"
-import StudentCohortReport from "./reports/StudentCohortReport"
-import BoardChangeReport from "./reports/BoardChangeReport"
-import StudentScorecardReport from "./reports/StudentScorecardReport"
-import LearningPathReport from "./reports/LearningPathReport"
-import ErrorImpactReport from "./reports/ErrorImpactReport"
-import ComparativeReport from "./reports/ComparativeReport"
-import SkillsMasteryReport from "./reports/SkillsMasteryReport"
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts"
+
+const ActivityReport = React.lazy(() => import("./reports/ActivityReport"))
+const PerformanceReport = React.lazy(() => import("./reports/PerformanceReport"))
+const ProgressReport = React.lazy(() => import("./reports/ProgressReport"))
+const PinUsageReport = React.lazy(() => import("./reports/PinUsageReport"))
+const StudentEngagementReport = React.lazy(() => import("./reports/StudentEngagementReport"))
+const SketchDifficultyReport = React.lazy(() => import("./reports/SketchDifficultyReport"))
+const ErrorTrendReport = React.lazy(() => import("./reports/ErrorTrendReport"))
+const BoardUsageReport = React.lazy(() => import("./reports/BoardUsageReport"))
+const SessionEndReport = React.lazy(() => import("./reports/SessionEndReport"))
+const FileWorkflowReport = React.lazy(() => import("./reports/FileWorkflowReport"))
+const SerialUsageReport = React.lazy(() => import("./reports/SerialUsageReport"))
+const StudentCohortReport = React.lazy(() => import("./reports/StudentCohortReport"))
+const BoardChangeReport = React.lazy(() => import("./reports/BoardChangeReport"))
+const StudentScorecardReport = React.lazy(() => import("./reports/StudentScorecardReport"))
+const LearningPathReport = React.lazy(() => import("./reports/LearningPathReport"))
+const ErrorImpactReport = React.lazy(() => import("./reports/ErrorImpactReport"))
+const ComparativeReport = React.lazy(() => import("./reports/ComparativeReport"))
+const SkillsMasteryReport = React.lazy(() => import("./reports/SkillsMasteryReport"))
 
 const TAB_MAP: Record<string, React.ComponentType> = {
   Activity: ActivityReport,
@@ -58,8 +59,10 @@ const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
       onTabChange={setActiveTab}
       onLogout={onLogout}
     >
-      <ReportComponent />
-      {HelpModal}
+      <React.Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Loading report...</div>}>
+        <ReportComponent />
+      </React.Suspense>
+      {HelpModal && <HelpModal />}
     </AdminLayout>
   )
 }

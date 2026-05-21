@@ -1,6 +1,6 @@
 import React from "react"
 
-const Spinner = () => {
+const Spinner = React.memo(() => {
   React.useEffect(() => {
     const styleNode: HTMLStyleElement = document.createElement("style")
     const styleText = `
@@ -46,6 +46,6 @@ const Spinner = () => {
       <div></div>
     </div>
   )
-}
+})
 
 export default Spinner

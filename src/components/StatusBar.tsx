@@ -3,7 +3,7 @@ import { useSimulatorContext } from "../contexts/SimulatorContext"
 import { isMega, isNano } from "../utils/service"
 import { t } from "../utils/languages"
 
-const StatusBar = () => {
+const StatusBar = React.memo(() => {
   const { simulatorRunning, boardType } = useSimulatorContext()
 
   const digitalCount = isMega(boardType || "") ? 54 : 14
@@ -32,7 +32,7 @@ const StatusBar = () => {
       </div>
     </div>
   )
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {

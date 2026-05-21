@@ -48,16 +48,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="New (Ctrl+N)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -70,6 +73,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="New (Ctrl+N)"
           >
             <svg
               height={16}
@@ -81,7 +85,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 transform="translate(0 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -94,16 +98,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Open (Ctrl+O)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -116,6 +123,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Open (Ctrl+O)"
           >
             <svg
               height={16}
@@ -127,7 +135,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 transform="translate(0 -60) scale(1,1.2)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -140,16 +148,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Save (Ctrl+S)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -162,6 +173,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Save (Ctrl+S)"
           >
             <svg
               height={16}
@@ -173,7 +185,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 transform="translate(-10 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -197,16 +209,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Undo"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -219,6 +234,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Undo"
           >
             <svg
               height={16}
@@ -230,7 +246,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 transform="translate(0 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -243,16 +259,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Redo"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -265,6 +284,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Redo"
           >
             <svg
               height={16}
@@ -276,7 +296,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 transform="translate(0 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -300,16 +320,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Search/Replace"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -322,6 +345,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Search/Replace"
           >
             <svg
               height={24}
@@ -333,7 +357,47 @@ exports[`Toolbar Rendering 1 1`] = `
                 transform="translate(0 2)"
               />
             </svg>
-          </div>
+          </button>
+        </div>
+        <div
+          style={
+            {
+              "borderLeft": "thin solid #D3D3D3",
+              "float": "left",
+              "height": "100px",
+              "marginLeft": "5px",
+              "width": "1px",
+            }
+          }
+        />
+        <div
+          style={
+            {
+              "alignItems": "center",
+              "display": "flex",
+              "float": "left",
+              "height": "40px",
+              "position": "relative",
+            }
+          }
+        >
+          <button
+            onClick={[Function]}
+            style={
+              {
+                "backgroundColor": "#F2F2F2",
+                "border": "thin solid #F2F2F2",
+                "borderRadius": "2px",
+                "cursor": "pointer",
+                "fontFamily": "Arial",
+                "fontSize": "13px",
+                "marginLeft": "3px",
+                "padding": "4px 10px",
+              }
+            }
+          >
+            Examples
+          </button>
         </div>
         <div
           style={
@@ -357,16 +421,20 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Select Board"
             className="arduinosimulator_menu_item"
+            disabled={false}
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -379,6 +447,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Select Board"
           >
             <div
               style={
@@ -869,7 +938,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 UNO R3
               </div>
             </div>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -893,16 +962,19 @@ exports[`Toolbar Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Start Simulation (Ctrl+R)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -915,6 +987,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Start Simulation (Ctrl+R)"
           >
             <svg
               height={17}
@@ -926,7 +999,7 @@ exports[`Toolbar Rendering 1 1`] = `
                 d="M46.279,26.484L20.113,7.48c-0.957-0.695-2.228-0.796-3.278-0.258c-1.056,0.537-1.721,1.622-1.721,2.807  v38.009c0,1.184,0.665,2.268,1.721,2.805c0.45,0.23,0.939,0.344,1.429,0.344c0.652,0,1.303-0.203,1.85-0.602l26.166-19.006  c0.818-0.594,1.298-1.539,1.298-2.548C47.577,28.023,47.094,27.077,46.279,26.484z"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -973,7 +1046,6 @@ exports[`Toolbar Rendering 1 1`] = `
     </div>
   </div>,
   <input
-    onChange={[Function]}
     style={
       {
         "display": "none",

@@ -1,8 +1,8 @@
 import React from "react"
 
-const ToolbarSeparator = () => {
+const ToolbarSeparator = React.memo(() => {
   return <div style={styles.separator}></div>
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   separator: {

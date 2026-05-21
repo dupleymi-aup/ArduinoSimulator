@@ -1,4 +1,5 @@
 import { Router } from "express"
+import { logger } from "../utils/logger"
 import { getOrCreateStudent, startSession, endSession, heartbeatSession, recordEvent } from "../services/trackingService"
 
 const router = Router()
@@ -28,7 +29,7 @@ router.post("/session/start", async (req, res) => {
     const session = await startSession(student.id, sanitizedSketchName, sanitizedBoardType)
     res.json({ sessionId: session.id })
   } catch (err) {
-    console.error("Error starting session:", err)
+    logger.error("Error starting session:", err)
     res.status(500).json({ error: "Failed to start session" })
   }
 })
@@ -50,7 +51,7 @@ router.post("/event", async (req, res) => {
     await recordEvent(sessionId, sanitizedType, sanitizedPayload)
     res.status(204).send()
   } catch (err) {
-    console.error("Error recording event:", err)
+    logger.error("Error recording event:", err)
     res.status(500).json({ error: "Failed to record event" })
   }
 })
@@ -67,7 +68,7 @@ router.post("/session/end", async (req, res) => {
     await endSession(sessionId, typeof durationMs === "number" ? durationMs : 0, sanitizedEndReason || "unknown")
     res.status(204).send()
   } catch (err) {
-    console.error("Error ending session:", err)
+    logger.error("Error ending session:", err)
     res.status(500).json({ error: "Failed to end session" })
   }
 })
@@ -82,7 +83,7 @@ router.post("/heartbeat", async (req, res) => {
     await heartbeatSession(sessionId)
     res.status(204).send()
   } catch (err) {
-    console.error("Error sending heartbeat:", err)
+    logger.error("Error sending heartbeat:", err)
     res.status(500).json({ error: "Failed to send heartbeat" })
   }
 })

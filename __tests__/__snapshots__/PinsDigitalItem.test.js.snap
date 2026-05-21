@@ -2,6 +2,8 @@
 
 exports[`PinsDigitalItem Rendering 1 1`] = `
 <div
+  aria-label="Digital pin 0 is low"
+  role="status"
   style={
     {
       "alignItems": "center",
@@ -27,6 +29,8 @@ exports[`PinsDigitalItem Rendering 1 1`] = `
 
 exports[`PinsDigitalItem Rendering 2 1`] = `
 <div
+  aria-label="Digital pin 0 is high"
+  role="status"
   style={
     {
       "alignItems": "center",

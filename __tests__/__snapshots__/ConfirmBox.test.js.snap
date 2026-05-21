@@ -2,6 +2,9 @@
 
 exports[`ConfirmBox Rendering 1 1`] = `
 <div
+  aria-labelledby="confirm-title"
+  aria-modal="true"
+  role="dialog"
   style={
     {
       "WebkitUserSelect": "none",
@@ -37,6 +40,7 @@ exports[`ConfirmBox Rendering 1 1`] = `
     }
   >
     <div
+      id="confirm-title"
       style={
         {
           "backgroundColor": "#3a76b1",
@@ -54,6 +58,7 @@ exports[`ConfirmBox Rendering 1 1`] = `
       Test Title
     </div>
     <div
+      id="confirm-message"
       style={
         {
           "color": "black",
@@ -84,6 +89,8 @@ exports[`ConfirmBox Rendering 1 1`] = `
       }
     >
       <input
+        aria-label="Test Accept"
+        autoFocus={true}
         onClick={[Function]}
         style={
           {
@@ -117,6 +124,7 @@ exports[`ConfirmBox Rendering 1 1`] = `
         }
       />
       <input
+        aria-label="Test Cancel"
         onClick={[Function]}
         style={
           {

@@ -13,10 +13,15 @@ const WelcomeModal = ({ onDismiss }: WelcomeModalProps) => {
   }
 
   return (
-    <div style={styles.overlay}>
+    <div
+      style={styles.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="welcome-title"
+    >
       <div style={styles.modal}>
         <div style={styles.header}>
-          <span>{t("WELCOME_TITLE")}</span>
+          <span id="welcome-title">{t("WELCOME_TITLE")}</span>
         </div>
         <div style={styles.body}>
           <p>{t("WELCOME_MESSAGE")}</p>
@@ -37,7 +42,7 @@ const WelcomeModal = ({ onDismiss }: WelcomeModalProps) => {
           </label>
         </div>
         <div style={styles.footer}>
-          <button style={styles.button} onClick={handleDismiss}>
+          <button style={styles.button} onClick={handleDismiss} autoFocus>
             {t("WELCOME_GET_STARTED")}
           </button>
         </div>

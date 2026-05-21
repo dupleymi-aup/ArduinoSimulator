@@ -2,6 +2,9 @@
 
 exports[`SerialMonitorData Rendering 1 1`] = `
 <div
+  aria-label="Serial output"
+  aria-live="polite"
+  role="log"
   style={
     {
       "backgroundColor": "white",

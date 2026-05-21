@@ -4,6 +4,7 @@ import ErrorDisplay from "../components/ErrorDisplay"
 import LoadingState from "../components/LoadingState"
 import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
+import { useReportData } from "../hooks/useReportData"
 
 interface PinUsageData {
   digitalPins: Record<number, number>
@@ -25,36 +26,14 @@ const ANALOG_PINS = (() => {
 
 const PinUsageReport = () => {
   const { fetchPinUsage } = useReports()
-  const [data, setData] = React.useState<PinUsageData | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
-
-  const loadData = React.useCallback(() => {
-    setLoading(true)
-    setError(null)
-    fetchPinUsage()
-      .then((d) => {
-        setData(d)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(
-          err instanceof Error ? err.message : "Failed to load pin usage data"
-        )
-        setLoading(false)
-      })
-  }, [fetchPinUsage])
-
-  React.useEffect(() => {
-    loadData()
-  }, [loadData])
+  const { data, loading, error, reload } = useReportData(fetchPinUsage)
 
   if (loading) return <LoadingState />
-  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
+  if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
-  const maxDigital = Math.max(1, ...Object.values(data.digitalPins || {}))
-  const maxAnalog = Math.max(1, ...Object.values(data.analogPins || {}))
+  const maxDigital = Math.max(1, ...(Object.values(data.digitalPins || {}) as number[]))
+  const maxAnalog = Math.max(1, ...(Object.values(data.analogPins || {}) as number[]))
 
   const getHeatColor = (value: number, max: number) => {
     const intensity = value / max
@@ -86,12 +65,12 @@ const PinUsageReport = () => {
       <div style={styles.statsRow}>
         <StatCard
           title="Digital Pin Events"
-          value={totalDigitalUsage}
+          value={totalDigitalUsage as number}
           color="#0066cc"
         />
         <StatCard
           title="Analog Pin Events"
-          value={totalAnalogUsage}
+          value={totalAnalogUsage as number}
           color="#f39c12"
         />
       </div>

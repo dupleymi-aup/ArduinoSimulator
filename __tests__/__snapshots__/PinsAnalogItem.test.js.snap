@@ -2,6 +2,8 @@
 
 exports[`PinsAnalogItem Rendering 1 1`] = `
 <div
+  aria-label="Analog pin Aundefined duty cycle 255"
+  role="status"
   style={
     {
       "alignItems": "center",

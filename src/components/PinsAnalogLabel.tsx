@@ -1,9 +1,9 @@
 import React from "react"
 import { t } from "../utils/languages"
 
-const PinsAnalogLabel = () => {
+const PinsAnalogLabel = React.memo(() => {
   return <div style={styles.label}>{t("ANALOG_PINS")}</div>
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   label: {

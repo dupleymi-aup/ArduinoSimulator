@@ -9,8 +9,19 @@ export async function apiFetch<T = unknown>(
   // Auth header always takes precedence
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...options.headers,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  }
+
+  // Merge incoming headers from options
+  if (options.headers) {
+    const incoming = options.headers as Record<string, string>
+    for (const [key, value] of Object.entries(incoming)) {
+      headers[key] = value
+    }
+  }
+
+  // Add auth token if available
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
   }
 
   try {

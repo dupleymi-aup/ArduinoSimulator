@@ -48,16 +48,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="New (Ctrl+N)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -70,6 +73,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="New (Ctrl+N)"
           >
             <svg
               height={16}
@@ -81,7 +85,7 @@ exports[`Editor Rendering 1 1`] = `
                 transform="translate(0 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -94,16 +98,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Open (Ctrl+O)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -116,6 +123,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Open (Ctrl+O)"
           >
             <svg
               height={16}
@@ -127,7 +135,7 @@ exports[`Editor Rendering 1 1`] = `
                 transform="translate(0 -60) scale(1,1.2)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -140,16 +148,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Save (Ctrl+S)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -162,6 +173,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Save (Ctrl+S)"
           >
             <svg
               height={16}
@@ -173,7 +185,7 @@ exports[`Editor Rendering 1 1`] = `
                 transform="translate(-10 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -197,16 +209,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Undo"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -219,6 +234,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Undo"
           >
             <svg
               height={16}
@@ -230,7 +246,7 @@ exports[`Editor Rendering 1 1`] = `
                 transform="translate(0 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -243,16 +259,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Redo"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -265,6 +284,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Redo"
           >
             <svg
               height={16}
@@ -276,7 +296,7 @@ exports[`Editor Rendering 1 1`] = `
                 transform="translate(0 930) scale(-1,1) rotate(180)"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -300,16 +320,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Search/Replace"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -322,6 +345,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Search/Replace"
           >
             <svg
               height={24}
@@ -333,7 +357,47 @@ exports[`Editor Rendering 1 1`] = `
                 transform="translate(0 2)"
               />
             </svg>
-          </div>
+          </button>
+        </div>
+        <div
+          style={
+            {
+              "borderLeft": "thin solid #D3D3D3",
+              "float": "left",
+              "height": "100px",
+              "marginLeft": "5px",
+              "width": "1px",
+            }
+          }
+        />
+        <div
+          style={
+            {
+              "alignItems": "center",
+              "display": "flex",
+              "float": "left",
+              "height": "40px",
+              "position": "relative",
+            }
+          }
+        >
+          <button
+            onClick={[Function]}
+            style={
+              {
+                "backgroundColor": "#F2F2F2",
+                "border": "thin solid #F2F2F2",
+                "borderRadius": "2px",
+                "cursor": "pointer",
+                "fontFamily": "Arial",
+                "fontSize": "13px",
+                "marginLeft": "3px",
+                "padding": "4px 10px",
+              }
+            }
+          >
+            Examples
+          </button>
         </div>
         <div
           style={
@@ -357,16 +421,20 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Select Board"
             className="arduinosimulator_menu_item"
+            disabled={false}
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -379,6 +447,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Select Board"
           >
             <div
               style={
@@ -869,7 +938,7 @@ exports[`Editor Rendering 1 1`] = `
                 UNO R3
               </div>
             </div>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -893,16 +962,19 @@ exports[`Editor Rendering 1 1`] = `
             }
           }
         >
-          <div
+          <button
+            aria-label="Start Simulation (Ctrl+R)"
             className="arduinosimulator_menu_item"
             onClick={[Function]}
+            onKeyDown={[Function]}
             style={
               {
                 "MozUserSelect": "none",
                 "WebkitUserSelect": "none",
                 "backgroundColor": "#F2F2F2",
                 "border": "thin solid #F2F2F2",
-                "cursor": "default",
+                "borderRadius": "2px",
+                "cursor": "pointer",
                 "display": "block",
                 "fontFamily": "Arial",
                 "fontSize": "15px",
@@ -915,6 +987,7 @@ exports[`Editor Rendering 1 1`] = `
                 "userSelect": "none",
               }
             }
+            title="Start Simulation (Ctrl+R)"
           >
             <svg
               height={17}
@@ -926,7 +999,7 @@ exports[`Editor Rendering 1 1`] = `
                 d="M46.279,26.484L20.113,7.48c-0.957-0.695-2.228-0.796-3.278-0.258c-1.056,0.537-1.721,1.622-1.721,2.807  v38.009c0,1.184,0.665,2.268,1.721,2.805c0.45,0.23,0.939,0.344,1.429,0.344c0.652,0,1.303-0.203,1.85-0.602l26.166-19.006  c0.818-0.594,1.298-1.539,1.298-2.548C47.577,28.023,47.094,27.077,46.279,26.484z"
               />
             </svg>
-          </div>
+          </button>
         </div>
         <div
           style={
@@ -1013,7 +1086,9 @@ exports[`Editor Rendering 1 1`] = `
         "backgroundColor": "#F2F2F2",
         "borderLeft": "1px solid #D3D3D3",
         "borderTop": "1px solid #D3D3D3",
-        "bottom": 0,
+        "bottom": "24px",
+        "display": "flex",
+        "flexDirection": "column",
         "height": "251px",
         "left": 0,
         "overflowX": "hidden",
@@ -1025,639 +1100,870 @@ exports[`Editor Rendering 1 1`] = `
     <div
       style={
         {
-          "height": "26px",
-          "overflowY": "hidden",
-        }
-      }
-    >
-      <div
-        style={
-          {
-            "height": "80px",
-            "outline": "none",
-            "overflowX": "scroll",
-            "overflowY": "hidden",
-          }
-        }
-      >
-        <div
-          style={
-            {
-              "float": "left",
-              "width": "550px",
-            }
-          }
-        >
-          <div
-            style={
-              {
-                "cursor": "default",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "13px",
-                "fontWeight": "bold",
-                "lineHeight": 2,
-                "marginLeft": "7px",
-                "marginRight": "1px",
-              }
-            }
-          >
-            DIGITAL PINS
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            0
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            1
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            2
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            3
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            4
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            5
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            6
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            7
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            8
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            9
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            10
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            11
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            12
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "red",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "16px",
-              }
-            }
-          >
-            13
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style={
-        {
-          "height": "26px",
-          "overflowY": "hidden",
-        }
-      }
-    >
-      <div
-        style={
-          {
-            "height": "80px",
-            "outline": "none",
-            "overflowX": "scroll",
-            "overflowY": "hidden",
-          }
-        }
-      >
-        <div
-          style={
-            {
-              "float": "left",
-              "width": "550px",
-            }
-          }
-        >
-          <div
-            style={
-              {
-                "cursor": "default",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "13px",
-                "fontWeight": "bold",
-                "lineHeight": 2,
-                "marginLeft": "7px",
-                "marginRight": "1px",
-              }
-            }
-          >
-            ANALOG PINS
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "black",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "40px",
-              }
-            }
-          >
-            0
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "black",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "40px",
-              }
-            }
-          >
-            0
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "black",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "40px",
-              }
-            }
-          >
-            0
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "black",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "40px",
-              }
-            }
-          >
-            0
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "black",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "40px",
-              }
-            }
-          >
-            0
-          </div>
-          <div
-            style={
-              {
-                "alignItems": "center",
-                "backgroundColor": "black",
-                "borderRadius": "16px",
-                "color": "white",
-                "cursor": "default",
-                "display": "flex",
-                "float": "left",
-                "fontFamily": "Arial",
-                "fontSize": "11px",
-                "height": "16px",
-                "justifyContent": "center",
-                "marginLeft": "4px",
-                "marginTop": "4px",
-                "width": "40px",
-              }
-            }
-          >
-            0
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style={
-        {
-          "backgroundColor": "#F2F2F2",
+          "backgroundColor": "#E8E8E8",
           "borderBottom": "1px solid #D3D3D3",
+          "display": "flex",
+          "gap": "4px",
+          "padding": "2px 8px",
+        }
+      }
+    >
+      <button
+        onClick={[Function]}
+        style={
+          {
+            "backgroundColor": "#F2F2F2",
+            "border": "1px solid #D3D3D3",
+            "borderRadius": "2px",
+            "color": "#333333",
+            "cursor": "pointer",
+            "fontFamily": "Arial",
+            "fontSize": "11px",
+            "padding": "2px 8px",
+          }
+        }
+      >
+        API Reference
+      </button>
+    </div>
+    <div
+      style={
+        {
+          "flex": 1,
+          "overflow": "auto",
         }
       }
     >
       <div
         style={
           {
-            "cursor": "default",
-            "float": "left",
-            "fontFamily": "Arial",
-            "fontSize": "13px",
-            "fontWeight": "bold",
-            "lineHeight": 2,
-            "marginLeft": "7px",
-            "marginRight": "1px",
-          }
-        }
-      >
-        SERIAL MONITOR
-      </div>
-      <div
-        style={
-          {
-            "display": "flex",
-            "width": "100%",
-          }
-        }
-      >
-        <input
-          onChange={[Function]}
-          onKeyUp={[Function]}
-          readOnly={true}
-          style={
-            {
-              "WebkitAppearance": "none",
-              "backgroundColor": "#D9D9D9",
-              "border": "1px solid silver",
-              "borderRadius": 0,
-              "cursor": "default",
-              "flex": 2,
-              "fontFamily": "Arial",
-              "fontSize": "13px",
-              "height": "18px",
-              "marginBottom": "7px",
-              "marginLeft": "5px",
-              "marginRight": "3px",
-              "outline": "none",
-              "padding": "4px",
-            }
-          }
-          type="text"
-          value=""
-        />
-        <input
-          disabled={true}
-          onClick={[Function]}
-          style={
-            {
-              "WebkitAppearance": "none",
-              "backgroundColor": "#D9D9D9",
-              "border": "1px solid silver",
-              "borderRadius": 0,
-              "color": "gray",
-              "fontFamily": "Arial",
-              "fontSize": "13px",
-              "height": "28px",
-              "marginLeft": "2px",
-              "marginRight": "5px",
-              "width": "99px",
-            }
-          }
-          type="submit"
-          value="SEND"
-        />
-      </div>
-      <div
-        style={
-          {
-            "backgroundColor": "white",
-            "bottom": 0,
-            "height": "137px",
-            "left": 0,
-            "overflow": "scroll",
-            "position": "fixed",
-            "right": 0,
+            "height": "26px",
+            "overflowY": "hidden",
           }
         }
       >
         <div
           style={
             {
-              "MozUserSelect": "text",
-              "WebkitUserSelect": "text",
-              "fontFamily": "monospace,monospace",
-              "overflowWrap": "break-word",
-              "padding": "10px",
-              "userSelect": "text",
-              "whiteSpace": "pre-line",
+              "height": "80px",
+              "outline": "none",
+              "overflowX": "scroll",
+              "overflowY": "hidden",
             }
           }
-        />
+        >
+          <div
+            style={
+              {
+                "float": "left",
+                "width": "550px",
+              }
+            }
+          >
+            <div
+              style={
+                {
+                  "cursor": "default",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "13px",
+                  "fontWeight": "bold",
+                  "lineHeight": 2,
+                  "marginLeft": "7px",
+                  "marginRight": "1px",
+                }
+              }
+            >
+              DIGITAL PINS
+            </div>
+            <div
+              aria-label="Digital pin 0 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              0
+            </div>
+            <div
+              aria-label="Digital pin 1 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              1
+            </div>
+            <div
+              aria-label="Digital pin 2 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              2
+            </div>
+            <div
+              aria-label="Digital pin 3 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              3
+            </div>
+            <div
+              aria-label="Digital pin 4 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              4
+            </div>
+            <div
+              aria-label="Digital pin 5 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              5
+            </div>
+            <div
+              aria-label="Digital pin 6 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              6
+            </div>
+            <div
+              aria-label="Digital pin 7 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              7
+            </div>
+            <div
+              aria-label="Digital pin 8 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              8
+            </div>
+            <div
+              aria-label="Digital pin 9 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              9
+            </div>
+            <div
+              aria-label="Digital pin 10 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              10
+            </div>
+            <div
+              aria-label="Digital pin 11 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              11
+            </div>
+            <div
+              aria-label="Digital pin 12 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              12
+            </div>
+            <div
+              aria-label="Digital pin 13 is low"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "red",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "16px",
+                }
+              }
+            >
+              13
+            </div>
+          </div>
+        </div>
       </div>
+      <div
+        style={
+          {
+            "height": "26px",
+            "overflowY": "hidden",
+          }
+        }
+      >
+        <div
+          style={
+            {
+              "height": "80px",
+              "outline": "none",
+              "overflowX": "scroll",
+              "overflowY": "hidden",
+            }
+          }
+        >
+          <div
+            style={
+              {
+                "float": "left",
+                "width": "550px",
+              }
+            }
+          >
+            <div
+              style={
+                {
+                  "cursor": "default",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "13px",
+                  "fontWeight": "bold",
+                  "lineHeight": 2,
+                  "marginLeft": "7px",
+                  "marginRight": "1px",
+                }
+              }
+            >
+              ANALOG PINS
+            </div>
+            <div
+              aria-label="Analog pin A0 duty cycle 0"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "black",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "40px",
+                }
+              }
+            >
+              0
+            </div>
+            <div
+              aria-label="Analog pin A1 duty cycle 0"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "black",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "40px",
+                }
+              }
+            >
+              0
+            </div>
+            <div
+              aria-label="Analog pin A2 duty cycle 0"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "black",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "40px",
+                }
+              }
+            >
+              0
+            </div>
+            <div
+              aria-label="Analog pin A3 duty cycle 0"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "black",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "40px",
+                }
+              }
+            >
+              0
+            </div>
+            <div
+              aria-label="Analog pin A4 duty cycle 0"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "black",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "40px",
+                }
+              }
+            >
+              0
+            </div>
+            <div
+              aria-label="Analog pin A5 duty cycle 0"
+              role="status"
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "black",
+                  "borderRadius": "16px",
+                  "color": "white",
+                  "cursor": "default",
+                  "display": "flex",
+                  "float": "left",
+                  "fontFamily": "Arial",
+                  "fontSize": "11px",
+                  "height": "16px",
+                  "justifyContent": "center",
+                  "marginLeft": "4px",
+                  "marginTop": "4px",
+                  "width": "40px",
+                }
+              }
+            >
+              0
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        style={
+          {
+            "backgroundColor": "#F2F2F2",
+            "borderBottom": "1px solid #D3D3D3",
+          }
+        }
+      >
+        <div
+          style={
+            {
+              "cursor": "default",
+              "float": "left",
+              "fontFamily": "Arial",
+              "fontSize": "13px",
+              "fontWeight": "bold",
+              "lineHeight": 2,
+              "marginLeft": "7px",
+              "marginRight": "1px",
+            }
+          }
+        >
+          SERIAL MONITOR
+        </div>
+        <div
+          style={
+            {
+              "alignItems": "center",
+              "display": "flex",
+              "gap": "4px",
+              "padding": "0 4px",
+              "width": "100%",
+            }
+          }
+        >
+          <div
+            style={
+              {
+                "display": "flex",
+                "flex": 1,
+              }
+            }
+          >
+            <input
+              aria-label="Serial monitor input"
+              onChange={[Function]}
+              onKeyUp={[Function]}
+              placeholder="Enter serial data..."
+              readOnly={true}
+              style={
+                {
+                  "WebkitAppearance": "none",
+                  "backgroundColor": "#D9D9D9",
+                  "border": "1px solid silver",
+                  "borderRadius": 0,
+                  "cursor": "default",
+                  "flex": 2,
+                  "fontFamily": "Arial",
+                  "fontSize": "13px",
+                  "height": "18px",
+                  "marginBottom": "7px",
+                  "marginLeft": "5px",
+                  "marginRight": "3px",
+                  "outline": "none",
+                  "padding": "4px",
+                }
+              }
+              type="text"
+              value=""
+            />
+            <input
+              disabled={true}
+              onClick={[Function]}
+              style={
+                {
+                  "WebkitAppearance": "none",
+                  "backgroundColor": "#D9D9D9",
+                  "border": "1px solid silver",
+                  "borderRadius": 0,
+                  "color": "gray",
+                  "fontFamily": "Arial",
+                  "fontSize": "13px",
+                  "height": "28px",
+                  "marginLeft": "2px",
+                  "marginRight": "5px",
+                  "width": "99px",
+                }
+              }
+              type="submit"
+              value="SEND"
+            />
+          </div>
+          <select
+            onChange={[Function]}
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "border": "1px solid #D3D3D3",
+                "borderRadius": "2px",
+                "cursor": "pointer",
+                "fontFamily": "Arial",
+                "fontSize": "11px",
+                "padding": "2px 4px",
+              }
+            }
+            title="Line ending"
+            value=""
+          >
+            <option
+              value=""
+            >
+              No line ending
+            </option>
+            <option
+              value="
+"
+            >
+              Newline
+            </option>
+            <option
+              value="
+"
+            >
+              Carriage return
+            </option>
+            <option
+              value="
+"
+            >
+              Both NL & CR
+            </option>
+          </select>
+        </div>
+        <div
+          aria-label="Serial output"
+          aria-live="polite"
+          role="log"
+          style={
+            {
+              "backgroundColor": "white",
+              "bottom": 0,
+              "height": "137px",
+              "left": 0,
+              "overflow": "scroll",
+              "position": "fixed",
+              "right": 0,
+            }
+          }
+        >
+          <div
+            style={
+              {
+                "MozUserSelect": "text",
+                "WebkitUserSelect": "text",
+                "fontFamily": "monospace,monospace",
+                "overflowWrap": "break-word",
+                "padding": "10px",
+                "userSelect": "text",
+                "whiteSpace": "pre-line",
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+  </div>,
+  <div
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#F2F2F2",
+        "borderTop": "1px solid #D3D3D3",
+        "bottom": 0,
+        "color": "#333333",
+        "display": "flex",
+        "fontFamily": "Arial",
+        "fontSize": "11px",
+        "height": "24px",
+        "justifyContent": "space-between",
+        "left": 0,
+        "padding": "0 12px",
+        "position": "fixed",
+        "right": 0,
+        "zIndex": 100,
+      }
+    }
+  >
+    <div
+      style={
+        {
+          "alignItems": "center",
+          "display": "flex",
+          "gap": "6px",
+        }
+      }
+    >
+      <span
+        style={
+          {
+            "backgroundColor": "#CC3333",
+            "borderRadius": "50%",
+            "display": "inline-block",
+            "height": "8px",
+            "width": "8px",
+          }
+        }
+      />
+      <span
+        style={
+          {
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        Stopped
+      </span>
+    </div>
+    <div
+      style={
+        {
+          "alignItems": "center",
+          "display": "flex",
+          "gap": "6px",
+        }
+      }
+    >
+      <span
+        style={
+          {
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        UNO R3
+      </span>
+    </div>
+    <div
+      style={
+        {
+          "alignItems": "center",
+          "display": "flex",
+          "gap": "6px",
+        }
+      }
+    >
+      <span
+        style={
+          {
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        Digital
+        : 
+        14
+         | 
+        Analog
+        : 
+        6
+      </span>
     </div>
   </div>,
 ]

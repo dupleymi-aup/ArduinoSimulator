@@ -2,14 +2,14 @@ import React from "react"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
 import { t } from "../utils/languages"
 
-const ToolbarFilename = () => {
+const ToolbarFilename = React.memo(() => {
   const { filename } = useSimulatorContext()
   return (
     <div style={styles.container}>
       <div style={styles.label}>{filename ? filename : t("FILENAME")}</div>
     </div>
   )
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {

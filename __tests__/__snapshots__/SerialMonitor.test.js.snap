@@ -28,59 +28,116 @@ exports[`SerialMonitor Rendering 1 1`] = `
   <div
     style={
       {
+        "alignItems": "center",
         "display": "flex",
+        "gap": "4px",
+        "padding": "0 4px",
         "width": "100%",
       }
     }
   >
-    <input
+    <div
+      style={
+        {
+          "display": "flex",
+          "flex": 1,
+        }
+      }
+    >
+      <input
+        aria-label="Serial monitor input"
+        onChange={[Function]}
+        onKeyUp={[Function]}
+        placeholder="Enter serial data..."
+        readOnly={true}
+        style={
+          {
+            "WebkitAppearance": "none",
+            "backgroundColor": "#D9D9D9",
+            "border": "1px solid silver",
+            "borderRadius": 0,
+            "cursor": "default",
+            "flex": 2,
+            "fontFamily": "Arial",
+            "fontSize": "13px",
+            "height": "18px",
+            "marginBottom": "7px",
+            "marginLeft": "5px",
+            "marginRight": "3px",
+            "outline": "none",
+            "padding": "4px",
+          }
+        }
+        type="text"
+        value=""
+      />
+      <input
+        disabled={true}
+        onClick={[Function]}
+        style={
+          {
+            "WebkitAppearance": "none",
+            "backgroundColor": "#D9D9D9",
+            "border": "1px solid silver",
+            "borderRadius": 0,
+            "color": "gray",
+            "fontFamily": "Arial",
+            "fontSize": "13px",
+            "height": "28px",
+            "marginLeft": "2px",
+            "marginRight": "5px",
+            "width": "99px",
+          }
+        }
+        type="submit"
+        value="SEND"
+      />
+    </div>
+    <select
       onChange={[Function]}
-      onKeyUp={[Function]}
-      readOnly={true}
       style={
         {
-          "WebkitAppearance": "none",
-          "backgroundColor": "#D9D9D9",
-          "border": "1px solid silver",
-          "borderRadius": 0,
-          "cursor": "default",
-          "flex": 2,
+          "backgroundColor": "#FFFFFF",
+          "border": "1px solid #D3D3D3",
+          "borderRadius": "2px",
+          "cursor": "pointer",
           "fontFamily": "Arial",
-          "fontSize": "13px",
-          "height": "18px",
-          "marginBottom": "7px",
-          "marginLeft": "5px",
-          "marginRight": "3px",
-          "outline": "none",
-          "padding": "4px",
+          "fontSize": "11px",
+          "padding": "2px 4px",
         }
       }
-      type="text"
+      title="Line ending"
       value=""
-    />
-    <input
-      disabled={true}
-      onClick={[Function]}
-      style={
-        {
-          "WebkitAppearance": "none",
-          "backgroundColor": "#D9D9D9",
-          "border": "1px solid silver",
-          "borderRadius": 0,
-          "color": "gray",
-          "fontFamily": "Arial",
-          "fontSize": "13px",
-          "height": "28px",
-          "marginLeft": "2px",
-          "marginRight": "5px",
-          "width": "99px",
-        }
-      }
-      type="submit"
-      value="SEND"
-    />
+    >
+      <option
+        value=""
+      >
+        No line ending
+      </option>
+      <option
+        value="
+"
+      >
+        Newline
+      </option>
+      <option
+        value="
+"
+      >
+        Carriage return
+      </option>
+      <option
+        value="
+"
+      >
+        Both NL & CR
+      </option>
+    </select>
   </div>
   <div
+    aria-label="Serial output"
+    aria-live="polite"
+    role="log"
     style={
       {
         "backgroundColor": "white",

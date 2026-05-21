@@ -1,7 +1,7 @@
 import React from "react"
 import Spinner from "./Spinner"
 
-const Loading = () => {
+const Loading = React.memo(() => {
   return (
     <div style={styles.container}>
       <div style={styles.icon}>
@@ -9,7 +9,7 @@ const Loading = () => {
       </div>
     </div>
   )
-}
+})
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
