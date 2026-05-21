@@ -13,6 +13,25 @@ function dateFilter(range?: DateRange): Record<string, unknown> {
   return { startedAt: dateConditions }
 }
 
+export async function getStudents() {
+  const students = await prisma.student.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      identifier: true,
+      createdAt: true,
+      _count: { select: { sessions: true } },
+    },
+  })
+
+  return students.map((s) => ({
+    id: s.id,
+    identifier: s.identifier,
+    createdAt: s.createdAt,
+    sessionCount: s._count.sessions,
+  }))
+}
+
 export async function getActivityReport(range?: DateRange) {
   const filter = dateFilter(range)
 

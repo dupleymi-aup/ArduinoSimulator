@@ -12,15 +12,17 @@ exports[`ToolbarItem Rendering 1 1`] = `
     }
   }
 >
-  <div
+  <button
     className="arduinosimulator_menu_item"
+    onKeyDown={[Function]}
     style={
       {
         "MozUserSelect": "none",
         "WebkitUserSelect": "none",
         "backgroundColor": "#F2F2F2",
         "border": "thin solid #F2F2F2",
-        "cursor": "default",
+        "borderRadius": "2px",
+        "cursor": "pointer",
         "display": "block",
         "fontFamily": "Arial",
         "fontSize": "15px",

@@ -7,7 +7,9 @@ exports[`BottomPanel Rendering 1 1`] = `
       "backgroundColor": "#F2F2F2",
       "borderLeft": "1px solid #D3D3D3",
       "borderTop": "1px solid #D3D3D3",
-      "bottom": 0,
+      "bottom": "24px",
+      "display": "flex",
+      "flexDirection": "column",
       "height": "251px",
       "left": 0,
       "overflowX": "hidden",
@@ -15,5 +17,43 @@ exports[`BottomPanel Rendering 1 1`] = `
       "right": 0,
     }
   }
-/>
+>
+  <div
+    style={
+      {
+        "backgroundColor": "#E8E8E8",
+        "borderBottom": "1px solid #D3D3D3",
+        "display": "flex",
+        "gap": "4px",
+        "padding": "2px 8px",
+      }
+    }
+  >
+    <button
+      onClick={[Function]}
+      style={
+        {
+          "backgroundColor": "#F2F2F2",
+          "border": "1px solid #D3D3D3",
+          "borderRadius": "2px",
+          "color": "#333333",
+          "cursor": "pointer",
+          "fontFamily": "Arial",
+          "fontSize": "11px",
+          "padding": "2px 8px",
+        }
+      }
+    >
+      API Reference
+    </button>
+  </div>
+  <div
+    style={
+      {
+        "flex": 1,
+        "overflow": "auto",
+      }
+    }
+  />
+</div>
 `;

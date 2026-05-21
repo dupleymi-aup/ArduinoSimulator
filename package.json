@@ -52,7 +52,7 @@
     "test": "npm run build && npm run test:dependency && npm run test:benchmark && npm run test:unit && npm run test:e2e",
     "test:dependency": "depcheck --ignores=\"@awmottaz/*,@babel/*,babel*,@types/*,typescript-eslint,pre-commit\" --ignore-patterns=\"ArduinoSimulatorInterpreter.js\"",
     "test:benchmark": "jest --testPathPattern='.benchmark.test.js' --testTimeout=600000",
-    "test:unit": "jest --testPathIgnorePatterns='.e2e.test.js' --testPathIgnorePatterns='client.js' --testPathIgnorePatterns='benchmark.test.js' --testTimeout=600000",
+    "test:unit": "jest --testPathIgnorePatterns='.e2e.test.js' --testPathIgnorePatterns='client.js' --testPathIgnorePatterns='benchmark.test.js' --testPathIgnorePatterns='server/' --testTimeout=600000",
     "test:e2e": "jest --testPathPattern='.e2e.test.js' --testTimeout=600000"
   },
   "babel": {

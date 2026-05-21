@@ -2,7 +2,7 @@ import { Router } from "express"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import prisma from "../utils/db"
-import { authenticate } from "../middleware/auth"
+import { authenticate, JWT_SECRET } from "../middleware/auth"
 import {
   getActivityReport,
   getPerformanceReport,
@@ -29,9 +29,11 @@ function parseDateRange(query: Record<string, unknown>) {
   return { range: { start, end }, error: null }
 }
 
-function dateRangeParams(query: Record<string, unknown>) {
+function dateRangeParams(query: Record<string, unknown>): Record<string, string> | undefined | null {
   const { range, error } = parseDateRange(query)
-  return error ? null : range || undefined
+  if (error) return null
+  if (!range) return undefined
+  return range as Record<string, string>
 }
 
 const router = Router()
@@ -71,7 +73,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/reports/activity", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const report = await getActivityReport(range)
     res.json(report)
@@ -83,7 +85,7 @@ router.get("/reports/activity", authenticate, async (req, res) => {
 
 router.get("/reports/performance", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const report = await getPerformanceReport(range)
     res.json(report)
@@ -115,7 +117,7 @@ router.get("/reports/pins", authenticate, async (req, res) => {
 
 router.get("/sessions", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20))
@@ -139,7 +141,7 @@ router.get("/students", authenticate, async (req, res) => {
 
 router.get("/reports/student-engagement", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const report = await getStudentEngagementReport(range)
     res.json(report)
@@ -151,7 +153,7 @@ router.get("/reports/student-engagement", authenticate, async (req, res) => {
 
 router.get("/reports/sketch-difficulty", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const report = await getSketchDifficultyReport(range)
     res.json(report)
@@ -163,7 +165,7 @@ router.get("/reports/sketch-difficulty", authenticate, async (req, res) => {
 
 router.get("/reports/error-trends", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const report = await getErrorTrendReport(range)
     res.json(report)
@@ -175,7 +177,7 @@ router.get("/reports/error-trends", authenticate, async (req, res) => {
 
 router.get("/reports/board-usage", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const report = await getBoardUsageReport(range)
     res.json(report)
@@ -187,7 +189,7 @@ router.get("/reports/board-usage", authenticate, async (req, res) => {
 
 router.get("/students/:id", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
-  if (!range) return res.status(400).json({ error: "Invalid date format" })
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
     const detail = await getStudentDetail(req.params.id, range)
     if (!detail) return res.status(404).json({ error: "Student not found" })

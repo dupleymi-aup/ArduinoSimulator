@@ -31,6 +31,44 @@ en -  of
 en - Replace with
 en - Replace
 en - All
+en - New (Ctrl+N)
+en - Open (Ctrl+O)
+en - Save (Ctrl+S)
+en - Undo
+en - Redo
+en - Search/Replace
+en - Select Board
+en - Start Simulation (Ctrl+R)
+en - Stop Simulation (Ctrl+Shift+R)
+en - ERROR CONSOLE
+en - Clear
+en - Running
+en - Stopped
+en - Digital
+en - Analog
+en - Welcome to Arduino Simulator!
+en - Write, edit, and run Arduino sketches directly in your browser without physical hardware.
+en - Code editor with Arduino syntax highlighting
+en - Interactive digital and analog pin visualization
+en - Bidirectional Serial Monitor
+en - EEPROM read/write support
+en - Multiple board support: UNO, MEGA, NANO
+en - Don't show this again
+en - Get Started
+en - Examples
+en - API Reference
+en - Supported
+en - Partial
+en - Not Supported
+en - Status
+en - Restore autosaved sketch?
+en - A previously unsaved sketch was found. Would you like to restore it?
+en - Sketch autosaved
+en - Line ending
+en - No line ending
+en - Newline
+en - Carriage return
+en - Both NL & CR
 es - /*
 
 Arduino Simulator desarrollado por LRusso.com
@@ -60,6 +98,44 @@ es -  de
 es - Reemplazar con
 es - Reemplazar
 es - Todo
+es - Nuevo (Ctrl+N)
+es - Abrir (Ctrl+O)
+es - Guardar (Ctrl+S)
+es - Deshacer
+es - Rehacer
+es - Buscar/Reemplazar
+es - Seleccionar placa
+es - Iniciar simulación (Ctrl+R)
+es - Detener simulación (Ctrl+Shift+R)
+es - CONSOLA DE ERRORES
+es - Limpiar
+es - Ejecutando
+es - Detenido
+es - Digital
+es - Analógico
+es - ¡Bienvenido al Simulador Arduino!
+es - Escribe, edita y ejecuta sketches de Arduino directamente en tu navegador sin hardware físico.
+es - Editor de código con resaltado de sintaxis Arduino
+es - Visualización interactiva de pines digitales y analógicos
+es - Monitor Serial bidireccional
+es - Soporte de lectura/escritura EEPROM
+es - Soporte múltiples placas: UNO, MEGA, NANO
+es - No mostrar esto de nuevo
+es - Comenzar
+es - Ejemplos
+es - Referencia API
+es - Soportado
+es - Parcial
+es - No soportado
+es - Estado
+es - ¿Restaurar sketch autoguardado?
+es - Se encontró un sketch sin guardar. ¿Deseas restaurarlo?
+es - Sketch autoguardado
+es - Final de línea
+es - Sin final de línea
+es - Nueva línea
+es - Retorno de carro
+es - NL y CR
 it - /*
 
 Arduino Simulator sviluppato da LRusso.com
@@ -89,9 +165,47 @@ it -  di
 it - Sostituirlo con
 it - Sostituirlo
 it - Tutto
+it - Nuovo (Ctrl+N)
+it - Apri (Ctrl+O)
+it - Salva (Ctrl+S)
+it - Annulla
+it - Ripeti
+it - Cerca/Sostituisci
+it - Seleziona scheda
+it - Avvia simulazione (Ctrl+R)
+it - Arresta simulazione (Ctrl+Shift+R)
+it - CONSOLE ERRORI
+it - Cancella
+it - In esecuzione
+it - Arrestato
+it - Digitale
+it - Analogico
+it - Benvenuto nel Simulatore Arduino!
+it - Scrivi, modifica ed esegui sketch Arduino direttamente nel tuo browser senza hardware fisico.
+it - Editor di codice con evidenziazione sintassi Arduino
+it - Visualizzazione interattiva pin digitali e analogici
+it - Monitor Seriale bidirezionale
+it - Supporto lettura/scrittura EEPROM
+it - Supporto schede multiple: UNO, MEGA, NANO
+it - Non mostrare più
+it - Inizia
+it - Esempi
+it - Riferimento API
+it - Supportato
+it - Parziale
+it - Non supportato
+it - Stato
+it - Ripristinare sketch salvato automaticamente?
+it - È stato trovato uno sketch non salvato. Vuoi ripristinarlo?
+it - Sketch salvato automaticamente
+it - Fine riga
+it - Senza fine riga
+it - Nueva linea
+it - Ritorno a capo
+it - NL e CR
 fr - /*
 
-Simulateur Arduino 2 développé par LRusso.com
+Simulateur Arduino développé par LRusso.com
 
 */
 
@@ -118,6 +232,44 @@ fr -  sur
 fr - Remplacer par
 fr - Remplacer
 fr - Toutes
+fr - Nouveau (Ctrl+N)
+fr - Ouvrir (Ctrl+O)
+fr - Enregistrer (Ctrl+S)
+fr - Annuler
+fr - Rétablir
+fr - Rechercher/Remplacer
+fr - Sélectionner la carte
+fr - Démarrer la simulation (Ctrl+R)
+fr - Arrêter la simulation (Ctrl+Shift+R)
+fr - CONSOLE D'ERREURS
+fr - Effacer
+fr - En cours
+fr - Arrêté
+fr - Numérique
+fr - Analogique
+fr - Bienvenue dans le Simulateur Arduino!
+fr - Écrivez, modifiez et exécutez des sketches Arduino directement dans votre navigateur sans matériel physique.
+fr - Éditeur de code avec coloration syntaxique Arduino
+fr - Visualisation interactive des broches numériques et analogiques
+fr - Moniteur Série bidirectionnel
+fr - Support lecture/écriture EEPROM
+fr - Support de plusieurs cartes: UNO, MEGA, NANO
+fr - Ne plus afficher
+fr - Commencer
+fr - Exemples
+fr - Référence API
+fr - Supporté
+fr - Partiel
+fr - Non supporté
+fr - État
+fr - Restaurer le sketch enregistré automatiquement?
+fr - Un sketch non enregistré a été trouvé. Voulez-vous le restaurer?
+fr - Sketch enregistré automatiquement
+fr - Fin de ligne
+fr - Pas de fin de ligne
+fr - Nouvelle ligne
+fr - Retour chariot
+fr - NL et CR
 pr - /*
 
 Arduino Simulator desenvolvido por LRusso.com
@@ -147,5 +299,110 @@ pr -  de
 pr - Substituir com
 pr - Substituir
 pr - Todos
+pr - Novo (Ctrl+N)
+pr - Abrir (Ctrl+O)
+pr - Salvar (Ctrl+S)
+pr - Desfazer
+pr - Refazer
+pr - Buscar/Substituir
+pr - Selecionar placa
+pr - Iniciar simulação (Ctrl+R)
+pr - Parar simulação (Ctrl+Shift+R)
+pr - CONSOLE DE ERROS
+pr - Limpar
+pr - Executando
+pr - Parado
+pr - Digital
+pr - Analógico
+pr - Bem-vindo ao Simulador Arduino!
+pr - Escreva, edite e execute sketches Arduino diretamente no seu navegador sem hardware físico.
+pr - Editor de código com destaque de sintaxe Arduino
+pr - Visualização interativa de pins digitais e analógicos
+pr - Monitor Serial bidirecional
+pr - Suporte leitura/escrita EEPROM
+pr - Suporte a múltiplas placas: UNO, MEGA, NANO
+pr - Não mostrar novamente
+pr - Começar
+pr - Exemplos
+pr - Referência API
+pr - Suportado
+pr - Parcial
+pr - Não suportado
+pr - Estado
+pr - Restaurar sketch salvo automaticamente?
+pr - Um sketch não salvo foi encontrado. Deseja restaurá-lo?
+pr - Sketch salvo automaticamente
+pr - Final de linha
+pr - Sem final de linha
+pr - Nova linha
+pr - Retorno de carro
+pr - NL e CR
+ru - /*
+
+Симулятор Arduino от LRusso.com
+
+*/
+
+void setup()
+	{
+	Serial.begin(9600);
+	}
+
+void loop()
+	{
+	}
+ru - Без имени.ino
+ru - Без имени
+ru - СООБЩЕНИЕ
+ru - Потерять все несохранённые изменения?
+ru - Да
+ru - Нет
+ru - ЦИФРОВЫЕ ПИНЫ
+ru - АНАЛОГОВЫЕ ПИНЫ
+ru - МОНИТОР ПОРТА
+ru - ОТПРАВИТЬ
+ru - Найти
+ru -  из 
+ru - Заменить на
+ru - Заменить
+ru - Все
+ru - Создать (Ctrl+N)
+ru - Открыть (Ctrl+O)
+ru - Сохранить (Ctrl+S)
+ru - Отменить
+ru - Повторить
+ru - Поиск/Замена
+ru - Выбрать плату
+ru - Запустить симуляцию (Ctrl+R)
+ru - Остановить симуляцию (Ctrl+Shift+R)
+ru - КОНСОЛЬ ОШИБОК
+ru - Очистить
+ru - Работает
+ru - Остановлена
+ru - Цифровые
+ru - Аналоговые
+ru - Добро пожаловать в Симулятор Arduino!
+ru - Пишите, редактируйте и запускайте скетчи Arduino прямо в браузере без физического оборудования.
+ru - Редактор кода с подсветкой синтаксиса Arduino
+ru - Интерактивная визуализация цифровых и аналоговых пинов
+ru - Двусторонний монитор порта
+ru - Поддержка чтения/записи EEPROM
+ru - Поддержка нескольких плат: UNO, MEGA, NANO
+ru - Больше не показывать
+ru - Начать
+ru - Примеры
+ru - Справка API
+ru - Поддерж.
+ru - Частично
+ru - Не поддерж.
+ru - Статус
+ru - Восстановить автосохранённый скетч?
+ru - Найден несохранённый скетч. Хотите восстановить его?
+ru - Скетч автосохранён
+ru - Конец строки
+ru - Без конца строки
+ru - Новая строка
+ru - Возврат каретки
+ru - NL и CR
 "
 `;
