@@ -7,9 +7,12 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
@@ -84,7 +87,7 @@ const StudentEngagementReport = () => {
     [fetchStudentDetail]
   )
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
@@ -107,7 +110,12 @@ const StudentEngagementReport = () => {
 
   return (
     <div>
-      <DateRangeFilter value={dateRange} onChange={setDateRange} />
+      <div style={styles.headerRow}>
+        <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        {data.students.length > 0 && (
+          <ExportButton data={data.students} filename="student-engagement" />
+        )}
+      </div>
       <div style={styles.statsRow}>
         <StatCard
           title="Active Students"
@@ -131,6 +139,7 @@ const StudentEngagementReport = () => {
               <XAxis dataKey="identifier" tick={{ fontSize: 11 }} />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="totalSessions" fill="#0066cc" name="Sessions" />
             </BarChart>
           </ResponsiveContainer>
@@ -146,6 +155,7 @@ const StudentEngagementReport = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="count" fill="#3498db" name="Sessions" />
             </BarChart>
           </ResponsiveContainer>
@@ -161,6 +171,7 @@ const StudentEngagementReport = () => {
               <XAxis dataKey="hour" tick={{ fontSize: 10 }} />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="count" fill="#e67e22" name="Sessions" />
             </BarChart>
           </ResponsiveContainer>
@@ -398,6 +409,13 @@ const SessionRow = ({
 )
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+  },
   statsRow: {
     display: "flex",
     gap: 16,

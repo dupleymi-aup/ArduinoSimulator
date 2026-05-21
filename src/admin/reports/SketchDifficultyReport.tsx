@@ -7,9 +7,12 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
@@ -57,7 +60,7 @@ const SketchDifficultyReport = () => {
     loadData()
   }, [loadData])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
@@ -81,7 +84,12 @@ const SketchDifficultyReport = () => {
 
   return (
     <div>
-      <DateRangeFilter value={dateRange} onChange={setDateRange} />
+      <div style={styles.headerRow}>
+        <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        {data.sketches.length > 0 && (
+          <ExportButton data={data.sketches} filename="sketch-difficulty" />
+        )}
+      </div>
       <div style={styles.statsRow}>
         <StatCard
           title="Total Sketches"
@@ -112,6 +120,7 @@ const SketchDifficultyReport = () => {
               <XAxis dataKey="name" tick={{ fontSize: 11 }} />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="attempts" fill="#0066cc" name="Attempts" />
             </BarChart>
           </ResponsiveContainer>
@@ -127,6 +136,7 @@ const SketchDifficultyReport = () => {
               <XAxis dataKey="name" tick={{ fontSize: 11 }} />
               <YAxis domain={[0, 100]} />
               <Tooltip />
+              <Legend />
               <Bar dataKey="completionRate" fill="#e74c3c" name="Completion %" />
             </BarChart>
           </ResponsiveContainer>
@@ -190,6 +200,13 @@ const SketchRow = ({
 )
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+  },
   statsRow: {
     display: "flex",
     gap: 16,

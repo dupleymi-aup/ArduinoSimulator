@@ -9,9 +9,12 @@ import {
   LineChart,
   Line,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
@@ -46,7 +49,7 @@ const ActivityReport = () => {
     loadData()
   }, [loadData])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
@@ -57,7 +60,12 @@ const ActivityReport = () => {
 
   return (
     <div>
-      <DateRangeFilter value={dateRange} onChange={setDateRange} />
+      <div style={styles.headerRow}>
+        <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        {data.topExamples.length > 0 && (
+          <ExportButton data={data.topExamples} filename="activity-top-examples" />
+        )}
+      </div>
       <div style={styles.statsRow}>
         <StatCard
           title="Total Sessions"
@@ -79,6 +87,7 @@ const ActivityReport = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="count" fill="#0066cc" name="Attempts" />
             </BarChart>
           </ResponsiveContainer>
@@ -93,6 +102,7 @@ const ActivityReport = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Line
                 type="monotone"
                 dataKey="count"
@@ -108,6 +118,13 @@ const ActivityReport = () => {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+  },
   statsRow: {
     display: "flex",
     gap: 16,

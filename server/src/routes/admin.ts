@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import prisma from "../utils/db"
 import { authenticate, JWT_SECRET } from "../middleware/auth"
+import { getCache, setCache } from "../services/cache"
 import {
   getActivityReport,
   getPerformanceReport,
@@ -15,6 +16,16 @@ import {
   getErrorTrendReport,
   getBoardUsageReport,
   getStudentDetail,
+  getSessionEndReport,
+  getFileWorkflowReport,
+  getSerialUsageReport,
+  getStudentCohortReport,
+  getBoardChangeReport,
+  getStudentScorecardReport,
+  getLearningPathReport,
+  getErrorImpactReport,
+  getComparativeReport,
+  getSkillsMasteryReport,
 } from "../services/reportService"
 
 function parseDateRange(query: Record<string, unknown>) {
@@ -184,6 +195,146 @@ router.get("/reports/board-usage", authenticate, async (req, res) => {
   } catch (err) {
     console.error("Error getting board usage report:", err)
     res.status(500).json({ error: "Failed to get board usage report" })
+  }
+})
+
+router.get("/reports/session-end", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const report = await getSessionEndReport(range)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting session end report:", err)
+    res.status(500).json({ error: "Failed to get session end report" })
+  }
+})
+
+router.get("/reports/file-workflow", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const report = await getFileWorkflowReport(range)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting file workflow report:", err)
+    res.status(500).json({ error: "Failed to get file workflow report" })
+  }
+})
+
+router.get("/reports/serial-usage", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const report = await getSerialUsageReport(range)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting serial usage report:", err)
+    res.status(500).json({ error: "Failed to get serial usage report" })
+  }
+})
+
+router.get("/reports/student-cohort", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const report = await getStudentCohortReport(range)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting student cohort report:", err)
+    res.status(500).json({ error: "Failed to get student cohort report" })
+  }
+})
+
+router.get("/reports/board-changes", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const report = await getBoardChangeReport(range)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting board change report:", err)
+    res.status(500).json({ error: "Failed to get board change report" })
+  }
+})
+
+router.get("/reports/student-scorecard", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const cacheKey = `student-scorecard:${JSON.stringify(req.query)}`
+    const cached = getCache(cacheKey)
+    if (cached) return res.json(cached)
+    const report = await getStudentScorecardReport(range)
+    setCache(cacheKey, report)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting student scorecard report:", err)
+    res.status(500).json({ error: "Failed to get student scorecard report" })
+  }
+})
+
+router.get("/reports/learning-path", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const cacheKey = `learning-path:${JSON.stringify(req.query)}`
+    const cached = getCache(cacheKey)
+    if (cached) return res.json(cached)
+    const report = await getLearningPathReport(range)
+    setCache(cacheKey, report)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting learning path report:", err)
+    res.status(500).json({ error: "Failed to get learning path report" })
+  }
+})
+
+router.get("/reports/error-impact", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const cacheKey = `error-impact:${JSON.stringify(req.query)}`
+    const cached = getCache(cacheKey)
+    if (cached) return res.json(cached)
+    const report = await getErrorImpactReport(range)
+    setCache(cacheKey, report)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting error impact report:", err)
+    res.status(500).json({ error: "Failed to get error impact report" })
+  }
+})
+
+router.get("/reports/comparative", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const cacheKey = `comparative:${JSON.stringify(range)}`
+    const cached = getCache(cacheKey)
+    if (cached) return res.json(cached)
+    const report = await getComparativeReport(range)
+    setCache(cacheKey, report)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting comparative report:", err)
+    res.status(500).json({ error: "Failed to get comparative report" })
+  }
+})
+
+router.get("/reports/skills-mastery", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (range === null) return res.status(400).json({ error: "Invalid date format" })
+  try {
+    const cacheKey = `skills-mastery:${JSON.stringify(req.query)}`
+    const cached = getCache(cacheKey)
+    if (cached) return res.json(cached)
+    const report = await getSkillsMasteryReport(range)
+    setCache(cacheKey, report)
+    res.json(report)
+  } catch (err) {
+    console.error("Error getting skills mastery report:", err)
+    res.status(500).json({ error: "Failed to get skills mastery report" })
   }
 })
 

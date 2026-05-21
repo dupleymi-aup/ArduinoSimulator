@@ -7,9 +7,12 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 
 interface ProgressData {
@@ -41,12 +44,18 @@ const ProgressReport = () => {
     loadData()
   }, [loadData])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   return (
     <div>
+      <div style={styles.headerRow}>
+        <h2 style={styles.pageTitle}>Progress Report</h2>
+        {data.examples.length > 0 && (
+          <ExportButton data={data.examples} filename="progress-examples" />
+        )}
+      </div>
       <div style={styles.statsRow}>
         <StatCard
           title="Total Students"
@@ -68,6 +77,7 @@ const ProgressReport = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="completions" fill="#27ae60" name="Completions" />
             </BarChart>
           </ResponsiveContainer>
@@ -83,6 +93,20 @@ const ProgressReport = () => {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24,
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  pageTitle: {
+    margin: 0,
+    fontSize: 20,
+    fontWeight: 600,
+    color: "#333",
+  },
   statsRow: {
     display: "flex",
     gap: 16,

@@ -9,6 +9,16 @@ const TABS = [
   "Sketch Difficulty",
   "Error Trends",
   "Board Usage",
+  "Session End",
+  "File Workflow",
+  "Serial Usage",
+  "Student Cohort",
+  "Board Changes",
+  "Student Scorecard",
+  "Learning Path",
+  "Error Impact",
+  "Comparative",
+  "Skills Mastery",
 ]
 
 interface AdminLayoutProps {

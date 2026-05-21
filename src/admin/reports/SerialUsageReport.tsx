@@ -2,6 +2,8 @@ import React from "react"
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -16,41 +18,53 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
-interface BoardEntry {
-  board: string
-  sessions: number
-  percentage: number
-  avgDurationMs: number
+interface SerialTypeEntry {
+  type: string
+  count: number
 }
 
-interface BoardUsageData {
-  boardPerformance: BoardEntry[]
-  totalSessions: number
-  mostPopularBoard: string
-  popularBoardPerSketch: { sketch: string; board: string; count: number }[]
+interface SerialOverTimeEntry {
+  day: string
+  output: number
+  send: number
 }
 
-const BoardUsageReport = () => {
-  const { dateRange, setDateRange, fetchBoardUsage } = useReports()
-  const [data, setData] = React.useState<BoardUsageData | null>(null)
+interface SketchSerialEntry {
+  sketchName: string
+  count: number
+}
+
+interface SerialUsageData {
+  totalOutputs: number
+  totalSends: number
+  byType: SerialTypeEntry[]
+  serialOverTime: SerialOverTimeEntry[]
+  topSketchesBySerial: SketchSerialEntry[]
+  avgSerialPerSession: number
+  interactiveRatio: number
+}
+
+const SerialUsageReport = () => {
+  const { dateRange, setDateRange, fetchSerialUsage } = useReports()
+  const [data, setData] = React.useState<SerialUsageData | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
 
   const loadData = React.useCallback(() => {
     setLoading(true)
     setError(null)
-    fetchBoardUsage()
+    fetchSerialUsage()
       .then((d) => {
         setData(d)
         setLoading(false)
       })
       .catch((err) => {
         setError(
-          err instanceof Error ? err.message : "Failed to load board usage data"
+          err instanceof Error ? err.message : "Failed to load serial usage data"
         )
         setLoading(false)
       })
-  }, [fetchBoardUsage])
+  }, [fetchSerialUsage])
 
   React.useEffect(() => {
     loadData()
@@ -60,96 +74,96 @@ const BoardUsageReport = () => {
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
-  const formatDuration = (ms: number) => {
-    const mins = Math.floor(ms / 60000)
-    return mins > 0 ? `${mins} min` : "< 1 min"
-  }
-
   return (
     <div>
       <div style={styles.headerRow}>
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
-        {data.boardPerformance.length > 0 && (
-          <ExportButton data={data.boardPerformance} filename="board-usage" />
+        {data.byType.length > 0 && (
+          <ExportButton data={data.byType} filename="serial-usage" />
         )}
       </div>
       <div style={styles.statsRow}>
         <StatCard
-          title="Total Sessions"
-          value={data.totalSessions}
+          title="Serial Outputs"
+          value={data.totalOutputs}
           color="#0066cc"
         />
         <StatCard
-          title="Most Popular Board"
-          value={data.mostPopularBoard}
+          title="Serial Sends"
+          value={data.totalSends}
           color="#27ae60"
         />
         <StatCard
-          title="Board Types"
-          value={data.boardPerformance.length}
+          title="Avg Serial/Session"
+          value={data.avgSerialPerSession}
           color="#8e44ad"
+        />
+        <StatCard
+          title="Interactive Ratio"
+          value={`${data.interactiveRatio}%`}
+          color="#f39c12"
         />
       </div>
 
-      {data.boardPerformance.length > 0 && (
+      {data.byType.length > 0 && (
         <div style={styles.chartContainer}>
-          <h3 style={styles.chartTitle}>Board Type Distribution</h3>
+          <h3 style={styles.chartTitle}>Serial Events by Type</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data.boardPerformance}>
+            <BarChart data={data.byType}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="board" />
+              <XAxis dataKey="type" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="sessions" fill="#0066cc" name="Sessions" />
+              <Bar dataKey="count" fill="#0066cc" name="Count" />
             </BarChart>
           </ResponsiveContainer>
         </div>
       )}
 
-      <div style={styles.tableContainer}>
-        <h3 style={styles.tableTitle}>Board Performance</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Board</th>
-              <th style={styles.th}>Sessions</th>
-              <th style={styles.th}>Share</th>
-              <th style={styles.th}>Avg Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.boardPerformance.map((b, _i) => (
-              <BoardRow
-                key={b.board}
-                board={b.board}
-                sessions={b.sessions}
-                percentage={b.percentage}
-                avgDuration={formatDuration(b.avgDurationMs)}
+      {data.serialOverTime.length > 0 && (
+        <div style={styles.chartContainer}>
+          <h3 style={styles.chartTitle}>Serial Activity Over Time</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data.serialOverTime}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="day" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="output"
+                stroke="#0066cc"
+                name="Output"
               />
-            ))}
-          </tbody>
-        </table>
-      </div>
+              <Line
+                type="monotone"
+                dataKey="send"
+                stroke="#27ae60"
+                name="Send"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
-      {data.popularBoardPerSketch.length > 0 && (
+      {data.topSketchesBySerial.length > 0 && (
         <div style={styles.tableContainer}>
-          <h3 style={styles.tableTitle}>Most Popular Board per Sketch (Top 10)</h3>
+          <h3 style={styles.tableTitle}>Top Sketches by Serial Activity</h3>
           <table style={styles.table}>
             <thead>
               <tr>
                 <th style={styles.th}>Sketch</th>
-                <th style={styles.th}>Board</th>
-                <th style={styles.th}>Usage Count</th>
+                <th style={styles.th}>Sessions with Serial</th>
               </tr>
             </thead>
             <tbody>
-              {data.popularBoardPerSketch.map((item, _i) => (
-                <SketchBoardRow
-                  key={item.sketch}
-                  sketch={item.sketch}
-                  board={item.board}
-                  count={item.count}
+              {data.topSketchesBySerial.map((s) => (
+                <SketchSerialRow
+                  key={s.sketchName}
+                  sketchName={s.sketchName}
+                  count={s.count}
                 />
               ))}
             </tbody>
@@ -160,37 +174,15 @@ const BoardUsageReport = () => {
   )
 }
 
-const BoardRow = ({
-  board,
-  sessions,
-  percentage,
-  avgDuration,
-}: {
-  board: string
-  sessions: number
-  percentage: number
-  avgDuration: string
-}) => (
-  <tr>
-    <td style={styles.td}>{board}</td>
-    <td style={{ ...styles.td, textAlign: "center" }}>{sessions}</td>
-    <td style={{ ...styles.td, textAlign: "center" }}>{percentage}%</td>
-    <td style={styles.td}>{avgDuration}</td>
-  </tr>
-)
-
-const SketchBoardRow = ({
-  sketch,
-  board,
+const SketchSerialRow = ({
+  sketchName,
   count,
 }: {
-  sketch: string
-  board: string
+  sketchName: string
   count: number
 }) => (
   <tr>
-    <td style={styles.td}>{sketch}</td>
-    <td style={styles.td}>{board}</td>
+    <td style={styles.td}>{sketchName}</td>
     <td style={{ ...styles.td, textAlign: "center" }}>{count}</td>
   </tr>
 )
@@ -251,4 +243,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 }
 
-export default BoardUsageReport
+export default SerialUsageReport

@@ -1,6 +1,8 @@
 import React from "react"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 
 interface PinUsageData {
@@ -47,7 +49,7 @@ const PinUsageReport = () => {
     loadData()
   }, [loadData])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
@@ -70,8 +72,17 @@ const PinUsageReport = () => {
     0
   )
 
+  const pinData = [
+    { type: "Digital", total: totalDigitalUsage },
+    { type: "Analog", total: totalAnalogUsage },
+  ]
+
   return (
     <div>
+      <div style={styles.headerRow}>
+        <h2 style={styles.pageTitle}>Pin Usage Report</h2>
+        <ExportButton data={pinData} filename="pin-usage" />
+      </div>
       <div style={styles.statsRow}>
         <StatCard
           title="Digital Pin Events"
@@ -135,6 +146,20 @@ const PinUsageReport = () => {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24,
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  pageTitle: {
+    margin: 0,
+    fontSize: 20,
+    fontWeight: 600,
+    color: "#333",
+  },
   statsRow: {
     display: "flex",
     gap: 16,

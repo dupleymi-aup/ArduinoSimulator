@@ -216,4 +216,121 @@ describe("Admin API", () => {
       expect(Array.isArray(res.body)).toBe(true)
     })
   })
+
+  describe("GET /api/admin/reports/session-end", () => {
+    test("returns 401 without token", async () => {
+      const res = await request(app).get("/api/admin/reports/session-end")
+      expect(res.status).toBe(401)
+    })
+
+    test("returns session end data with valid token", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/session-end")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveProperty("totalSessions")
+      expect(res.body).toHaveProperty("byReason")
+      expect(res.body).toHaveProperty("crashRate")
+      expect(res.body).toHaveProperty("completionRate")
+      expect(res.body).toHaveProperty("abandonmentRate")
+      expect(res.body).toHaveProperty("trendOverTime")
+      expect(res.body).toHaveProperty("incompleteCount")
+    })
+  })
+
+  describe("GET /api/admin/reports/file-workflow", () => {
+    test("returns 401 without token", async () => {
+      const res = await request(app).get("/api/admin/reports/file-workflow")
+      expect(res.status).toBe(401)
+    })
+
+    test("returns file workflow data with valid token", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/file-workflow")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveProperty("totalSaves")
+      expect(res.body).toHaveProperty("totalOpens")
+      expect(res.body).toHaveProperty("totalNewFiles")
+      expect(res.body).toHaveProperty("byType")
+      expect(res.body).toHaveProperty("savesOverTime")
+      expect(res.body).toHaveProperty("avgSavesPerSession")
+    })
+  })
+
+  describe("GET /api/admin/reports/serial-usage", () => {
+    test("returns 401 without token", async () => {
+      const res = await request(app).get("/api/admin/reports/serial-usage")
+      expect(res.status).toBe(401)
+    })
+
+    test("returns serial usage data with valid token", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/serial-usage")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveProperty("totalOutputs")
+      expect(res.body).toHaveProperty("totalSends")
+      expect(res.body).toHaveProperty("byType")
+      expect(res.body).toHaveProperty("serialOverTime")
+      expect(res.body).toHaveProperty("interactiveRatio")
+    })
+  })
+
+  describe("GET /api/admin/reports/student-cohort", () => {
+    test("returns 401 without token", async () => {
+      const res = await request(app).get("/api/admin/reports/student-cohort")
+      expect(res.status).toBe(401)
+    })
+
+    test("returns student cohort data with valid token", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/student-cohort")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveProperty("totalStudents")
+      expect(res.body).toHaveProperty("returningStudentPct")
+      expect(res.body).toHaveProperty("avgSessionsPerStudent")
+      expect(res.body).toHaveProperty("cohortsByWeek")
+      expect(res.body).toHaveProperty("retentionData")
+      expect(res.body).toHaveProperty("newVsReturning")
+    })
+  })
+
+  describe("GET /api/admin/reports/board-changes", () => {
+    test("returns 401 without token", async () => {
+      const res = await request(app).get("/api/admin/reports/board-changes")
+      expect(res.status).toBe(401)
+    })
+
+    test("returns board change data with valid token", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/board-changes")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveProperty("totalBoardChanges")
+      expect(res.body).toHaveProperty("uniqueStudentsSwitching")
+      expect(res.body).toHaveProperty("byBoardType")
+      expect(res.body).toHaveProperty("topSwitchers")
+      expect(res.body).toHaveProperty("switchingVsDuration")
+    })
+  })
+
+  describe("Date validation", () => {
+    test("returns 400 for invalid date format on session-end", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/session-end?start=not-a-date")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(400)
+      expect(res.body).toHaveProperty("error")
+    })
+
+    test("returns 400 for invalid date format on file-workflow", async () => {
+      const res = await request(app)
+        .get("/api/admin/reports/file-workflow?end=invalid")
+        .set("Authorization", `Bearer ${token}`)
+      expect(res.status).toBe(400)
+      expect(res.body).toHaveProperty("error")
+    })
+  })
 })

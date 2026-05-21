@@ -9,9 +9,12 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
@@ -54,13 +57,18 @@ const ErrorTrendReport = () => {
     loadData()
   }, [loadData])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   return (
     <div>
-      <DateRangeFilter value={dateRange} onChange={setDateRange} />
+      <div style={styles.headerRow}>
+        <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        {data.errorCategories.length > 0 && (
+          <ExportButton data={data.errorCategories} filename="error-trends" />
+        )}
+      </div>
       <div style={styles.statsRow}>
         <StatCard title="Total Errors" value={data.totalErrors} color="#e74c3c" />
         <StatCard
@@ -79,6 +87,7 @@ const ErrorTrendReport = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Line type="monotone" dataKey="count" stroke="#e74c3c" name="Errors" />
             </LineChart>
           </ResponsiveContainer>
@@ -94,6 +103,7 @@ const ErrorTrendReport = () => {
               <XAxis dataKey="category" tick={{ fontSize: 11 }} />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="count" fill="#e74c3c" name="Count" />
             </BarChart>
           </ResponsiveContainer>
@@ -132,6 +142,7 @@ const ErrorTrendReport = () => {
               <XAxis dataKey="board" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Bar dataKey="total" fill="#0066cc" name="Total Sessions" />
               <Bar dataKey="errors" fill="#e74c3c" name="Sessions with Errors" />
             </BarChart>
@@ -211,6 +222,13 @@ const BoardErrorRow = ({
 )
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+  },
   statsRow: {
     display: "flex",
     gap: 16,

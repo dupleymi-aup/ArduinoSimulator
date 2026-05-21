@@ -7,9 +7,12 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
+import LoadingState from "../components/LoadingState"
+import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
@@ -48,13 +51,18 @@ const PerformanceReport = () => {
     loadData()
   }, [loadData])
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={loadData} />
   if (!data) return <p>No data available.</p>
 
   return (
     <div>
-      <DateRangeFilter value={dateRange} onChange={setDateRange} />
+      <div style={styles.headerRow}>
+        <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        {data.topErrors.length > 0 && (
+          <ExportButton data={data.topErrors} filename="performance-errors" />
+        )}
+      </div>
       <div style={styles.statsRow}>
         <StatCard
           title="Total Sessions"
@@ -95,6 +103,7 @@ const PerformanceReport = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
+              <Legend />
               <Line
                 type="monotone"
                 dataKey="count"
@@ -110,6 +119,13 @@ const PerformanceReport = () => {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+  },
   statsRow: {
     display: "flex",
     gap: 16,
