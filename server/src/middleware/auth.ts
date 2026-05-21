@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 
-const JWT_SECRET = process.env.JWT_SECRET || "arduino-simulator-secret-key-change-in-production"
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET environment variable is required. Set it before starting the server."
+  )
+}
 
 interface AuthRequest extends Request {
   adminId?: string
@@ -26,5 +31,3 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
     return res.status(401).json({ error: "Invalid token" })
   }
 }
-
-export { JWT_SECRET }

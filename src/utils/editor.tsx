@@ -42,8 +42,8 @@ const editorNew = () => {
 
   try {
     editor.searchBox.hide()
-  } catch (err) {
-    //
+  } catch {
+    // searchBox may not be initialized yet — non-critical
   }
 
   editorFocus()
@@ -72,7 +72,8 @@ const editorSave = (filename: string) => {
     link.click()
     link.remove()
   } catch (err) {
-    //
+    // eslint-disable-next-line no-console
+    console.error("Editor save failed:", err)
   }
 
   editor.session.getUndoManager().reset()
@@ -80,7 +81,8 @@ const editorSave = (filename: string) => {
   try {
     editor.searchBox.hide()
   } catch (err) {
-    //
+    // eslint-disable-next-line no-console
+    console.error("Editor searchBox hide failed:", err)
   }
 
   editorFocus()
@@ -92,7 +94,8 @@ const editorUndo = () => {
     editor.focus()
     editor.clearSelection()
   } catch (err) {
-    //
+    // eslint-disable-next-line no-console
+    console.error("Editor undo failed:", err)
   }
 }
 
@@ -102,7 +105,8 @@ const editorRedo = () => {
     editor.focus()
     editor.clearSelection()
   } catch (err) {
-    //
+    // eslint-disable-next-line no-console
+    console.error("Editor redo failed:", err)
   }
 }
 

@@ -7,7 +7,7 @@ const SerialMonitorData = () => {
 
   React.useEffect(() => {
     if (refData.current) {
-      refData.current.innerHTML = outputData
+      refData.current.textContent = outputData
       refData.current.scrollIntoView(false)
     }
   }, [outputData])

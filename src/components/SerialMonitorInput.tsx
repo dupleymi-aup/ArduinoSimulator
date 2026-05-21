@@ -34,6 +34,8 @@ const SerialMonitorInput = ({
       onChange={_onChange}
       onKeyUp={_onKeyUp}
       readOnly={!simulatorRunning}
+      aria-label="Serial monitor input"
+      placeholder="Enter serial data..."
       style={simulatorRunning ? styles.enabled : styles.disabled}
     />
   )

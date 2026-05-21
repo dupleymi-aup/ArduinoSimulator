@@ -10,14 +10,25 @@ interface ToolbarItemProps {
 const ToolbarItem = ({ onClick, disabled, tooltip, children }: ToolbarItemProps) => {
   return (
     <div style={styles.item}>
-      <div
-        style={styles.iconWrapper}
+      <button
+        style={{
+          ...styles.iconWrapper,
+          ...(disabled ? styles.disabled : {}),
+        }}
         onClick={onClick}
-        className={disabled ? undefined : "arduinosimulator_menu_item"}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            onClick()
+          }
+        }}
+        disabled={disabled}
         title={tooltip}
+        aria-label={tooltip}
+        className={disabled ? undefined : "arduinosimulator_menu_item"}
       >
         {children}
-      </div>
+      </button>
     </div>
   )
 }
@@ -40,12 +51,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#F2F2F2",
     border: "thin solid #F2F2F2",
     marginLeft: "3px",
-    cursor: "default",
+    cursor: "pointer",
     WebkitUserSelect: "none",
     MozUserSelect: "none",
     userSelect: "none",
     paddingTop: "3px",
     paddingBottom: "1px",
+    borderRadius: "2px",
+  },
+  disabled: {
+    opacity: 0.5,
+    cursor: "not-allowed",
   },
 }
 

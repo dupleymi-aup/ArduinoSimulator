@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
+import crypto from "crypto"
 
 const prisma = new PrismaClient()
 
 async function seed() {
   const username = "admin"
-  const password = "admin123"
+  const password = process.env.ADMIN_PASSWORD || crypto.randomBytes(16).toString("hex")
 
   const existing = await prisma.adminUser.findUnique({ where: { username } })
   if (existing) {
@@ -21,6 +22,7 @@ async function seed() {
   console.log("Admin user created:")
   console.log(`  Username: ${username}`)
   console.log(`  Password: ${password}`)
+  console.log("  Save this password — it will not be shown again.")
 }
 
 seed()

@@ -11,6 +11,7 @@ const ErrorConsole = ({ error, onClear }: ErrorConsoleProps) => {
 
   React.useEffect(() => {
     if (outputRef.current) {
+      outputRef.current.textContent = error
       outputRef.current.scrollTop = outputRef.current.scrollHeight
     }
   }, [error])
@@ -25,11 +26,7 @@ const ErrorConsole = ({ error, onClear }: ErrorConsoleProps) => {
           {t("ERROR_CLEAR")}
         </button>
       </div>
-      <div
-        ref={outputRef}
-        style={styles.output}
-        dangerouslySetInnerHTML={{ __html: error.replace(/\n/g, "<br />") }}
-      />
+      <div ref={outputRef} style={styles.output} />
     </div>
   )
 }

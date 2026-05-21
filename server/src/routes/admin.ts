@@ -2,7 +2,7 @@ import { Router } from "express"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import prisma from "../utils/db"
-import { authenticate, JWT_SECRET } from "../middleware/auth"
+import { authenticate } from "../middleware/auth"
 import {
   getActivityReport,
   getPerformanceReport,
@@ -16,6 +16,23 @@ import {
   getBoardUsageReport,
   getStudentDetail,
 } from "../services/reportService"
+
+function parseDateRange(query: Record<string, unknown>) {
+  const start = query.start as string | undefined
+  const end = query.end as string | undefined
+  if (!start && !end) return { range: null, error: null }
+  const startDate = start ? new Date(start) : null
+  const endDate = end ? new Date(end) : null
+  if ((start && isNaN(startDate!.getTime())) || (end && isNaN(endDate!.getTime()))) {
+    return { range: null, error: "Invalid date format. Use ISO 8601 (e.g., 2024-01-01T00:00:00Z)." }
+  }
+  return { range: { start, end }, error: null }
+}
+
+function dateRangeParams(query: Record<string, unknown>) {
+  const { range, error } = parseDateRange(query)
+  return error ? null : range || undefined
+}
 
 const router = Router()
 
@@ -53,8 +70,10 @@ router.post("/login", async (req, res) => {
 })
 
 router.get("/reports/activity", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const report = await getActivityReport({ start: req.query.start as string, end: req.query.end as string })
+    const report = await getActivityReport(range)
     res.json(report)
   } catch (err) {
     console.error("Error getting activity report:", err)
@@ -63,8 +82,10 @@ router.get("/reports/activity", authenticate, async (req, res) => {
 })
 
 router.get("/reports/performance", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const report = await getPerformanceReport({ start: req.query.start as string, end: req.query.end as string })
+    const report = await getPerformanceReport(range)
     res.json(report)
   } catch (err) {
     console.error("Error getting performance report:", err)
@@ -93,10 +114,12 @@ router.get("/reports/pins", authenticate, async (req, res) => {
 })
 
 router.get("/sessions", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20))
-    const result = await getSessions(page, limit, { start: req.query.start as string, end: req.query.end as string })
+    const result = await getSessions(page, limit, range)
     res.json(result)
   } catch (err) {
     console.error("Error getting sessions:", err)
@@ -115,11 +138,10 @@ router.get("/students", authenticate, async (req, res) => {
 })
 
 router.get("/reports/student-engagement", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const report = await getStudentEngagementReport({
-      start: req.query.start as string,
-      end: req.query.end as string,
-    })
+    const report = await getStudentEngagementReport(range)
     res.json(report)
   } catch (err) {
     console.error("Error getting student engagement report:", err)
@@ -128,11 +150,10 @@ router.get("/reports/student-engagement", authenticate, async (req, res) => {
 })
 
 router.get("/reports/sketch-difficulty", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const report = await getSketchDifficultyReport({
-      start: req.query.start as string,
-      end: req.query.end as string,
-    })
+    const report = await getSketchDifficultyReport(range)
     res.json(report)
   } catch (err) {
     console.error("Error getting sketch difficulty report:", err)
@@ -141,11 +162,10 @@ router.get("/reports/sketch-difficulty", authenticate, async (req, res) => {
 })
 
 router.get("/reports/error-trends", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const report = await getErrorTrendReport({
-      start: req.query.start as string,
-      end: req.query.end as string,
-    })
+    const report = await getErrorTrendReport(range)
     res.json(report)
   } catch (err) {
     console.error("Error getting error trends report:", err)
@@ -154,11 +174,10 @@ router.get("/reports/error-trends", authenticate, async (req, res) => {
 })
 
 router.get("/reports/board-usage", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const report = await getBoardUsageReport({
-      start: req.query.start as string,
-      end: req.query.end as string,
-    })
+    const report = await getBoardUsageReport(range)
     res.json(report)
   } catch (err) {
     console.error("Error getting board usage report:", err)
@@ -167,11 +186,10 @@ router.get("/reports/board-usage", authenticate, async (req, res) => {
 })
 
 router.get("/students/:id", authenticate, async (req, res) => {
+  const range = dateRangeParams(req.query)
+  if (!range) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const detail = await getStudentDetail(req.params.id, {
-      start: req.query.start as string,
-      end: req.query.end as string,
-    })
+    const detail = await getStudentDetail(req.params.id, range)
     if (!detail) return res.status(404).json({ error: "Student not found" })
     res.json(detail)
   } catch (err) {
