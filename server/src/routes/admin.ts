@@ -39,15 +39,36 @@ const loginLimiter = rateLimit({
 })
 
 function parseDateRange(query: Record<string, unknown>) {
-  const start = query.start as string | undefined
-  const end = query.end as string | undefined
-  if (!start && !end) return { range: null, error: null }
-  const startDate = start ? new Date(start) : null
-  const endDate = end ? new Date(end) : null
-  if ((start && isNaN(startDate!.getTime())) || (end && isNaN(endDate!.getTime()))) {
-    return { range: null, error: "Invalid date format. Use ISO 8601 (e.g., 2024-01-01T00:00:00Z)." }
+  const rawStart = query.start
+  const rawEnd = query.end
+  if (rawStart === undefined && rawEnd === undefined) return { range: null, error: null }
+
+  if (rawStart !== undefined && typeof rawStart !== "string") {
+    return { range: null, error: "start must be a string in ISO 8601 format" }
   }
-  return { range: { start, end }, error: null }
+  if (rawEnd !== undefined && typeof rawEnd !== "string") {
+    return { range: null, error: "end must be a string in ISO 8601 format" }
+  }
+
+  const startDate = rawStart ? new Date(rawStart) : null
+  const endDate = rawEnd ? new Date(rawEnd) : null
+
+  if (rawStart && isNaN(startDate!.getTime())) {
+    return { range: null, error: "Invalid start date format. Use ISO 8601 (e.g., 2024-01-01T00:00:00Z)." }
+  }
+  if (rawEnd && isNaN(endDate!.getTime())) {
+    return { range: null, error: "Invalid end date format. Use ISO 8601 (e.g., 2024-01-01T00:00:00Z)." }
+  }
+  if (startDate && endDate && startDate > endDate) {
+    return { range: null, error: "start date must be before or equal to end date" }
+  }
+
+  const maxDurationMs = 365 * 24 * 60 * 60 * 1000
+  if (startDate && endDate && endDate.getTime() - startDate.getTime() > maxDurationMs) {
+    return { range: null, error: "Date range cannot exceed 1 year" }
+  }
+
+  return { range: { start: rawStart as string, end: rawEnd as string }, error: null }
 }
 
 function dateRangeParams(query: Record<string, unknown>): Record<string, string> | undefined | null {
