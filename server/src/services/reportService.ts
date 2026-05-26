@@ -54,6 +54,7 @@ export async function getActivityReport(range?: DateRange) {
   const sessionsWithDuration = await prisma.session.findMany({
     where: filter,
     select: { durationMs: true },
+    take: MAX_ROWS,
   })
 
   const avgDuration =
@@ -79,6 +80,7 @@ export async function getActivityReport(range?: DateRange) {
     where: { startedAt: sessionDateFilter },
     select: { startedAt: true },
     orderBy: { startedAt: "asc" },
+    take: MAX_ROWS,
   })
 
   // Group by day in application code
@@ -139,6 +141,7 @@ export async function getPerformanceReport(range?: DateRange) {
     where: { type: "sim_start", timestamp: simDateFilter },
     select: { timestamp: true },
     orderBy: { timestamp: "asc" },
+    take: MAX_EVENTS,
   })
 
   // Group by day in application code
@@ -352,7 +355,7 @@ export async function getSketchDifficultyReport(range?: DateRange) {
   })
 
   const errorEvents = await prisma.event.findMany({
-    where: { type: "runtime_error" },
+    where: { type: "runtime_error", ...eventDateFilter(range) },
     select: { sessionId: true },
     take: MAX_EVENTS,
   })
@@ -409,6 +412,7 @@ export async function getErrorTrendReport(range?: DateRange) {
     where: { type: "runtime_error", timestamp: errorDateFilter },
     select: { timestamp: true, payload: true, sessionId: true },
     orderBy: { timestamp: "asc" },
+    take: MAX_EVENTS,
   })
 
   const dayMap = new Map<string, number>()
@@ -468,6 +472,7 @@ export async function getErrorTrendReport(range?: DateRange) {
   const sessionEndReasons = await prisma.session.findMany({
     where: { id: { in: Array.from(sessionIdsWithErrors) }, ...filter },
     select: { endReason: true, simCompleted: true },
+    take: MAX_ROWS,
   })
   const endedNormally = sessionEndReasons.filter(
     (s) => s.endReason === "user_stop" || s.simCompleted
@@ -553,10 +558,12 @@ export async function getStudentDetail(studentId: string, range?: DateRange) {
       sessions: {
         where: filter,
         orderBy: { startedAt: "desc" },
+        take: MAX_ROWS,
         include: {
           events: {
             where: { type: "runtime_error" },
             orderBy: { timestamp: "asc" },
+            take: MAX_EVENTS,
           },
         },
       },
@@ -677,6 +684,7 @@ export async function getFileWorkflowReport(range?: DateRange) {
     where: { type: { in: fileTypes }, ...filter },
     select: { type: true, timestamp: true, sessionId: true },
     orderBy: { timestamp: "asc" },
+    take: MAX_EVENTS,
   })
 
   const typeCounts: Record<string, number> = {}
@@ -904,7 +912,7 @@ export async function getStudentScorecardReport(range?: DateRange) {
   })
 
   const errorEvents = await prisma.event.findMany({
-    where: { type: "runtime_error" },
+    where: { type: "runtime_error", ...eventDateFilter(range) },
     select: { sessionId: true },
     take: MAX_EVENTS,
   })
@@ -1208,7 +1216,7 @@ export async function getComparativeReport(range?: DateRange) {
   })
 
   const errorEvents = await prisma.event.findMany({
-    where: { type: "runtime_error" },
+    where: { type: "runtime_error", ...eventDateFilter(range) },
     select: { sessionId: true },
     take: MAX_EVENTS,
   })
@@ -1351,7 +1359,7 @@ export async function getSkillsMasteryReport(range?: DateRange) {
   })
 
   const errorEvents = await prisma.event.findMany({
-    where: { type: "runtime_error" },
+    where: { type: "runtime_error", ...eventDateFilter(range) },
     select: { sessionId: true },
     take: MAX_EVENTS,
   })

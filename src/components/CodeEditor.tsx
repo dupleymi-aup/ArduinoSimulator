@@ -1,5 +1,5 @@
 import React from "react"
-import { editorInit } from "../utils/editor"
+import { editorInit, editorDestroy } from "../utils/editor"
 
 const CodeEditor = () => {
   React.useEffect(() => {
@@ -37,6 +37,7 @@ const CodeEditor = () => {
       if (styleNode.parentNode) {
         styleNode.parentNode.removeChild(styleNode)
       }
+      editorDestroy()
     }
   }, [])
 

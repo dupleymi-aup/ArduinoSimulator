@@ -12,7 +12,7 @@ const SerialMonitorButton = ({
 }: SerialMonitorButtonProps) => {
   return (
     <input
-      type="submit"
+      type="button"
       style={{ ...styles.button, color: simulatorRunning ? "black" : "gray" }}
       value={t("SEND")}
       disabled={!simulatorRunning}

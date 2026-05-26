@@ -150,6 +150,13 @@ const editorFocus = () => {
   }, 100)
 }
 
+const editorDestroy = () => {
+  if (editor) {
+    editor.destroy()
+    editor = null
+  }
+}
+
 export {
   editorInit,
   editorNew,
@@ -163,4 +170,5 @@ export {
   editorEnable,
   editorDisable,
   editorFocus,
+  editorDestroy,
 }

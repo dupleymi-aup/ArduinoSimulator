@@ -30,6 +30,13 @@ function scheduleHealthRetry(): void {
   }, 30000)
 }
 
+export function cancelHealthRetry(): void {
+  if (healthCheckRetry) {
+    clearTimeout(healthCheckRetry)
+    healthCheckRetry = null
+  }
+}
+
 export function isBackendAvailable(): boolean {
   return backendAvailable
 }

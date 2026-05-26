@@ -5,6 +5,7 @@ import {
   startSession,
   endSession,
   sendHeartbeat,
+  cancelHealthRetry,
 } from "../utils/tracking"
 
 interface TrackingContextType {
@@ -58,6 +59,7 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       cancelled = true
+      cancelHealthRetry()
     }
   }, [])
 
