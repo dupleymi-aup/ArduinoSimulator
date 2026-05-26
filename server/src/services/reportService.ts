@@ -1,6 +1,10 @@
 import prisma from "../utils/db"
 import { logger } from "../utils/logger"
 
+const MAX_ROWS = 10000
+const MAX_EVENTS = 50000
+const MAX_STUDENTS = 5000
+
 interface DateRange {
   start?: string
   end?: string
@@ -17,6 +21,7 @@ function dateFilter(range?: DateRange): Record<string, unknown> {
 export async function getStudents() {
   const students = await prisma.student.findMany({
     orderBy: { createdAt: "desc" },
+    take: MAX_STUDENTS,
     select: {
       id: true,
       identifier: true,
@@ -171,11 +176,13 @@ export async function getPinUsageReport() {
   const digitalPinEvents = await prisma.event.findMany({
     where: { type: "digital_pin_change" },
     select: { payload: true },
+    take: MAX_EVENTS,
   })
 
   const analogPinEvents = await prisma.event.findMany({
     where: { type: "analog_pin_change" },
     select: { payload: true },
+    take: MAX_EVENTS,
   })
 
   const digitalPins: Record<number, number> = {}
@@ -232,6 +239,7 @@ export async function getStudentEngagementReport(range?: DateRange) {
 
   const sessions = await prisma.session.findMany({
     where: filter,
+    take: MAX_ROWS,
     select: {
       studentId: true,
       durationMs: true,
@@ -329,11 +337,13 @@ export async function getSketchDifficultyReport(range?: DateRange) {
   const sessionsWithSketches = await prisma.session.findMany({
     where: { sketchName: { not: null }, ...filter },
     select: { id: true, sketchName: true },
+    take: MAX_ROWS,
   })
 
   const errorEvents = await prisma.event.findMany({
     where: { type: "runtime_error" },
     select: { sessionId: true },
+    take: MAX_EVENTS,
   })
   const sessionIdsWithErrors = new Set(errorEvents.map((e) => e.sessionId))
 
@@ -424,6 +434,7 @@ export async function getErrorTrendReport(range?: DateRange) {
   const sessions = await prisma.session.findMany({
     where: filter,
     select: { id: true, boardType: true },
+    take: MAX_ROWS,
   })
 
   const boardErrorMap: Record<string, number> = {}
@@ -605,6 +616,7 @@ export async function getSessionEndReport(range?: DateRange) {
     where: { startedAt: { gte: thirtyDaysAgo } },
     select: { startedAt: true, endReason: true },
     orderBy: { startedAt: "asc" },
+    take: MAX_ROWS,
   })
 
   const dayMap = new Map<
@@ -678,6 +690,7 @@ export async function getFileWorkflowReport(range?: DateRange) {
   const sessions = await prisma.session.findMany({
     where: { sketchName: { not: null }, ...filter },
     select: { id: true, sketchName: true },
+    take: MAX_ROWS,
   })
   const sketchSaveMap: Record<string, number> = {}
   for (const s of sessions) {
@@ -738,6 +751,7 @@ export async function getSerialUsageReport(range?: DateRange) {
   const sessions = await prisma.session.findMany({
     where: { sketchName: { not: null }, ...filter },
     select: { id: true, sketchName: true },
+    take: MAX_ROWS,
   })
   const sessionIdsWithSerial = new Set(events.map((e) => e.sessionId))
   const sketchSerialMap: Record<string, number> = {}
@@ -778,6 +792,7 @@ export async function getStudentCohortReport(range?: DateRange) {
 
   const students = await prisma.student.findMany({
     orderBy: { createdAt: "desc" },
+    take: MAX_STUDENTS,
     include: {
       sessions: {
         where: filter,
@@ -871,11 +886,13 @@ export async function getStudentScorecardReport(range?: DateRange) {
       durationMs: true,
       simCompleted: true,
     },
+    take: MAX_ROWS,
   })
 
   const errorEvents = await prisma.event.findMany({
     where: { type: "runtime_error" },
     select: { sessionId: true },
+    take: MAX_EVENTS,
   })
   const sessionErrorMap = new Map<string, number>()
   for (const e of errorEvents) {
@@ -914,6 +931,7 @@ export async function getStudentScorecardReport(range?: DateRange) {
 
   const students = await prisma.student.findMany({
     select: { id: true, identifier: true },
+    take: MAX_STUDENTS,
   })
   const idMap = new Map(students.map(s => [s.id, s.identifier]))
 
@@ -977,6 +995,7 @@ export async function getLearningPathReport(range?: DateRange) {
       simCompleted: true,
     },
     orderBy: { startedAt: "asc" },
+    take: MAX_ROWS,
   })
 
   const studentPaths = new Map<string, Array<{ sketch: string; completed: boolean; durationMs: number }>>()
@@ -1054,12 +1073,14 @@ export async function getErrorImpactReport(range?: DateRange) {
       durationMs: true,
       endReason: true,
     },
+    take: MAX_ROWS,
   })
 
   const errorEvents = await prisma.event.findMany({
     where: { type: "runtime_error", ...filter },
     select: { sessionId: true, payload: true, timestamp: true },
     orderBy: { timestamp: "asc" },
+    take: MAX_EVENTS,
   })
 
   const sessionErrorMap = new Map<string, { count: number; types: Record<string, number>; firstErrorTime?: Date }>()
@@ -1162,11 +1183,13 @@ export async function getComparativeReport(range?: DateRange) {
       simCompleted: true,
       startedAt: true,
     },
+    take: MAX_ROWS,
   })
 
   const errorEvents = await prisma.event.findMany({
     where: { type: "runtime_error" },
     select: { sessionId: true },
+    take: MAX_EVENTS,
   })
   const sessionErrorSet = new Set(errorEvents.map(e => e.sessionId))
 
@@ -1303,11 +1326,13 @@ export async function getSkillsMasteryReport(range?: DateRange) {
       simCompleted: true,
       durationMs: true,
     },
+    take: MAX_ROWS,
   })
 
   const errorEvents = await prisma.event.findMany({
     where: { type: "runtime_error" },
     select: { sessionId: true },
+    take: MAX_EVENTS,
   })
   const sessionErrorSet = new Set(errorEvents.map(e => e.sessionId))
 
@@ -1365,6 +1390,7 @@ export async function getBoardChangeReport(range?: DateRange) {
   const events = await prisma.event.findMany({
     where: { type: "board_change", ...filter },
     select: { payload: true, sessionId: true, timestamp: true },
+    take: MAX_EVENTS,
   })
 
   const boardTypeCounts: Record<string, number> = {}
@@ -1397,6 +1423,7 @@ export async function getBoardChangeReport(range?: DateRange) {
       durationMs: true,
       student: { select: { identifier: true } },
     },
+    take: MAX_ROWS,
   })
 
   const studentData: Record<
