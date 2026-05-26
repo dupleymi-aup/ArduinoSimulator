@@ -2,7 +2,7 @@ import { editorEnable, editorGetValue } from "./editor"
 import { trackEvent, isBackendAvailable, getActiveSessionId } from "./tracking"
 import logger from "./logger"
 
-let myWorker: Worker = null
+let myWorker: Worker | null = null
 const myWorkerTimestamp = Date.now()
 let accumulatedError = ""
 

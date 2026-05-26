@@ -1,3 +1,5 @@
+import logger from "./logger"
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
 
 let activeSessionId: string | null = null
@@ -71,7 +73,7 @@ export function trackEvent(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: data,
-    }).catch(() => {})
+    }).catch((err) => logger.warn("Tracking fallback fetch failed:", err))
   }
 }
 

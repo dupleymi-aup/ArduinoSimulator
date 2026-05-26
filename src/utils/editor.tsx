@@ -4,7 +4,8 @@ import logger from "./logger"
 
 const mobileDevice: boolean = isMobileDevice()
 
-let editor = null
+// eslint-disable-next-line no-undef -- AceEditor is a global TS interface
+let editor: AceEditor | null = null
 
 const editorInit = () => {
   window.ace.config.set("basePath", ".")

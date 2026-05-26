@@ -4,6 +4,10 @@
 # build folder
 *build
 
+# compiled output
+dist/
+server/dist/
+
 # misc
 .DS_Store
 
