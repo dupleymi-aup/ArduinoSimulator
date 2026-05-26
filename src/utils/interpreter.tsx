@@ -232,14 +232,14 @@ const convertSketch = (sketch: string) => {
 
   // FINDING AND REPLACING ALL THE REFERENCES TO THE CONVERT TO STRING FUNCTION THAT HAS A FRACTION AS A PARAMETER
   sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\b(String\()([0-9]...*)\)/g,
-    "_fractionToChar($2)"
+    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bString\(([0-9]+\.[0-9]+)\)/g,
+    "_fractionToChar($1)"
   )
 
   // FINDING AND REPLACING ALL THE REFERENCES TO THE CONVERT TO STRING FUNCTION THAT HAS AN INTEGER AS A PARAMETER
   sketch = sketch.replace(
-    /(?=(?:[^"]*"[^"]*")*[^"]*$)\b(String\()([0-9].*)\)/g,
-    "_intToChar($2)"
+    /(?=(?:[^"]*"[^"]*")*[^"]*$)\bString\(([0-9]+)\)/g,
+    "_intToChar($1)"
   )
 
   // FINDING AND REPLACING COMMON STRING METHOD CALLS
