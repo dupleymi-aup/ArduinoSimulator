@@ -14,6 +14,12 @@ const startSimulator = (
   setOutputData: (_data: string | ((_prev: string) => string)) => void,
   setRuntimeError: (_error: string | null) => void
 ) => {
+  // Terminate any existing worker before creating a new one
+  if (myWorker) {
+    myWorker.terminate()
+    myWorker = null
+  }
+
   accumulatedError = ""
   myWorker = new Worker("ArduinoSimulatorInterpreter.min.js?v=" + myWorkerTimestamp)
 

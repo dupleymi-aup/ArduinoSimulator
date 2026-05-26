@@ -32,6 +32,7 @@ const editorInit = () => {
 }
 
 const editorNew = () => {
+  if (!editor) return
   editor.session.setMode("ace/mode/arduino")
   editor.setTheme("ace/theme/arduino_light")
   editor.setValue("")
@@ -51,6 +52,7 @@ const editorNew = () => {
 }
 
 const editorSetValue = (newContent: string | ArrayBuffer) => {
+  if (!editor) return
   editor.setValue(newContent)
   editor.clearSelection()
   editor.selection.moveTo(0, 0)
@@ -58,10 +60,12 @@ const editorSetValue = (newContent: string | ArrayBuffer) => {
 }
 
 const editorGetValue = () => {
+  if (!editor) return ""
   return editor.getValue()
 }
 
 const editorSave = (filename: string) => {
+  if (!editor) return
   try {
     const blobValue = new Blob([editor.getValue()], { type: "text/plain" })
 
@@ -88,6 +92,7 @@ const editorSave = (filename: string) => {
 }
 
 const editorUndo = () => {
+  if (!editor) return
   try {
     editor.undo()
     editor.focus()
@@ -98,6 +103,7 @@ const editorUndo = () => {
 }
 
 const editorRedo = () => {
+  if (!editor) return
   try {
     editor.redo()
     editor.focus()
@@ -108,6 +114,7 @@ const editorRedo = () => {
 }
 
 const editorSearch = () => {
+  if (!editor) return
   try {
     editor.execCommand("find")
   } catch {
@@ -124,21 +131,22 @@ const editorIsDirty = () => {
 }
 
 const editorEnable = () => {
+  if (!editor) return
   editor.setOptions({ readOnly: false, highlightGutterLine: true })
   editor.renderer.$cursorLayer.element.style.display = "block"
 }
 
 const editorDisable = () => {
+  if (!editor) return
   editor.setOptions({ readOnly: true, highlightGutterLine: false })
   editor.renderer.$cursorLayer.element.style.display = "none"
 }
 
 const editorFocus = () => {
-  if (!mobileDevice) {
-    setTimeout(() => {
-      editor.focus()
-    }, 100)
-  }
+  if (!editor || !mobileDevice) return
+  setTimeout(() => {
+    editor.focus()
+  }, 100)
 }
 
 export {

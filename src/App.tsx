@@ -16,6 +16,8 @@ const App = () => {
         clearInterval(checkAceEditor)
       }
     }, 200)
+
+    return () => clearInterval(checkAceEditor)
   }, [])
 
   if (!webLoaded) {
