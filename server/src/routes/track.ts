@@ -1,8 +1,19 @@
 import { Router } from "express"
+import rateLimit from "express-rate-limit"
 import { logger } from "../utils/logger"
 import { getOrCreateStudent, startSession, endSession, heartbeatSession, recordEvent } from "../services/trackingService"
 
 const router = Router()
+
+const trackingLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+})
+
+router.use(trackingLimiter)
 
 const sanitizeString = (value: unknown, maxLength = 500): string | undefined => {
   if (typeof value !== "string") return undefined
@@ -42,7 +53,13 @@ router.post("/event", async (req, res) => {
     }
 
     const sanitizedType = sanitizeString(type, 100)
-    const sanitizedPayload = sanitizeString(payload, 2000)
+
+    let sanitizedPayload: string | undefined
+    if (typeof payload === "string") {
+      sanitizedPayload = sanitizeString(payload, 2000)
+    } else if (payload && typeof payload === "object") {
+      sanitizedPayload = JSON.stringify(payload).slice(0, 2000)
+    }
 
     if (!sanitizedType) {
       return res.status(400).json({ error: "Invalid event type format" })
@@ -64,8 +81,9 @@ router.post("/session/end", async (req, res) => {
     }
 
     const sanitizedEndReason = sanitizeString(endReason, 100)
+    const validatedDuration = typeof durationMs === "number" && durationMs >= 0 ? durationMs : 0
 
-    await endSession(sessionId, typeof durationMs === "number" ? durationMs : 0, sanitizedEndReason || "unknown")
+    await endSession(sessionId, validatedDuration, sanitizedEndReason || "unknown")
     res.status(204).send()
   } catch (err) {
     logger.error("Error ending session:", err)

@@ -1,11 +1,11 @@
 import prisma from "../utils/db"
 
 export async function getOrCreateStudent(identifier: string) {
-  let student = await prisma.student.findUnique({ where: { identifier } })
-  if (!student) {
-    student = await prisma.student.create({ data: { identifier } })
-  }
-  return student
+  return prisma.student.upsert({
+    where: { identifier },
+    create: { identifier },
+    update: {},
+  })
 }
 
 export async function startSession(studentId: string, sketchName?: string, boardType?: string) {
@@ -24,11 +24,11 @@ export async function endSession(sessionId: string, durationMs: number, endReaso
 export async function heartbeatSession(sessionId: string) {
   return prisma.session.update({
     where: { id: sessionId },
-    data: { updatedAt: new Date() },
+    data: { simStarted: true },
   })
 }
 
-export async function recordEvent(sessionId: string, type: string, payload?: Record<string, unknown>) {
+export async function recordEvent(sessionId: string, type: string, payload?: string) {
   const updates: Record<string, unknown> = {}
 
   if (type === "sim_start") {
@@ -37,12 +37,17 @@ export async function recordEvent(sessionId: string, type: string, payload?: Rec
     updates.simCompleted = true
   }
 
-  return prisma.$transaction([
+  const transactionOps: unknown[] = [
     prisma.event.create({
-      data: { sessionId, type, payload: payload ? JSON.stringify(payload) : undefined },
+      data: { sessionId, type, payload },
     }),
-    Object.keys(updates).length > 0
-      ? prisma.session.update({ where: { id: sessionId }, data: updates })
-      : Promise.resolve(),
-  ])
+  ]
+
+  if (Object.keys(updates).length > 0) {
+    transactionOps.push(
+      prisma.session.update({ where: { id: sessionId }, data: updates }),
+    )
+  }
+
+  return prisma.$transaction(transactionOps as any)
 }

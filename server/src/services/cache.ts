@@ -6,6 +6,21 @@ interface CacheEntry<T> {
 const cache = new Map<string, CacheEntry<unknown>>()
 
 const DEFAULT_TTL_MS = 5 * 60 * 1000 // 5 minutes
+const CLEANUP_INTERVAL_MS = 10 * 60 * 1000 // 10 minutes
+
+function cleanupExpiredEntries(): void {
+  const now = Date.now()
+  for (const [key, entry] of cache.entries()) {
+    if (now > entry.expiresAt) {
+      cache.delete(key)
+    }
+  }
+}
+
+const cleanupInterval = setInterval(cleanupExpiredEntries, CLEANUP_INTERVAL_MS)
+if (cleanupInterval.unref) {
+  cleanupInterval.unref()
+}
 
 export function getCache<T>(key: string): T | null {
   const entry = cache.get(key)

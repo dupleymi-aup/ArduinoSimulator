@@ -1,4 +1,5 @@
 import prisma from "../utils/db"
+import { logger } from "../utils/logger"
 
 interface DateRange {
   start?: string
@@ -1106,7 +1107,9 @@ export async function getErrorImpactReport(range?: DateRange) {
       try {
         const parsed = JSON.parse(e.payload) as { message?: string; error?: string }
         type = parsed?.message || parsed?.error || "unknown"
-      } catch {}
+      } catch (parseError) {
+        logger.warn("Failed to parse error event payload:", parseError)
+      }
     }
     const entry = errorTypeMap.get(type) || { total: 0, abandoned: 0 }
     entry.total++
@@ -1151,6 +1154,7 @@ export async function getComparativeReport(range?: DateRange) {
   const sessions = await prisma.session.findMany({
     where: filter,
     select: {
+      id: true,
       studentId: true,
       boardType: true,
       sketchName: true,
@@ -1293,6 +1297,7 @@ export async function getSkillsMasteryReport(range?: DateRange) {
   const sessions = await prisma.session.findMany({
     where: { sketchName: { not: null }, ...filter },
     select: {
+      id: true,
       studentId: true,
       sketchName: true,
       simCompleted: true,
@@ -1386,8 +1391,12 @@ export async function getBoardChangeReport(range?: DateRange) {
 
   const sessions = await prisma.session.findMany({
     where: { id: { in: Object.keys(sessionSwitches) } },
-    select: { id: true, studentId: true, durationMs: true },
-    include: { student: { select: { identifier: true } } },
+    select: {
+      id: true,
+      studentId: true,
+      durationMs: true,
+      student: { select: { identifier: true } },
+    },
   })
 
   const studentData: Record<

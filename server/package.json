@@ -13,7 +13,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "2": "^3.0.0",
     "@prisma/client": "^5.10.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
