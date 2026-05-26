@@ -2,6 +2,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
 
 let activeSessionId: string | null = null
 let backendAvailable = false
+let healthCheckRetry: ReturnType<typeof setTimeout> | null = null
 
 export async function checkBackendHealth(): Promise<boolean> {
   try {
@@ -13,7 +14,18 @@ export async function checkBackendHealth(): Promise<boolean> {
   } catch {
     backendAvailable = false
   }
+  if (!backendAvailable) {
+    scheduleHealthRetry()
+  }
   return backendAvailable
+}
+
+function scheduleHealthRetry(): void {
+  if (healthCheckRetry) return
+  healthCheckRetry = setTimeout(async () => {
+    healthCheckRetry = null
+    await checkBackendHealth()
+  }, 30000)
 }
 
 export function isBackendAvailable(): boolean {
@@ -82,8 +94,11 @@ export async function startSession(
       activeSessionId = data.sessionId
       return data.sessionId
     }
+    backendAvailable = false
+    scheduleHealthRetry()
   } catch {
-    // tracking unavailable, continue silently
+    backendAvailable = false
+    scheduleHealthRetry()
   }
   return null
 }

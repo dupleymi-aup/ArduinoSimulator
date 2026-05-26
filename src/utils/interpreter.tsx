@@ -354,7 +354,12 @@ const convertSketch = (sketch: string) => {
 
     // DIGITALREAD IMPLEMENTATION
     int digitalRead(int digitalpin);
-    int digitalRead(int digitalpin){return _user_digital_input[digitalpin];}
+    int digitalRead(int digitalpin){
+      if(digitalpin >= 0 && digitalpin <= 54) {
+        return _user_digital_input[digitalpin];
+      }
+      return 0;
+    }
 
     // ANALOGWRITE IMPLEMENTATION
     void analogWrite(int analogpin, int duty);
@@ -394,7 +399,12 @@ const convertSketch = (sketch: string) => {
 
     // PULSEIN IMPLEMENTATION
     unsigned long pulseIn(int pin, int state);
-    unsigned long pulseIn(int pin, int state){return _user_digital_input[pin]==state?1000:0;}
+    unsigned long pulseIn(int pin, int state){
+      if(pin >= 0 && pin <= 54) {
+        return _user_digital_input[pin]==state?1000:0;
+      }
+      return 0;
+    }
 
     // MILLIS AND MICROS IMPLEMENTATION
     unsigned long millis(){return(unsigned long)((time(0)-_sim_start_time)*1000);}
@@ -417,9 +427,18 @@ const convertSketch = (sketch: string) => {
     // EEPROM IMPLEMENTATION (WORK IN PROGRESS)
     char _EEPROM_Data[4096] = {0};
     char _EEPROM_Read(int address);
-    char _EEPROM_Read(int address){return (char)_EEPROM_Data[address];}
+    char _EEPROM_Read(int address){
+      if(address >= 0 && address < 4096) {
+        return (char)_EEPROM_Data[address];
+      }
+      return 0;
+    }
     void _EEPROM_Write(int address, char value);
-    void _EEPROM_Write(int address, char value){_EEPROM_Data[address] = value;}
+    void _EEPROM_Write(int address, char value){
+      if(address >= 0 && address < 4096) {
+        _EEPROM_Data[address] = value;
+      }
+    }
 
     // INT TO CHAR IMPLEMENTATION
     char* _intToChar(int a) {
