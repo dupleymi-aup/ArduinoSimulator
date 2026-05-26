@@ -1,17 +1,25 @@
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
 
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+  ) {
+    super(message)
+    this.name = "ApiError"
+  }
+}
+
 export async function apiFetch<T = unknown>(
   path: string,
   options: Parameters<typeof fetch>[1] = {}
 ): Promise<T | null> {
   const token = localStorage.getItem("arduino-sim-admin-token")
 
-  // Auth header always takes precedence
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   }
 
-  // Merge incoming headers from options
   if (options.headers) {
     const incoming = options.headers as Record<string, string>
     for (const [key, value] of Object.entries(incoming)) {
@@ -19,7 +27,6 @@ export async function apiFetch<T = unknown>(
     }
   }
 
-  // Add auth token if available
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }
@@ -33,10 +40,15 @@ export async function apiFetch<T = unknown>(
       return null
     }
 
+    if (!res.ok) {
+      const body = await res.json().catch(() => null) as { error?: string } | null
+      throw new ApiError(body?.error || `Request failed with status ${res.status}`, res.status)
+    }
+
     if (res.status === 204) return null
     return (await res.json()) as T
-  } catch {
-    // Network or parsing errors are silently handled; caller receives null.
-    return null
+  } catch (err) {
+    if (err instanceof ApiError) throw err
+    throw new ApiError(err instanceof Error ? err.message : "Network request failed", 0)
   }
 }

@@ -101,7 +101,7 @@ const Editor = () => {
 
   const openFileAction = () => {
     resetSimulatorState()
-    refUploader.current.click()
+    refUploader.current?.click()
     setShowConfirmMessage(null)
   }
 
