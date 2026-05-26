@@ -1,10 +1,32 @@
 import React from "react"
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]))
+    return payload.exp ? Date.now() >= payload.exp * 1000 : false
+  } catch {
+    return true
+  }
+}
+
 export function useAuth() {
   const [token, setToken] = React.useState<string | null>(
     localStorage.getItem("arduino-sim-admin-token")
   )
   const [loginError, setLoginError] = React.useState<string | null>(null)
+
+  const logout = React.useCallback(() => {
+    localStorage.removeItem("arduino-sim-admin-token")
+    setToken(null)
+    setLoginError(null)
+    window.location.href = "/admin/login"
+  }, [])
+
+  React.useEffect(() => {
+    if (token && isTokenExpired(token)) {
+      logout()
+    }
+  }, [token, logout])
 
   const login = async (username: string, password: string): Promise<boolean> => {
     setLoginError(null)
@@ -36,13 +58,6 @@ export function useAuth() {
       setLoginError("Network error. Check your connection and try again.")
       return false
     }
-  }
-
-  const logout = () => {
-    localStorage.removeItem("arduino-sim-admin-token")
-    setToken(null)
-    setLoginError(null)
-    window.location.href = "/admin/login"
   }
 
   return { token, login, logout, loginError, isAuthenticated: !!token }
