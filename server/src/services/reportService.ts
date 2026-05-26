@@ -18,6 +18,14 @@ function dateFilter(range?: DateRange): Record<string, unknown> {
   return { startedAt: dateConditions }
 }
 
+function eventDateFilter(range?: DateRange): Record<string, unknown> {
+  if (!range?.start && !range?.end) return {}
+  const dateConditions: Record<string, Date> = {}
+  if (range.start) dateConditions.gte = new Date(range.start)
+  if (range.end) dateConditions.lte = new Date(range.end)
+  return { timestamp: dateConditions }
+}
+
 export async function getStudents() {
   const students = await prisma.student.findMany({
     orderBy: { createdAt: "desc" },
@@ -63,10 +71,12 @@ export async function getActivityReport(range?: DateRange) {
     take: 5,
   })
 
-  // Use Prisma findMany instead of SQLite-specific raw SQL for portability
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  // Group sessions by day for trend visualization
+  // Use the provided range filter, or default to last 30 days
+  const sessionDateFilter = (dateFilter(range) as { startedAt?: Record<string, Date> }).startedAt
+    ?? { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
   const recentSessions = await prisma.session.findMany({
-    where: { startedAt: { gte: thirtyDaysAgo } },
+    where: { startedAt: sessionDateFilter },
     select: { startedAt: true },
     orderBy: { startedAt: "asc" },
   })
@@ -122,10 +132,11 @@ export async function getPerformanceReport(range?: DateRange) {
     }
   }
 
-  // Use Prisma findMany instead of SQLite-specific raw SQL for portability
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  // Group sim_start events by day for trend visualization
+  const simDateFilter = (eventDateFilter(range) as { timestamp?: Record<string, Date> }).timestamp
+    ?? { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
   const simStartEvents = await prisma.event.findMany({
-    where: { type: "sim_start", timestamp: { gte: thirtyDaysAgo } },
+    where: { type: "sim_start", timestamp: simDateFilter },
     select: { timestamp: true },
     orderBy: { timestamp: "asc" },
   })
@@ -392,9 +403,10 @@ export async function getSketchDifficultyReport(range?: DateRange) {
 export async function getErrorTrendReport(range?: DateRange) {
   const filter = dateFilter(range)
 
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const errorDateFilter = (eventDateFilter(range) as { timestamp?: Record<string, Date> }).timestamp
+    ?? { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
   const errorEvents = await prisma.event.findMany({
-    where: { type: "runtime_error", timestamp: { gte: thirtyDaysAgo } },
+    where: { type: "runtime_error", timestamp: errorDateFilter },
     select: { timestamp: true, payload: true, sessionId: true },
     orderBy: { timestamp: "asc" },
   })
@@ -611,9 +623,11 @@ export async function getSessionEndReport(range?: DateRange) {
     where: { simCompleted: true, ...filter },
   })
 
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  // Group sessions by day and end reason for trend visualization
+  const endDateFilter = (dateFilter(range) as { startedAt?: Record<string, Date> }).startedAt
+    ?? { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
   const recentSessions = await prisma.session.findMany({
-    where: { startedAt: { gte: thirtyDaysAgo } },
+    where: { startedAt: endDateFilter },
     select: { startedAt: true, endReason: true },
     orderBy: { startedAt: "asc" },
     take: MAX_ROWS,

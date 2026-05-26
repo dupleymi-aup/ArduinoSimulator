@@ -30,21 +30,29 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false
 
     ;(async () => {
-      const healthy = await checkBackendHealth()
-      if (cancelled) return
-      setBackendAvailable(healthy)
+      try {
+        const healthy = await checkBackendHealth()
+        if (cancelled) return
+        setBackendAvailable(healthy)
 
-      if (!healthy) return
+        if (!healthy) return
 
-      const id = generateStudentId()
-      if (cancelled) return
-      setStudentId(id)
+        const id = generateStudentId()
+        if (cancelled) return
+        setStudentId(id)
 
-      const sessId = await startSession(id)
-      if (cancelled) return
-      if (sessId) {
-        setSessionId(sessId)
-        sessionStartRef.current = Date.now()
+        const sessId = await startSession(id)
+        if (cancelled) return
+        if (sessId) {
+          setSessionId(sessId)
+          sessionStartRef.current = Date.now()
+        }
+      } catch (err) {
+        // Backend health check or session start failed — silently ignore
+        // tracking is optional and should not break the app
+        if (!cancelled) {
+          setBackendAvailable(false)
+        }
       }
     })()
 

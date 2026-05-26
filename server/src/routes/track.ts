@@ -5,6 +5,7 @@ import { getOrCreateStudent, startSession, endSession, heartbeatSession, recordE
 
 const router = Router()
 
+// Rate limiter for session and event operations (user actions)
 const trackingLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 100,
@@ -13,7 +14,14 @@ const trackingLimiter = rateLimit({
   message: { error: "Too many requests, please try again later" },
 })
 
-router.use(trackingLimiter)
+// Separate, more permissive rate limiter for heartbeats
+const heartbeatLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300, // Allow 5 heartbeats/second over 60s window
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many heartbeat requests, please try again later" },
+})
 
 const sanitizeString = (value: unknown, maxLength = 500): string | undefined => {
   if (typeof value !== "string") return undefined
@@ -21,7 +29,7 @@ const sanitizeString = (value: unknown, maxLength = 500): string | undefined => 
   return trimmed.replace(/[<>]/g, "")
 }
 
-router.post("/session/start", async (req, res) => {
+router.post("/session/start", trackingLimiter, async (req, res) => {
   try {
     const { studentId, sketchName, boardType } = req.body
     if (!studentId) {
@@ -45,7 +53,7 @@ router.post("/session/start", async (req, res) => {
   }
 })
 
-router.post("/event", async (req, res) => {
+router.post("/event", trackingLimiter, async (req, res) => {
   try {
     const { sessionId, type, payload } = req.body
     if (!sessionId || !type) {
@@ -73,7 +81,7 @@ router.post("/event", async (req, res) => {
   }
 })
 
-router.post("/session/end", async (req, res) => {
+router.post("/session/end", trackingLimiter, async (req, res) => {
   try {
     const { sessionId, durationMs, endReason } = req.body
     if (!sessionId) {
@@ -91,7 +99,7 @@ router.post("/session/end", async (req, res) => {
   }
 })
 
-router.post("/heartbeat", async (req, res) => {
+router.post("/heartbeat", heartbeatLimiter, async (req, res) => {
   try {
     const { sessionId } = req.body
     if (!sessionId) {

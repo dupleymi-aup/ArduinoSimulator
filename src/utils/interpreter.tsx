@@ -334,7 +334,7 @@ const convertSketch = (sketch: string) => {
     // DIGITALWRITE IMPLEMENTATION
     void digitalWrite(int digitalpin, bool signal);
     void digitalWrite(int digitalpin, bool signal) {
-      if(digitalpin >= 0 && digitalpin <= 54) {
+      if(digitalpin >= 0 && digitalpin < 54) {
         if (_digital_pins_active[digitalpin]) {
           _digital_pins_state[digitalpin] = signal;
           char payload[30];
@@ -355,7 +355,7 @@ const convertSketch = (sketch: string) => {
     // DIGITALREAD IMPLEMENTATION
     int digitalRead(int digitalpin);
     int digitalRead(int digitalpin){
-      if(digitalpin >= 0 && digitalpin <= 54) {
+      if(digitalpin >= 0 && digitalpin < 54) {
         return _user_digital_input[digitalpin];
       }
       return 0;
@@ -364,24 +364,22 @@ const convertSketch = (sketch: string) => {
     // ANALOGWRITE IMPLEMENTATION
     void analogWrite(int analogpin, int duty);
     void analogWrite(int analogpin, int duty) {
-      if(analogpin >= 0 && analogpin <= 14) {
-        if (_digital_pins_active[analogpin]) {
-          char payload[30];
+      if(analogpin >= 0 && analogpin < 14) {
+        char payload[30];
 
-          char pinStr[3];
-          intToCharArray(analogpin, pinStr);
+        char pinStr[3];
+        intToCharArray(analogpin, pinStr);
 
-          char dutyString[4];
-          intToCharArray(duty, dutyString);
+        char dutyString[4];
+        intToCharArray(duty, dutyString);
 
-          strcpy(payload, "_ANALOG_PIN_STATUS_");
-          strcat(payload, pinStr);
-          strcat(payload, "_");
-          strcat(payload, dutyString);
+        strcpy(payload, "_ANALOG_PIN_STATUS_");
+        strcat(payload, pinStr);
+        strcat(payload, "_");
+        strcat(payload, dutyString);
 
-          cout << payload;
-          return;
-        }
+        cout << payload;
+        return;
       }
     }
 

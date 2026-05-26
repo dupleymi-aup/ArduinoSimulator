@@ -33,6 +33,11 @@ const CodeEditor = () => {
 
     editorInit()
     // Intentionally runs once on mount: style injection and editorInit are singleton setup
+    return () => {
+      if (styleNode.parentNode) {
+        styleNode.parentNode.removeChild(styleNode)
+      }
+    }
   }, [])
 
   return (
