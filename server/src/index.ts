@@ -7,6 +7,7 @@ import adminRoute from "./routes/admin"
 import { errorHandler } from "./middleware/errorHandler"
 import { requestIdMiddleware } from "./middleware/requestId"
 import { logger } from "./utils/logger"
+import prisma from "./utils/db"
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -24,6 +25,24 @@ app.use("/api/admin", adminRoute)
 
 app.use(errorHandler)
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   logger.info(`Arduino Simulator server running on port ${PORT}`)
 })
+
+function gracefulShutdown(signal: string) {
+  logger.info(`Received ${signal}. Starting graceful shutdown...`)
+  server.close(async () => {
+    logger.info("HTTP server closed.")
+    await prisma.$disconnect()
+    logger.info("Database connection closed.")
+    process.exit(0)
+  })
+  // Force exit after 10s if graceful shutdown hangs
+  setTimeout(() => {
+    logger.error("Forcing shutdown after timeout.")
+    process.exit(1)
+  }, 10_000)
+}
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"))
+process.on("SIGINT", () => gracefulShutdown("SIGINT"))

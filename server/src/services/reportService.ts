@@ -1136,6 +1136,13 @@ export async function getErrorImpactReport(range?: DateRange) {
 
   const toxicErrors: { errorType: string; abandonmentCount: number; totalCount: number }[] = []
   const errorTypeMap = new Map<string, { total: number; abandoned: number }>()
+
+  // Build a Map for O(1) session lookup instead of O(n) .find() per error event
+  const sessionMap = new Map<string, { endReason: string | null }>()
+  for (const s of sessions) {
+    sessionMap.set(s.id, { endReason: s.endReason })
+  }
+
   for (const e of errorEvents) {
     let type = "unknown"
     if (e.payload) {
@@ -1148,7 +1155,7 @@ export async function getErrorImpactReport(range?: DateRange) {
     }
     const entry = errorTypeMap.get(type) || { total: 0, abandoned: 0 }
     entry.total++
-    const session = sessions.find(s => s.id === e.sessionId)
+    const session = sessionMap.get(e.sessionId)
     if (session?.endReason === "page_unload" || session?.endReason === "sim_crash") {
       entry.abandoned++
     }

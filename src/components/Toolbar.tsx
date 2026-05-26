@@ -128,7 +128,7 @@ const Toolbar = ({
     styleNode.id = styleId
     const styleText = `
       .arduinosimulator_menu_item:hover{background-color:#E3E3E3 !important;border:thin solid #D3D3D3 !important;cursor:pointer !important}
-      @media (pointer: coarse) { .arduinosimulator_menu_item:hover{background-color:#F2F2F2 !important;border:thin solid #F2F2F2 !important}
+      @media (pointer: coarse) { .arduinosimulator_menu_item:hover{background-color:#F2F2F2 !important;border:thin solid #F2F2F2 !important} }
     `
     const styleTextNode = document.createTextNode(styleText)
     styleNode.appendChild(styleTextNode)

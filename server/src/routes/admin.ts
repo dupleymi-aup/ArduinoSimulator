@@ -293,7 +293,7 @@ router.get("/reports/student-scorecard", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
   if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const cacheKey = `student-scorecard:${JSON.stringify(req.query)}`
+    const cacheKey = `student-scorecard:${JSON.stringify(range)}`
     const cached = getCache(cacheKey)
     if (cached) return res.json(cached)
     const report = await getStudentScorecardReport(range)
@@ -309,7 +309,7 @@ router.get("/reports/learning-path", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
   if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const cacheKey = `learning-path:${JSON.stringify(req.query)}`
+    const cacheKey = `learning-path:${JSON.stringify(range)}`
     const cached = getCache(cacheKey)
     if (cached) return res.json(cached)
     const report = await getLearningPathReport(range)
@@ -325,7 +325,7 @@ router.get("/reports/error-impact", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
   if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const cacheKey = `error-impact:${JSON.stringify(req.query)}`
+    const cacheKey = `error-impact:${JSON.stringify(range)}`
     const cached = getCache(cacheKey)
     if (cached) return res.json(cached)
     const report = await getErrorImpactReport(range)
@@ -357,7 +357,7 @@ router.get("/reports/skills-mastery", authenticate, async (req, res) => {
   const range = dateRangeParams(req.query)
   if (range === null) return res.status(400).json({ error: "Invalid date format" })
   try {
-    const cacheKey = `skills-mastery:${JSON.stringify(req.query)}`
+    const cacheKey = `skills-mastery:${JSON.stringify(range)}`
     const cached = getCache(cacheKey)
     if (cached) return res.json(cached)
     const report = await getSkillsMasteryReport(range)
