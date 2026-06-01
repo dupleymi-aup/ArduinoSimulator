@@ -6,6 +6,12 @@ let activeSessionId: string | null = null
 let backendAvailable = false
 let healthCheckRetry: ReturnType<typeof setTimeout> | null = null
 
+// Batching for high-frequency pin change events
+type PinChange = { type: "digital" | "analog"; pin: number; value: number | boolean }
+let pinChangeBuffer: PinChange[] = []
+let pinBatchTimeout: ReturnType<typeof setTimeout> | null = null
+const PIN_BATCH_INTERVAL = 5000
+
 export async function checkBackendHealth(): Promise<boolean> {
   try {
     const res = await fetch(`${BACKEND_URL}/api/health`, {
@@ -47,6 +53,52 @@ export function getActiveSessionId(): string | null {
 
 export function setActiveSessionId(id: string | null) {
   activeSessionId = id
+}
+
+function schedulePinBatch(): void {
+  if (pinBatchTimeout) return
+  pinBatchTimeout = setTimeout(() => {
+    pinBatchTimeout = null
+    flushPinBatch()
+  }, PIN_BATCH_INTERVAL)
+}
+
+function flushPinBatch(): void {
+  if (pinBatchTimeout) {
+    clearTimeout(pinBatchTimeout)
+    pinBatchTimeout = null
+  }
+  if (pinChangeBuffer.length === 0 || !backendAvailable || !activeSessionId) {
+    pinChangeBuffer = []
+    return
+  }
+
+  const data = JSON.stringify({
+    sessionId: activeSessionId,
+    type: "pin_changes_batch",
+    payload: { changes: pinChangeBuffer },
+  })
+
+  const sent = navigator.sendBeacon(`${BACKEND_URL}/api/track/event`, data)
+  if (!sent) {
+    fetch(`${BACKEND_URL}/api/track/event`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: data,
+    }).catch((err) => logger.warn("Pin batch fallback fetch failed:", err))
+  }
+  pinChangeBuffer = []
+}
+
+function trackPinChange(type: "digital" | "analog", pin: number, value: number | boolean): void {
+  if (!backendAvailable || !activeSessionId) return
+
+  pinChangeBuffer.push({ type, pin, value })
+  if (pinChangeBuffer.length >= 50) {
+    flushPinBatch()
+  } else {
+    schedulePinBatch()
+  }
 }
 
 export type TrackEventType =
@@ -116,6 +168,7 @@ export async function endSession(
   durationMs: number,
   endReason: string
 ): Promise<boolean> {
+  flushPinBatch()
   if (!backendAvailable || !activeSessionId) return false
 
   const data = JSON.stringify({
@@ -151,3 +204,5 @@ export function sendHeartbeat(): boolean {
   )
   return sent
 }
+
+export { trackPinChange }

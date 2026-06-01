@@ -1,5 +1,5 @@
 import { editorEnable, editorGetValue } from "./editor"
-import { trackEvent, isBackendAvailable, getActiveSessionId } from "./tracking"
+import { trackEvent, isBackendAvailable, getActiveSessionId, trackPinChange } from "./tracking"
 import logger from "./logger"
 
 let myWorker: Worker | null = null
@@ -79,10 +79,7 @@ const startSimulator = (
           EVENT_DIGITAL_PIN_TRUE
         )
         if (isBackendAvailable() && getActiveSessionId()) {
-          trackEvent("digital_pin_change", {
-            pin: parseInt(EVENT_DIGITAL_PIN_NUMBER),
-            state: EVENT_DIGITAL_PIN_TRUE,
-          })
+          trackPinChange("digital", parseInt(EVENT_DIGITAL_PIN_NUMBER), EVENT_DIGITAL_PIN_TRUE)
         }
       } else if (EVENT_ANALOG_PIN) {
         const analogPinNumber = receivedStr
@@ -95,10 +92,7 @@ const startSimulator = (
         )
         handleSetAnalogPins(parseInt(analogPinNumber), parseInt(analogPinValue))
         if (isBackendAvailable() && getActiveSessionId()) {
-          trackEvent("analog_pin_change", {
-            pin: parseInt(analogPinNumber),
-            value: parseInt(analogPinValue),
-          })
+          trackPinChange("analog", parseInt(analogPinNumber), parseInt(analogPinValue))
         }
       } else {
         setOutputData((prev) => prev + String(myReceivedData))
@@ -435,7 +429,8 @@ const convertSketch = (sketch: string) => {
       bool neg = false;
       if (a < 0) { neg = true; a = -a; }
       char tmp[12];
-      while (a > 0) { tmp[i++] = (a % 10 + '0'); a /= 10; }
+      int num = a;
+      while (num > 0) { tmp[i++] = (num % 10 + '0'); num /= 10; }
       int pos = 0;
       if (neg) answer2[pos++] = '-';
       for (int j = i - 1; j >= 0; j--) answer2[pos++] = tmp[j];
@@ -446,18 +441,18 @@ const convertSketch = (sketch: string) => {
     // FRACTION TO CHAR IMPLEMENTATION (uses static buffer to avoid returning pointer to local variable)
     char* _fractionToChar(double a) {
       static char answer2[20];
-      int b = (int)a;
-      int frac = (int)((a - (double)b) * 100 + 0.5);
+      int whole = (int)a;
+      if (whole < 0) whole = -whole;
+      int frac = (int)((a - (int)a) * 100 + 0.5);
       if (frac < 0) frac = -frac;
-      if (b < 0) { int t = b; b = -b; }
       int i = 0;
       char tmp[20];
       if (frac > 0) {
         while (frac > 0) { tmp[i++] = (frac % 10 + '0'); frac /= 10; }
         tmp[i++] = '.';
       }
-      if (b == 0) { tmp[i++] = '0'; }
-      else { while (b > 0) { tmp[i++] = (b % 10 + '0'); b /= 10; } }
+      if (whole == 0) { tmp[i++] = '0'; }
+      else { int w = whole; while (w > 0) { tmp[i++] = (w % 10 + '0'); w /= 10; } }
       int pos = 0;
       for (int j = i - 1; j >= 0; j--) answer2[pos++] = tmp[j];
       answer2[pos] = '\0';
