@@ -16,6 +16,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { formatDuration } from "../utils/formatDuration"
 
 interface LearningPathData {
   popularPaths: { path: string; count: number }[]
@@ -44,11 +45,6 @@ const LearningPathReport = () => {
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
-
-  const formatDuration = (ms: number) => {
-    const mins = Math.floor(ms / 60000)
-    return mins > 0 ? `${mins} min` : "< 1 min"
-  }
 
   const pathChartData = data.popularPaths.slice(0, 10).map((p) => ({
     path: p.path.length > 30 ? p.path.slice(0, 30) + "..." : p.path,

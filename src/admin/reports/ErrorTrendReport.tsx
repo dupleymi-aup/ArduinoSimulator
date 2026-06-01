@@ -100,7 +100,7 @@ const ErrorTrendReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.errorCategories.map((c, _i) => (
+              {data.errorCategories.map((c) => (
                 <ErrorCategoryRow
                   key={c.category}
                   category={c.category}
@@ -142,7 +142,7 @@ const ErrorTrendReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.errorsByBoard.map((b, _i) => (
+              {data.errorsByBoard.map((b) => (
                 <BoardErrorRow
                   key={b.board}
                   board={b.board}

@@ -16,6 +16,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { formatDuration } from "../utils/formatDuration"
 
 interface BoardEntry {
   board: string
@@ -38,11 +39,6 @@ const BoardUsageReport = () => {
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
-
-  const formatDuration = (ms: number) => {
-    const mins = Math.floor(ms / 60000)
-    return mins > 0 ? `${mins} min` : "< 1 min"
-  }
 
   return (
     <div>
@@ -98,7 +94,7 @@ const BoardUsageReport = () => {
             </tr>
           </thead>
           <tbody>
-            {data.boardPerformance.map((b, _i) => (
+            {data.boardPerformance.map((b) => (
               <BoardRow
                 key={b.board}
                 board={b.board}
@@ -123,7 +119,7 @@ const BoardUsageReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.popularBoardPerSketch.map((item, _i) => (
+              {data.popularBoardPerSketch.map((item) => (
                 <SketchBoardRow
                   key={item.sketch}
                   sketch={item.sketch}

@@ -16,6 +16,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { formatDuration } from "../utils/formatDuration"
 
 interface SketchEntry {
   name: string
@@ -40,11 +41,6 @@ const SketchDifficultyReport = () => {
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
-
-  const formatDuration = (ms: number) => {
-    const mins = Math.floor(ms / 60000)
-    return mins > 0 ? `${mins} min` : "< 1 min"
-  }
 
   const avgCompletionRate =
     data.sketches.length > 0
@@ -136,7 +132,7 @@ const SketchDifficultyReport = () => {
           <tbody>
             {[...data.sketches]
               .sort((a, b) => a.completionRate - b.completionRate)
-              .map((sk, _i) => (
+              .map((sk) => (
                 <SketchRow
                   key={sk.name}
                   sketch={sk}

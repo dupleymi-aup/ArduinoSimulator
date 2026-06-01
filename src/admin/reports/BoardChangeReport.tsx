@@ -16,6 +16,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { formatDuration } from "../utils/formatDuration"
 
 interface BoardTypeEntry {
   boardType: string
@@ -48,11 +49,6 @@ const BoardChangeReport = () => {
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
-
-  const formatDuration = (ms: number) => {
-    const mins = Math.floor(ms / 60000)
-    return mins > 0 ? `${mins} min` : "< 1 min"
-  }
 
   return (
     <div>

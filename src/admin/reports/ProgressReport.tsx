@@ -65,7 +65,7 @@ const ProgressReport = () => {
         </div>
       )}
       <div style={styles.grid}>
-        {data.examples.map((ex, _i) => (
+        {data.examples.map((ex) => (
           <ExampleCard key={ex.name} name={ex.name} completions={ex.completions} />
         ))}
       </div>

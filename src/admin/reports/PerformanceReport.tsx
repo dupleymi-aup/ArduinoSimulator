@@ -66,7 +66,7 @@ const PerformanceReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topErrors.map((err, _i) => (
+              {data.topErrors.map((err) => (
                 <ErrorRow key={err.error} error={err.error} count={err.count} />
               ))}
             </tbody>
