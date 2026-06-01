@@ -7,16 +7,18 @@ interface StatCardProps {
   color?: string
 }
 
-const StatCard = React.memo(({ title, value, subtitle, color = "#0066cc" }: StatCardProps) => {
-  return (
-    <div style={styles.card}>
-      <div style={{ ...styles.accent, backgroundColor: color }} />
-      <p style={styles.title}>{title}</p>
-      <p style={styles.value}>{value}</p>
-      {subtitle && <p style={styles.subtitle}>{subtitle}</p>}
-    </div>
-  )
-})
+const StatCard = React.memo(
+  ({ title, value, subtitle, color = "#0066cc" }: StatCardProps) => {
+    return (
+      <div style={styles.card}>
+        <div style={{ ...styles.accent, backgroundColor: color }} />
+        <p style={styles.title}>{title}</p>
+        <p style={styles.value}>{value}</p>
+        {subtitle && <p style={styles.subtitle}>{subtitle}</p>}
+      </div>
+    )
+  }
+)
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {

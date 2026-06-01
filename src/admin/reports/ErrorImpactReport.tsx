@@ -1,7 +1,5 @@
 import React from "react"
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -22,17 +20,11 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { colors } from "../styles/colors"
 
-interface ErrorImpactData {
-  errorVsSuccess: { errors: number; completionRate: number }[]
-  toxicErrors: { errorType: string; abandonmentCount: number; totalCount: number }[]
-  errorTrendByDay: { day: string; count: number }[]
-  totalErrors: number
-  avgErrorsPerSession: number
-}
-
 const ErrorImpactReport = () => {
   const { dateRange, setDateRange, fetchErrorImpact } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchErrorImpact, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchErrorImpact, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -47,7 +39,11 @@ const ErrorImpactReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Errors" value={data.totalErrors} color={colors.error} />
+        <StatCard
+          title="Total Errors"
+          value={data.totalErrors}
+          color={colors.error}
+        />
         <StatCard
           title="Avg Errors/Session"
           value={data.avgErrorsPerSession}
@@ -115,14 +111,21 @@ const ErrorImpactReport = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.toxicErrors.slice(0, 10).map((e) => (
+                {data.toxicErrors.slice(0, 10).map((e, _index) => (
                   <tr key={e.errorType}>
-                    <td style={styles.td}>{e.errorType}</td>
-                    <td style={styles.td}>{e.totalCount}</td>
-                    <td style={{ ...styles.td, color: colors.error, fontWeight: 600 }}>
+                    <td key={`${e.errorType}-type`} style={styles.td}>
+                      {e.errorType}
+                    </td>
+                    <td key={`${e.errorType}-total`} style={styles.td}>
+                      {e.totalCount}
+                    </td>
+                    <td
+                      key={`${e.errorType}-abandonment`}
+                      style={{ ...styles.td, color: colors.error, fontWeight: 600 }}
+                    >
                       {e.abandonmentCount}
                     </td>
-                    <td style={styles.td}>
+                    <td key={`${e.errorType}-rate`} style={styles.td}>
                       {e.totalCount > 0
                         ? Math.round((e.abandonmentCount / e.totalCount) * 100)
                         : 0}

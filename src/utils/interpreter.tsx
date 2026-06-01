@@ -1,5 +1,10 @@
 import { editorEnable, editorGetValue } from "./editor"
-import { trackEvent, isBackendAvailable, getActiveSessionId, trackPinChange } from "./tracking"
+import {
+  trackEvent,
+  isBackendAvailable,
+  getActiveSessionId,
+  trackPinChange,
+} from "./tracking"
 import logger from "./logger"
 
 let myWorker: Worker | null = null
@@ -79,7 +84,11 @@ const startSimulator = (
           EVENT_DIGITAL_PIN_TRUE
         )
         if (isBackendAvailable() && getActiveSessionId()) {
-          trackPinChange("digital", parseInt(EVENT_DIGITAL_PIN_NUMBER), EVENT_DIGITAL_PIN_TRUE)
+          trackPinChange(
+            "digital",
+            parseInt(EVENT_DIGITAL_PIN_NUMBER),
+            EVENT_DIGITAL_PIN_TRUE
+          )
         }
       } else if (EVENT_ANALOG_PIN) {
         const analogPinNumber = receivedStr
@@ -92,7 +101,11 @@ const startSimulator = (
         )
         handleSetAnalogPins(parseInt(analogPinNumber), parseInt(analogPinValue))
         if (isBackendAvailable() && getActiveSessionId()) {
-          trackPinChange("analog", parseInt(analogPinNumber), parseInt(analogPinValue))
+          trackPinChange(
+            "analog",
+            parseInt(analogPinNumber),
+            parseInt(analogPinValue)
+          )
         }
       } else {
         setOutputData((prev) => prev + String(myReceivedData))
@@ -393,8 +406,8 @@ const convertSketch = (sketch: string) => {
 
     // RANDOM IMPLEMENTATION
     void randomSeed(unsigned long seed){srand((unsigned int)seed);}
-    long random(long max){return rand()%max;}
-    long random(long min,long max){return min+(rand()%(max-min));}
+    long random(long max){return max>0?rand()%max:0;}
+    long random(long min,long max){return max>min?min+(rand()%(max-min)):min;}
 
     // SERIAL IMPLEMENTATION
     int _SerialReceivedData = 0;
@@ -441,9 +454,10 @@ const convertSketch = (sketch: string) => {
     // FRACTION TO CHAR IMPLEMENTATION (uses static buffer to avoid returning pointer to local variable)
     char* _fractionToChar(double a) {
       static char answer2[20];
-      int whole = (int)a;
-      if (whole < 0) whole = -whole;
-      int frac = (int)((a - (int)a) * 100 + 0.5);
+      int neg = a < 0 ? 1 : 0;
+      double absA = neg ? -a : a;
+      int whole = (int)absA;
+      int frac = (int)((absA - whole) * 100 + 0.5);
       if (frac < 0) frac = -frac;
       int i = 0;
       char tmp[20];
@@ -453,6 +467,7 @@ const convertSketch = (sketch: string) => {
       }
       if (whole == 0) { tmp[i++] = '0'; }
       else { int w = whole; while (w > 0) { tmp[i++] = (w % 10 + '0'); w /= 10; } }
+      if (neg) tmp[i++] = '-';
       int pos = 0;
       for (int j = i - 1; j >= 0; j--) answer2[pos++] = tmp[j];
       answer2[pos] = '\0';

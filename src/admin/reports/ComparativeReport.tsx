@@ -18,46 +18,22 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { formatDuration } from "../utils/formatDuration"
 
-interface ComparativeData {
-  byTimeOfDay: {
-    period: string
-    sessions: number
-    completionRate: number
-    avgDurationMs: number
-  }[]
-  byDayOfWeek: {
-    day: string
-    sessions: number
-    completionRate: number
-  }[]
-  byBoardType: {
-    board: string
-    sessions: number
-    completionRate: number
-    errorRate: number
-  }[]
-  fastVsSlow: {
-    fast: { count: number; completionRate: number }
-    slow: { count: number; completionRate: number }
-  }
-  medianDurationMs: number
-  totalSessions: number
-}
-
 const ComparativeReport = () => {
   const { dateRange, setDateRange, fetchComparative } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchComparative, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchComparative, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
-  const timeOfDayData = data.byTimeOfDay.map((d) => ({
+  const timeOfDayData = data.byTimeOfDay.map((d, _index) => ({
     ...d,
     period: d.period.charAt(0).toUpperCase() + d.period.slice(1),
   }))
 
-  const boardComparisonData = data.byBoardType.map((d) => ({
+  const boardComparisonData = data.byBoardType.map((d, _index) => ({
     board: d.board,
     completionRate: d.completionRate,
     errorRate: d.errorRate,
@@ -72,7 +48,11 @@ const ComparativeReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Sessions" value={data.totalSessions} color="#0066cc" />
+        <StatCard
+          title="Total Sessions"
+          value={data.totalSessions}
+          color="#0066cc"
+        />
         <StatCard
           title="Median Duration"
           value={formatDuration(data.medianDurationMs)}
@@ -100,7 +80,11 @@ const ComparativeReport = () => {
             <Tooltip />
             <Legend />
             <Bar dataKey="sessions" fill="#0066cc" name="Sessions" />
-            <Bar dataKey="completionRate" fill="#27ae60" name="Completion Rate (%)" />
+            <Bar
+              dataKey="completionRate"
+              fill="#27ae60"
+              name="Completion Rate (%)"
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -129,7 +113,11 @@ const ComparativeReport = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="completionRate" fill="#27ae60" name="Completion Rate (%)" />
+              <Bar
+                dataKey="completionRate"
+                fill="#27ae60"
+                name="Completion Rate (%)"
+              />
               <Bar dataKey="errorRate" fill="#e74c3c" name="Error Rate (%)" />
             </BarChart>
           </ResponsiveContainer>

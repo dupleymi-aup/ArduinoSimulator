@@ -16,11 +16,6 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 
-interface ProgressData {
-  totalStudents: number
-  examples: { name: string; completions: number }[]
-}
-
 const ProgressReport = () => {
   const { fetchProgress } = useReports()
   const { data, loading, error, reload } = useReportData(fetchProgress)
@@ -65,7 +60,7 @@ const ProgressReport = () => {
         </div>
       )}
       <div style={styles.grid}>
-        {data.examples.map((ex) => (
+        {data.examples.map((ex, _index) => (
           <ExampleCard key={ex.name} name={ex.name} completions={ex.completions} />
         ))}
       </div>

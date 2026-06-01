@@ -41,5 +41,5 @@ describe("Editor End-To-End", () => {
     expect(bodyContent).toContain(t("SEARCH_FOR"))
   })
 
-  afterAll(() => browser.close())
+  afterAll(() => browser?.close())
 })

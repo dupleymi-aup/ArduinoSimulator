@@ -4,20 +4,30 @@ const ActivityReport = React.lazy(() => import("../reports/ActivityReport"))
 const PerformanceReport = React.lazy(() => import("../reports/PerformanceReport"))
 const ProgressReport = React.lazy(() => import("../reports/ProgressReport"))
 const PinUsageReport = React.lazy(() => import("../reports/PinUsageReport"))
-const StudentEngagementReport = React.lazy(() => import("../reports/StudentEngagementReport"))
-const SketchDifficultyReport = React.lazy(() => import("../reports/SketchDifficultyReport"))
+const StudentEngagementReport = React.lazy(
+  () => import("../reports/StudentEngagementReport")
+)
+const SketchDifficultyReport = React.lazy(
+  () => import("../reports/SketchDifficultyReport")
+)
 const ErrorTrendReport = React.lazy(() => import("../reports/ErrorTrendReport"))
 const BoardUsageReport = React.lazy(() => import("../reports/BoardUsageReport"))
 const SessionEndReport = React.lazy(() => import("../reports/SessionEndReport"))
 const FileWorkflowReport = React.lazy(() => import("../reports/FileWorkflowReport"))
 const SerialUsageReport = React.lazy(() => import("../reports/SerialUsageReport"))
-const StudentCohortReport = React.lazy(() => import("../reports/StudentCohortReport"))
+const StudentCohortReport = React.lazy(
+  () => import("../reports/StudentCohortReport")
+)
 const BoardChangeReport = React.lazy(() => import("../reports/BoardChangeReport"))
-const StudentScorecardReport = React.lazy(() => import("../reports/StudentScorecardReport"))
+const StudentScorecardReport = React.lazy(
+  () => import("../reports/StudentScorecardReport")
+)
 const LearningPathReport = React.lazy(() => import("../reports/LearningPathReport"))
 const ErrorImpactReport = React.lazy(() => import("../reports/ErrorImpactReport"))
 const ComparativeReport = React.lazy(() => import("../reports/ComparativeReport"))
-const SkillsMasteryReport = React.lazy(() => import("../reports/SkillsMasteryReport"))
+const SkillsMasteryReport = React.lazy(
+  () => import("../reports/SkillsMasteryReport")
+)
 
 /**
  * Single source of truth for admin report tabs.
@@ -41,7 +51,7 @@ export const TAB_MAP: Record<string, React.ComponentType> = {
   "Student Scorecard": StudentScorecardReport,
   "Learning Path": LearningPathReport,
   "Error Impact": ErrorImpactReport,
-  "Comparative": ComparativeReport,
+  Comparative: ComparativeReport,
   "Skills Mastery": SkillsMasteryReport,
 }
 

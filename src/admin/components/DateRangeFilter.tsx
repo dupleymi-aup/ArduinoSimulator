@@ -15,7 +15,12 @@ interface DateRangeFilterProps {
   onFilterChange?: (_filters: FilterState) => void
 }
 
-export const DateRangeFilter = ({ value, onChange, filters, onFilterChange }: DateRangeFilterProps) => {
+export const DateRangeFilter = ({
+  value,
+  onChange,
+  filters,
+  onFilterChange,
+}: DateRangeFilterProps) => {
   const showFilters = filters && onFilterChange
 
   return (
@@ -44,7 +49,9 @@ export const DateRangeFilter = ({ value, onChange, filters, onFilterChange }: Da
           />
           <select
             value={filters.sketchName}
-            onChange={(e) => onFilterChange({ ...filters, sketchName: e.target.value })}
+            onChange={(e) =>
+              onFilterChange({ ...filters, sketchName: e.target.value })
+            }
             style={styles.select}
             aria-label="Filter by sketch"
           >
@@ -58,7 +65,9 @@ export const DateRangeFilter = ({ value, onChange, filters, onFilterChange }: Da
           </select>
           <select
             value={filters.boardType}
-            onChange={(e) => onFilterChange({ ...filters, boardType: e.target.value })}
+            onChange={(e) =>
+              onFilterChange({ ...filters, boardType: e.target.value })
+            }
             style={styles.select}
             aria-label="Filter by board type"
           >

@@ -2,7 +2,7 @@ import React from "react"
 
 interface UseKeyboardShortcutsOptions {
   tabNames: string[]
-  onTabChange: (tab: string) => void
+  onTabChange: (_tab: string) => void
   onLogout: () => void
 }
 
@@ -76,7 +76,15 @@ export function useKeyboardShortcuts({
         e.preventDefault()
         // Q starts at offset 11, but we need to map: q=11,w=12,e=13,r=14,t=15,y=16,u=17,i=18,o=19
         const keyMap: Record<string, number> = {
-          q: 11, w: 12, e: 13, r: 14, t: 15, y: 16, u: 17, i: 18, o: 19,
+          q: 11,
+          w: 12,
+          e: 13,
+          r: 14,
+          t: 15,
+          y: 16,
+          u: 17,
+          i: 18,
+          o: 19,
         }
         const tabNum = keyMap[e.key.toLowerCase()]
         if (tabNum) {
@@ -95,7 +103,12 @@ export function useKeyboardShortcuts({
     if (!help.visible) return null
     return (
       <div style={styles.overlay} onClick={() => setHelp({ visible: false })}>
-        <div style={styles.modal} role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+        <div
+          style={styles.modal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Keyboard shortcuts"
+        >
           <div style={styles.header}>
             <h2 style={styles.title}>Keyboard Shortcuts</h2>
             <button
@@ -107,10 +120,14 @@ export function useKeyboardShortcuts({
             </button>
           </div>
           <div style={styles.list}>
-            {SHORTCUTS.map((s) => (
+            {SHORTCUTS.map((s, _index) => (
               <div key={s.key} style={styles.row}>
-                <kbd style={styles.kbd}>{s.key}</kbd>
-                <span style={styles.desc}>{s.description}</span>
+                <kbd key={`${s.key}-kbd`} style={styles.kbd}>
+                  {s.key}
+                </kbd>
+                <span key={`${s.key}-desc`} style={styles.desc}>
+                  {s.description}
+                </span>
               </div>
             ))}
           </div>

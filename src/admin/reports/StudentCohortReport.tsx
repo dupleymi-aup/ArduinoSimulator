@@ -17,50 +17,31 @@ import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
-interface CohortWeekEntry {
-  week: string
-  studentCount: number
-}
-
-interface TopStudentEntry {
-  identifier: string
-  sessionCount: number
-  lastActive: string
-}
-
-interface RetentionData {
-  returned7d: number
-  returned14d: number
-  returned30d: number
-  activeStudents: number
-}
-
-interface StudentCohortData {
-  totalStudents: number
-  returningStudentPct: number
-  avgSessionsPerStudent: number
-  cohortsByWeek: CohortWeekEntry[]
-  retentionData: RetentionData
-  newVsReturning: { new: number; returning: number }
-  topStudents: TopStudentEntry[]
-}
-
 const StudentCohortReport = () => {
   const { dateRange, setDateRange, fetchStudentCohort } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchStudentCohort, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchStudentCohort, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
   const { retentionData, newVsReturning } = data
-  const retentionRates = retentionData.activeStudents > 0
-    ? {
-        r7: Math.round((retentionData.returned7d / retentionData.activeStudents) * 100),
-        r14: Math.round((retentionData.returned14d / retentionData.activeStudents) * 100),
-        r30: Math.round((retentionData.returned30d / retentionData.activeStudents) * 100),
-      }
-    : { r7: 0, r14: 0, r30: 0 }
+  const retentionRates =
+    retentionData.activeStudents > 0
+      ? {
+          r7: Math.round(
+            (retentionData.returned7d / retentionData.activeStudents) * 100
+          ),
+          r14: Math.round(
+            (retentionData.returned14d / retentionData.activeStudents) * 100
+          ),
+          r30: Math.round(
+            (retentionData.returned30d / retentionData.activeStudents) * 100
+          ),
+        }
+      : { r7: 0, r14: 0, r30: 0 }
 
   return (
     <div>
@@ -86,11 +67,7 @@ const StudentCohortReport = () => {
           value={data.avgSessionsPerStudent}
           color="#8e44ad"
         />
-        <StatCard
-          title="New Students"
-          value={newVsReturning.new}
-          color="#f39c12"
-        />
+        <StatCard title="New Students" value={newVsReturning.new} color="#f39c12" />
       </div>
 
       {data.cohortsByWeek.length > 0 && (
@@ -139,7 +116,7 @@ const StudentCohortReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topStudents.map((s) => (
+              {data.topStudents.map((s, _index) => (
                 <TopStudentRow
                   key={s.identifier}
                   identifier={s.identifier}
@@ -167,9 +144,7 @@ const TopStudentRow = ({
   <tr>
     <td style={styles.td}>{identifier}</td>
     <td style={{ ...styles.td, textAlign: "center" }}>{sessionCount}</td>
-    <td style={styles.td}>
-      {new Date(lastActive).toLocaleDateString()}
-    </td>
+    <td style={styles.td}>{new Date(lastActive).toLocaleDateString()}</td>
   </tr>
 )
 

@@ -45,6 +45,17 @@ Object.defineProperty(window.document, "cookie", {
   split: (s) => __cookies.split(s),
 })
 
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(() => null),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+}
+Object.defineProperty(window, "localStorage", {
+  value: localStorageMock,
+})
+
 const createElement = document.createElement.bind(document)
 document.createElement = (tagName) => {
   if (tagName === "canvas") {

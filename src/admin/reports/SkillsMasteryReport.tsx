@@ -8,8 +8,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-  LineChart,
-  Line,
 } from "recharts"
 import StatCard from "../components/StatCard"
 import ErrorDisplay from "../components/ErrorDisplay"
@@ -20,32 +18,17 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { colors } from "../styles/colors"
 
-interface Skill {
-  skill: string
-  totalAttempts: number
-  completions: number
-  masteryRate: number
-  errorRate: number
-  uniqueStudents: number
-}
-
-interface SkillsMasteryData {
-  skills: Skill[]
-  totalSkills: number
-  avgMasteryRate: number
-  masteredSkills: Skill[]
-  strugglingSkills: Skill[]
-}
-
 const SkillsMasteryReport = () => {
   const { dateRange, setDateRange, fetchSkillsMastery } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchSkillsMastery, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchSkillsMastery, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
-  const masteryChartData = data.skills.map((s) => ({
+  const masteryChartData = data.skills.map((s, _index) => ({
     skill: s.skill,
     masteryRate: s.masteryRate,
     errorRate: s.errorRate,
@@ -60,7 +43,11 @@ const SkillsMasteryReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Skills" value={data.totalSkills} color={colors.primary} />
+        <StatCard
+          title="Total Skills"
+          value={data.totalSkills}
+          color={colors.primary}
+        />
         <StatCard
           title="Avg Mastery"
           value={`${data.avgMasteryRate}%`}
@@ -88,7 +75,11 @@ const SkillsMasteryReport = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="masteryRate" fill={colors.success} name="Mastery Rate (%)" />
+              <Bar
+                dataKey="masteryRate"
+                fill={colors.success}
+                name="Mastery Rate (%)"
+              />
               <Bar dataKey="errorRate" fill={colors.error} name="Error Rate (%)" />
             </BarChart>
           </ResponsiveContainer>
@@ -99,11 +90,15 @@ const SkillsMasteryReport = () => {
         <div style={styles.chartContainer}>
           <h3 style={styles.chartTitle}>Mastered Skills (70%+)</h3>
           <div style={styles.skillCards}>
-            {data.masteredSkills.map((s) => (
+            {data.masteredSkills.map((s, _index) => (
               <div key={s.skill} style={styles.skillCard}>
-                <h4 style={styles.skillCardTitle}>{s.skill}</h4>
-                <p style={styles.skillCardValue}>{s.masteryRate}%</p>
-                <p style={styles.skillCardSub}>
+                <h4 key={`${s.skill}-title`} style={styles.skillCardTitle}>
+                  {s.skill}
+                </h4>
+                <p key={`${s.skill}-value`} style={styles.skillCardValue}>
+                  {s.masteryRate}%
+                </p>
+                <p key={`${s.skill}-sub`} style={styles.skillCardSub}>
                   {s.uniqueStudents} students · {s.totalAttempts} attempts
                 </p>
               </div>
@@ -127,15 +122,26 @@ const SkillsMasteryReport = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.strugglingSkills.map((s) => (
+                {data.strugglingSkills.map((s, _index) => (
                   <tr key={s.skill}>
-                    <td style={styles.td}>{s.skill}</td>
-                    <td style={{ ...styles.td, color: colors.error, fontWeight: 600 }}>
+                    <td key={`${s.skill}-skill`} style={styles.td}>
+                      {s.skill}
+                    </td>
+                    <td
+                      key={`${s.skill}-mastery`}
+                      style={{ ...styles.td, color: colors.error, fontWeight: 600 }}
+                    >
                       {s.masteryRate}%
                     </td>
-                    <td style={styles.td}>{s.errorRate}%</td>
-                    <td style={styles.td}>{s.uniqueStudents}</td>
-                    <td style={styles.td}>{s.totalAttempts}</td>
+                    <td key={`${s.skill}-error`} style={styles.td}>
+                      {s.errorRate}%
+                    </td>
+                    <td key={`${s.skill}-students`} style={styles.td}>
+                      {s.uniqueStudents}
+                    </td>
+                    <td key={`${s.skill}-attempts`} style={styles.td}>
+                      {s.totalAttempts}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -159,14 +165,26 @@ const SkillsMasteryReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.skills.map((s) => (
+              {data.skills.map((s, _index) => (
                 <tr key={s.skill}>
-                  <td style={styles.td}>{s.skill}</td>
-                  <td style={styles.td}>{s.masteryRate}%</td>
-                  <td style={styles.td}>{s.errorRate}%</td>
-                  <td style={styles.td}>{s.uniqueStudents}</td>
-                  <td style={styles.td}>{s.totalAttempts}</td>
-                  <td style={styles.td}>{s.completions}</td>
+                  <td key={`${s.skill}-skill`} style={styles.td}>
+                    {s.skill}
+                  </td>
+                  <td key={`${s.skill}-mastery`} style={styles.td}>
+                    {s.masteryRate}%
+                  </td>
+                  <td key={`${s.skill}-error`} style={styles.td}>
+                    {s.errorRate}%
+                  </td>
+                  <td key={`${s.skill}-students`} style={styles.td}>
+                    {s.uniqueStudents}
+                  </td>
+                  <td key={`${s.skill}-attempts`} style={styles.td}>
+                    {s.totalAttempts}
+                  </td>
+                  <td key={`${s.skill}-completions`} style={styles.td}>
+                    {s.completions}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -27,16 +27,11 @@ interface SketchEntry {
   errorCount: number
 }
 
-interface SketchDifficultyData {
-  sketches: SketchEntry[]
-  mostAttempted: SketchEntry | null
-  leastAttempted: SketchEntry | null
-  hardestSketch: SketchEntry
-}
-
 const SketchDifficultyReport = () => {
   const { dateRange, setDateRange, fetchSketchDifficulty } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchSketchDifficulty, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchSketchDifficulty, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -132,12 +127,8 @@ const SketchDifficultyReport = () => {
           <tbody>
             {[...data.sketches]
               .sort((a, b) => a.completionRate - b.completionRate)
-              .map((sk) => (
-                <SketchRow
-                  key={sk.name}
-                  sketch={sk}
-                  formatDuration={formatDuration}
-                />
+              .map((sk, _index) => (
+                <SketchRow key={sk.name} sketch={sk} formatDur={formatDuration} />
               ))}
           </tbody>
         </table>
@@ -148,10 +139,10 @@ const SketchDifficultyReport = () => {
 
 const SketchRow = ({
   sketch,
-  formatDuration,
+  formatDur,
 }: {
   sketch: SketchEntry
-  formatDuration: (_ms: number) => string
+  formatDur: (_ms: number) => string
 }) => (
   <tr>
     <td style={styles.td}>{sketch.name}</td>
@@ -167,7 +158,7 @@ const SketchRow = ({
     >
       {sketch.completionRate}%
     </td>
-    <td style={styles.td}>{formatDuration(sketch.avgDurationMs)}</td>
+    <td style={styles.td}>{formatDur(sketch.avgDurationMs)}</td>
     <td style={{ ...styles.td, textAlign: "center" }}>{sketch.errorCount}</td>
   </tr>
 )

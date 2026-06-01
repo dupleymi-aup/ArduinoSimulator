@@ -27,7 +27,7 @@ const AdminLayout = ({
         </button>
       </header>
       <nav style={styles.nav} role="tablist" aria-label="Admin reports">
-        {TAB_NAMES.map((tab) => (
+        {TAB_NAMES.map((tab, _index) => (
           <button
             key={tab}
             role="tab"

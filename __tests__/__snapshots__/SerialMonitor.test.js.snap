@@ -89,7 +89,7 @@ exports[`SerialMonitor Rendering 1 1`] = `
             "width": "99px",
           }
         }
-        type="submit"
+        type="button"
         value="SEND"
       />
     </div>

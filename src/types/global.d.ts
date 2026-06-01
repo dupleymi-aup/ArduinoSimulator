@@ -1,9 +1,9 @@
 declare global {
   interface Window {
     ace: {
-      edit: (elementId: string) => AceEditor
+      edit: (_elementId: string) => AceEditor
       config: {
-        set: (key: string, value: string) => void
+        set: (_key: string, _value: string) => void
       }
     }
     DEFAULT_SKETCH?: string
@@ -11,32 +11,32 @@ declare global {
 }
 
 interface AceEditor {
-  setOptions: (options: Record<string, unknown>) => void
+  setOptions: (_options: Record<string, unknown>) => void
   commands: {
-    removeCommand: (name: string) => void
+    removeCommand: (_name: string) => void
   }
   session: {
-    setMode: (mode: string) => void
-    setUseWorker: (use: boolean) => void
-    setValue: (value: string) => void
+    setMode: (_mode: string) => void
+    setUseWorker: (_use: boolean) => void
+    setValue: (_value: string) => void
     getUndoManager: () => { reset: () => void; isClean: () => boolean }
     selection: {
-      moveTo: (row: number, col: number) => void
+      moveTo: (_row: number, _col: number) => void
     }
     bgTokenizer: {
       tokenizer: {
-        $setMaxTokenCount: (max: number) => void
+        $setMaxTokenCount: (_max: number) => void
       }
     }
   }
-  setValue: (value: string) => void
+  setValue: (_value: string) => void
   getValue: () => string
   clearSelection: () => void
-  setTheme: (theme: string) => void
+  setTheme: (_theme: string) => void
   focus: () => void
   undo: () => void
   redo: () => void
-  execCommand: (command: string) => void
+  execCommand: (_command: string) => void
   searchBox: {
     hide: () => void
   }

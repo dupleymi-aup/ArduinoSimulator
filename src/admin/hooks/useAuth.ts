@@ -100,5 +100,12 @@ export function useAuth() {
     }
   }
 
-  return { token, login, logout, loginError, isAuthenticated: !!token, tokenExpiringSoon }
+  return {
+    token,
+    login,
+    logout,
+    loginError,
+    isAuthenticated: !!token,
+    tokenExpiringSoon,
+  }
 }

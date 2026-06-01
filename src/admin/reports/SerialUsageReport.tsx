@@ -19,35 +19,11 @@ import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
-interface SerialTypeEntry {
-  type: string
-  count: number
-}
-
-interface SerialOverTimeEntry {
-  day: string
-  output: number
-  send: number
-}
-
-interface SketchSerialEntry {
-  sketchName: string
-  count: number
-}
-
-interface SerialUsageData {
-  totalOutputs: number
-  totalSends: number
-  byType: SerialTypeEntry[]
-  serialOverTime: SerialOverTimeEntry[]
-  topSketchesBySerial: SketchSerialEntry[]
-  avgSerialPerSession: number
-  interactiveRatio: number
-}
-
 const SerialUsageReport = () => {
   const { dateRange, setDateRange, fetchSerialUsage } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchSerialUsage, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchSerialUsage, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -62,16 +38,8 @@ const SerialUsageReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard
-          title="Serial Outputs"
-          value={data.totalOutputs}
-          color="#0066cc"
-        />
-        <StatCard
-          title="Serial Sends"
-          value={data.totalSends}
-          color="#27ae60"
-        />
+        <StatCard title="Serial Outputs" value={data.totalOutputs} color="#0066cc" />
+        <StatCard title="Serial Sends" value={data.totalSends} color="#27ae60" />
         <StatCard
           title="Avg Serial/Session"
           value={data.avgSerialPerSession}
@@ -116,12 +84,7 @@ const SerialUsageReport = () => {
                 stroke="#0066cc"
                 name="Output"
               />
-              <Line
-                type="monotone"
-                dataKey="send"
-                stroke="#27ae60"
-                name="Send"
-              />
+              <Line type="monotone" dataKey="send" stroke="#27ae60" name="Send" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -138,7 +101,7 @@ const SerialUsageReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topSketchesBySerial.map((s) => (
+              {data.topSketchesBySerial.map((s, _index) => (
                 <SketchSerialRow
                   key={s.sketchName}
                   sketchName={s.sketchName}

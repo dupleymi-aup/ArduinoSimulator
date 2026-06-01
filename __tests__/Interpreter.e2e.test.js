@@ -92,5 +92,5 @@ describe("Interpreter End-To-End", () => {
     expect(serialData).toContain("This is a test")
   })
 
-  afterAll(() => browser.close())
+  afterAll(() => browser?.close())
 })

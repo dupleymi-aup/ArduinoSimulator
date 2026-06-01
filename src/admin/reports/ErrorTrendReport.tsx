@@ -19,22 +19,11 @@ import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
-interface ErrorTrendData {
-  errorTrend: { day: string; count: number }[]
-  errorCategories: { category: string; count: number }[]
-  errorsByBoard: {
-    board: string
-    total: number
-    errors: number
-    errorRate: number
-  }[]
-  totalErrors: number
-  errorResolutionRate: number
-}
-
 const ErrorTrendReport = () => {
   const { dateRange, setDateRange, fetchErrorTrends } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchErrorTrends, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchErrorTrends, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -100,7 +89,7 @@ const ErrorTrendReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.errorCategories.map((c) => (
+              {data.errorCategories.map((c, _index) => (
                 <ErrorCategoryRow
                   key={c.category}
                   category={c.category}
@@ -142,7 +131,7 @@ const ErrorTrendReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.errorsByBoard.map((b) => (
+              {data.errorsByBoard.map((b, _index) => (
                 <BoardErrorRow
                   key={b.board}
                   board={b.board}

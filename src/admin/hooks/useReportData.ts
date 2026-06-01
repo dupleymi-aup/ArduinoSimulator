@@ -9,7 +9,7 @@ import React from "react"
  * @param dependencies - Dependencies that trigger a reload (e.g., date range)
  */
 export function useReportData<T>(
-  fetchFn: (signal: AbortSignal) => Promise<unknown>,
+  fetchFn: (_signal: AbortSignal) => Promise<unknown>,
   dependencies: React.DependencyList = []
 ): {
   data: T | null

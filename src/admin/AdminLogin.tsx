@@ -57,7 +57,14 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
               {loginError}
             </p>
           )}
-          <button type="submit" style={{ ...styles.button, ...(submitting ? styles.buttonDisabled : {}) }} disabled={submitting}>
+          <button
+            type="submit"
+            style={{
+              ...styles.button,
+              ...(submitting ? styles.buttonDisabled : {}),
+            }}
+            disabled={submitting}
+          >
             {submitting ? "Logging in..." : "Login"}
           </button>
         </form>

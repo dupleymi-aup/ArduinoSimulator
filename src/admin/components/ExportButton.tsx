@@ -6,21 +6,29 @@ interface ExportButtonProps {
 }
 
 const ExportButton = ({ data, filename }: ExportButtonProps) => {
+  const toArray = (
+    d: Record<string, unknown>[] | Record<string, unknown>
+  ): Record<string, unknown>[] => {
+    const isArr = Object.prototype.toString.call(d) === "[object Array]"
+    return isArr ? (d as Record<string, unknown>[]) : Object.values({ single: d })
+  }
   const exportToCsv = () => {
-    const items = Array.isArray(data) ? data : [data]
+    const items = toArray(data)
     if (items.length === 0) return
 
     const headers = Object.keys(items[0])
     const csvRows = [
       headers.join(","),
-      ...items.map((row) =>
-        headers.map((h) => {
-          const val = row[h]
-          const str = val === null || val === undefined ? "" : String(val)
-          return str.includes(",") || str.includes('"') || str.includes("\n")
-            ? `"${str.replace(/"/g, '""')}"`
-            : str
-        }).join(",")
+      ...items.map((row, _rowIndex) =>
+        headers
+          .map((h, _hIndex) => {
+            const val = row[h]
+            const str = val === null || val === undefined ? "" : String(val)
+            return str.includes(",") || str.includes('"') || str.includes("\n")
+              ? `"${str.replace(/"/g, '""')}"`
+              : str
+          })
+          .join(",")
       ),
     ]
 
@@ -28,16 +36,16 @@ const ExportButton = ({ data, filename }: ExportButtonProps) => {
   }
 
   const exportToJson = () => {
-    const json = Array.isArray(data) ? data : [data]
+    const json = toArray(data)
     download(JSON.stringify(json, null, 2), `${filename}.json`, "application/json")
   }
 
-  const download = (content: string, filename: string, type: string) => {
+  const download = (content: string, fileName: string, type: string) => {
     const blob = new Blob([content], { type })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = filename
+    a.download = fileName
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -47,7 +55,11 @@ const ExportButton = ({ data, filename }: ExportButtonProps) => {
       <button onClick={exportToCsv} style={styles.button} aria-label="Export as CSV">
         CSV
       </button>
-      <button onClick={exportToJson} style={styles.button} aria-label="Export as JSON">
+      <button
+        onClick={exportToJson}
+        style={styles.button}
+        aria-label="Export as JSON"
+      >
         JSON
       </button>
     </div>

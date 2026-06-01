@@ -20,13 +20,6 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { formatDuration } from "../utils/formatDuration"
 
-interface ActivityData {
-  totalSessions: number
-  avgDurationMs: number
-  topExamples: { name: string; count: number }[]
-  sessionsByDay: { day: string; count: number }[]
-}
-
 const ActivityReport = () => {
   const { dateRange, setDateRange, fetchActivity } = useReports()
   const { data, loading, error, reload } = useReportData(fetchActivity, [dateRange])

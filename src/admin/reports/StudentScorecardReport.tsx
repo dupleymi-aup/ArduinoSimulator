@@ -18,26 +18,6 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { formatDuration } from "../utils/formatDuration"
 
-interface Scorecard {
-  identifier: string
-  studentId: string
-  totalSessions: number
-  completedSessions: number
-  completionRate: number
-  avgDurationMs: number
-  totalErrors: number
-  uniqueSketches: number
-  score: number
-  level: string
-}
-
-interface ScorecardData {
-  scorecards: Scorecard[]
-  levelDistribution: { level: string; count: number }[]
-  totalStudents: number
-  avgScore: number
-}
-
 const LEVEL_COLORS: Record<string, string> = {
   Beginner: "#e74c3c",
   Intermediate: "#f39c12",
@@ -46,7 +26,9 @@ const LEVEL_COLORS: Record<string, string> = {
 
 const StudentScorecardReport = () => {
   const { dateRange, setDateRange, fetchStudentScorecard } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchStudentScorecard, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchStudentScorecard, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -61,16 +43,24 @@ const StudentScorecardReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Students" value={data.totalStudents} color="#0066cc" />
+        <StatCard
+          title="Total Students"
+          value={data.totalStudents}
+          color="#0066cc"
+        />
         <StatCard title="Avg Score" value={`${data.avgScore}/100`} color="#8e44ad" />
         <StatCard
           title="Advanced"
-          value={data.levelDistribution.find((l) => l.level === "Advanced")?.count || 0}
+          value={
+            data.levelDistribution.find((l) => l.level === "Advanced")?.count || 0
+          }
           color="#27ae60"
         />
         <StatCard
           title="Beginner"
-          value={data.levelDistribution.find((l) => l.level === "Beginner")?.count || 0}
+          value={
+            data.levelDistribution.find((l) => l.level === "Beginner")?.count || 0
+          }
           color="#e74c3c"
         />
       </div>
@@ -108,12 +98,25 @@ const StudentScorecardReport = () => {
             </thead>
             <tbody>
               {data.scorecards.map((s, i) => (
-                <tr key={s.studentId} style={i % 2 === 0 ? styles.trEven : styles.trOdd}>
-                  <td style={styles.td}>{i + 1}</td>
-                  <td style={styles.td}>{s.identifier}</td>
-                  <td style={{ ...styles.td, fontWeight: 700 }}>{s.score}</td>
-                  <td style={styles.td}>
+                <tr
+                  key={s.studentId}
+                  style={i % 2 === 0 ? styles.trEven : styles.trOdd}
+                >
+                  <td key={`${s.studentId}-rank`} style={styles.td}>
+                    {i + 1}
+                  </td>
+                  <td key={`${s.studentId}-identifier`} style={styles.td}>
+                    {s.identifier}
+                  </td>
+                  <td
+                    key={`${s.studentId}-score`}
+                    style={{ ...styles.td, fontWeight: 700 }}
+                  >
+                    {s.score}
+                  </td>
+                  <td key={`${s.studentId}-level`} style={styles.td}>
                     <span
+                      key={`${s.studentId}-badge`}
                       style={{
                         ...styles.levelBadge,
                         backgroundColor: LEVEL_COLORS[s.level] || "#999",
@@ -122,11 +125,21 @@ const StudentScorecardReport = () => {
                       {s.level}
                     </span>
                   </td>
-                  <td style={styles.td}>{s.totalSessions}</td>
-                  <td style={styles.td}>{s.completionRate}%</td>
-                  <td style={styles.td}>{formatDuration(s.avgDurationMs)}</td>
-                  <td style={styles.td}>{s.totalErrors}</td>
-                  <td style={styles.td}>{s.uniqueSketches}</td>
+                  <td key={`${s.studentId}-sessions`} style={styles.td}>
+                    {s.totalSessions}
+                  </td>
+                  <td key={`${s.studentId}-completion`} style={styles.td}>
+                    {s.completionRate}%
+                  </td>
+                  <td key={`${s.studentId}-duration`} style={styles.td}>
+                    {formatDuration(s.avgDurationMs)}
+                  </td>
+                  <td key={`${s.studentId}-errors`} style={styles.td}>
+                    {s.totalErrors}
+                  </td>
+                  <td key={`${s.studentId}-sketches`} style={styles.td}>
+                    {s.uniqueSketches}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -20,32 +20,11 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { colors } from "../styles/colors"
 
-interface EndReasonEntry {
-  reason: string
-  count: number
-}
-
-interface TrendEntry {
-  day: string
-  user_stop: number
-  sim_crash: number
-  page_unload: number
-  other: number
-}
-
-interface SessionEndData {
-  totalSessions: number
-  byReason: EndReasonEntry[]
-  crashRate: number
-  completionRate: number
-  abandonmentRate: number
-  trendOverTime: TrendEntry[]
-  incompleteCount: number
-}
-
 const SessionEndReport = () => {
   const { dateRange, setDateRange, fetchSessionEnd } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchSessionEnd, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchSessionEnd, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -148,7 +127,7 @@ const SessionEndReport = () => {
             </tr>
           </thead>
           <tbody>
-            {data.byReason.map((r) => (
+            {data.byReason.map((r, _index) => (
               <EndReasonRow
                 key={r.reason}
                 reason={r.reason}

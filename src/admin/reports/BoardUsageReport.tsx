@@ -18,23 +18,11 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { formatDuration } from "../utils/formatDuration"
 
-interface BoardEntry {
-  board: string
-  sessions: number
-  percentage: number
-  avgDurationMs: number
-}
-
-interface BoardUsageData {
-  boardPerformance: BoardEntry[]
-  totalSessions: number
-  mostPopularBoard: string
-  popularBoardPerSketch: { sketch: string; board: string; count: number }[]
-}
-
 const BoardUsageReport = () => {
   const { dateRange, setDateRange, fetchBoardUsage } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchBoardUsage, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchBoardUsage, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -94,7 +82,7 @@ const BoardUsageReport = () => {
             </tr>
           </thead>
           <tbody>
-            {data.boardPerformance.map((b) => (
+            {data.boardPerformance.map((b, _index) => (
               <BoardRow
                 key={b.board}
                 board={b.board}
@@ -119,7 +107,7 @@ const BoardUsageReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.popularBoardPerSketch.map((item) => (
+              {data.popularBoardPerSketch.map((item, _index) => (
                 <SketchBoardRow
                   key={item.sketch}
                   sketch={item.sketch}

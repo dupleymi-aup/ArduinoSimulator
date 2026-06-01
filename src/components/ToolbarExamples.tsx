@@ -9,8 +9,20 @@ interface ToolbarExamplesProps {
 
 const ToolbarExamples = ({ onLoadExample, onClose }: ToolbarExamplesProps) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false)
+  const containerRef = React.useRef<HTMLDivElement>(null)
 
   const toggleOpen = () => setIsOpen(!isOpen)
+
+  React.useEffect(() => {
+    if (!isOpen) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [isOpen])
 
   const handleSelect = (content: string, name: string) => {
     onLoadExample(content, name)
@@ -19,7 +31,7 @@ const ToolbarExamples = ({ onLoadExample, onClose }: ToolbarExamplesProps) => {
   }
 
   return (
-    <div style={styles.container}>
+    <div ref={containerRef} style={styles.container}>
       <button style={styles.button} onClick={toggleOpen}>
         {t("EXAMPLES")}
       </button>

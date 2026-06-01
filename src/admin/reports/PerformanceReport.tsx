@@ -17,18 +17,11 @@ import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
-interface PerformanceData {
-  totalSessions: number
-  simStartedCount: number
-  simCompletedCount: number
-  successRate: number
-  topErrors: { error: string; count: number }[]
-  simAttemptsOverTime: { day: string; count: number }[]
-}
-
 const PerformanceReport = () => {
   const { dateRange, setDateRange, fetchPerformance } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchPerformance, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchPerformance, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -66,7 +59,7 @@ const PerformanceReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topErrors.map((err) => (
+              {data.topErrors.map((err, _index) => (
                 <ErrorRow key={err.error} error={err.error} count={err.count} />
               ))}
             </tbody>

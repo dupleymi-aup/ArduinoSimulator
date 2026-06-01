@@ -90,7 +90,11 @@ function flushPinBatch(): void {
   pinChangeBuffer = []
 }
 
-function trackPinChange(type: "digital" | "analog", pin: number, value: number | boolean): void {
+function trackPinChange(
+  type: "digital" | "analog",
+  pin: number,
+  value: number | boolean
+): void {
   if (!backendAvailable || !activeSessionId) return
 
   pinChangeBuffer.push({ type, pin, value })

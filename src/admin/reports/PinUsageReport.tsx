@@ -6,11 +6,6 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 
-interface PinUsageData {
-  digitalPins: Record<number, number>
-  analogPins: Record<number, number>
-}
-
 const DIGITAL_PIN_COUNT = 54
 const ANALOG_PIN_COUNT = 16
 const DIGITAL_PINS = (() => {
@@ -32,8 +27,14 @@ const PinUsageReport = () => {
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
-  const maxDigital = Math.max(1, ...(Object.values(data.digitalPins || {}) as number[]))
-  const maxAnalog = Math.max(1, ...(Object.values(data.analogPins || {}) as number[]))
+  const maxDigital = Math.max(
+    1,
+    ...(Object.values(data.digitalPins || {}) as number[])
+  )
+  const maxAnalog = Math.max(
+    1,
+    ...(Object.values(data.analogPins || {}) as number[])
+  )
 
   const getHeatColor = (value: number, max: number) => {
     const intensity = value / max
@@ -78,7 +79,7 @@ const PinUsageReport = () => {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Digital Pins (0-53)</h3>
         <div style={styles.pinGrid}>
-          {DIGITAL_PINS.map((i) => {
+          {DIGITAL_PINS.map((i, _index) => {
             const count = data.digitalPins[i] || 0
             return (
               <div
@@ -101,7 +102,7 @@ const PinUsageReport = () => {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Analog Pins (A0-A15)</h3>
         <div style={styles.pinGrid}>
-          {ANALOG_PINS.map((i) => {
+          {ANALOG_PINS.map((i, _index) => {
             const count = data.analogPins[i] || 0
             return (
               <div

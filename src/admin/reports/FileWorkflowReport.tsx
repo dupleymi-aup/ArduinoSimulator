@@ -19,36 +19,11 @@ import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 
-interface FileTypeEntry {
-  type: string
-  count: number
-}
-
-interface SavesOverTimeEntry {
-  day: string
-  count: number
-}
-
-interface SketchSaveEntry {
-  sketchName: string
-  saveCount: number
-}
-
-interface FileWorkflowData {
-  totalSaves: number
-  totalOpens: number
-  totalNewFiles: number
-  totalExamplesLoaded: number
-  totalAutosaves: number
-  byType: FileTypeEntry[]
-  savesOverTime: SavesOverTimeEntry[]
-  topSketchesBySaves: SketchSaveEntry[]
-  avgSavesPerSession: number
-}
-
 const FileWorkflowReport = () => {
   const { dateRange, setDateRange, fetchFileWorkflow } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchFileWorkflow, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchFileWorkflow, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -63,21 +38,9 @@ const FileWorkflowReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard
-          title="Total Saves"
-          value={data.totalSaves}
-          color="#0066cc"
-        />
-        <StatCard
-          title="Files Opened"
-          value={data.totalOpens}
-          color="#27ae60"
-        />
-        <StatCard
-          title="New Files"
-          value={data.totalNewFiles}
-          color="#8e44ad"
-        />
+        <StatCard title="Total Saves" value={data.totalSaves} color="#0066cc" />
+        <StatCard title="Files Opened" value={data.totalOpens} color="#27ae60" />
+        <StatCard title="New Files" value={data.totalNewFiles} color="#8e44ad" />
         <StatCard
           title="Avg Saves/Session"
           value={data.avgSavesPerSession}
@@ -128,7 +91,7 @@ const FileWorkflowReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topSketchesBySaves.map((s) => (
+              {data.topSketchesBySaves.map((s, _index) => (
                 <SketchSaveRow
                   key={s.sketchName}
                   sketchName={s.sketchName}

@@ -18,35 +18,17 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { formatDuration } from "../utils/formatDuration"
 
-interface LearningPathData {
-  popularPaths: { path: string; count: number }[]
-  sketchAnalysis: {
-    name: string
-    attempts: number
-    completions: number
-    completionRate: number
-    avgDurationMs: number
-    repeats: number
-  }[]
-  stuckSketches: {
-    name: string
-    attempts: number
-    repeats: number
-    completionRate: number
-  }[]
-  totalPaths: number
-  totalStudents: number
-}
-
 const LearningPathReport = () => {
   const { dateRange, setDateRange, fetchLearningPath } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchLearningPath, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchLearningPath, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
 
-  const pathChartData = data.popularPaths.slice(0, 10).map((p) => ({
+  const pathChartData = data.popularPaths.slice(0, 10).map((p, _index) => ({
     path: p.path.length > 30 ? p.path.slice(0, 30) + "..." : p.path,
     count: p.count,
   }))
@@ -60,7 +42,11 @@ const LearningPathReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Students" value={data.totalStudents} color="#0066cc" />
+        <StatCard
+          title="Total Students"
+          value={data.totalStudents}
+          color="#0066cc"
+        />
         <StatCard title="Unique Paths" value={data.totalPaths} color="#8e44ad" />
         <StatCard
           title="Stuck Sketches"
@@ -99,14 +85,23 @@ const LearningPathReport = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.stuckSketches.map((s) => (
+                {data.stuckSketches.map((s, _index) => (
                   <tr key={s.name}>
-                    <td style={styles.td}>{s.name}</td>
-                    <td style={styles.td}>{s.attempts}</td>
-                    <td style={{ ...styles.td, color: "#e74c3c", fontWeight: 600 }}>
+                    <td key={`${s.name}-name`} style={styles.td}>
+                      {s.name}
+                    </td>
+                    <td key={`${s.name}-attempts`} style={styles.td}>
+                      {s.attempts}
+                    </td>
+                    <td
+                      key={`${s.name}-repeats`}
+                      style={{ ...styles.td, color: "#e74c3c", fontWeight: 600 }}
+                    >
                       {s.repeats}
                     </td>
-                    <td style={styles.td}>{s.completionRate}%</td>
+                    <td key={`${s.name}-completion`} style={styles.td}>
+                      {s.completionRate}%
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -130,14 +125,26 @@ const LearningPathReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.sketchAnalysis.map((s) => (
+              {data.sketchAnalysis.map((s, _index) => (
                 <tr key={s.name}>
-                  <td style={styles.td}>{s.name}</td>
-                  <td style={styles.td}>{s.attempts}</td>
-                  <td style={styles.td}>{s.completions}</td>
-                  <td style={styles.td}>{s.completionRate}%</td>
-                  <td style={styles.td}>{formatDuration(s.avgDurationMs)}</td>
-                  <td style={styles.td}>{s.repeats}</td>
+                  <td key={`${s.name}-name`} style={styles.td}>
+                    {s.name}
+                  </td>
+                  <td key={`${s.name}-attempts`} style={styles.td}>
+                    {s.attempts}
+                  </td>
+                  <td key={`${s.name}-completions`} style={styles.td}>
+                    {s.completions}
+                  </td>
+                  <td key={`${s.name}-rate`} style={styles.td}>
+                    {s.completionRate}%
+                  </td>
+                  <td key={`${s.name}-duration`} style={styles.td}>
+                    {formatDuration(s.avgDurationMs)}
+                  </td>
+                  <td key={`${s.name}-repeats`} style={styles.td}>
+                    {s.repeats}
+                  </td>
                 </tr>
               ))}
             </tbody>

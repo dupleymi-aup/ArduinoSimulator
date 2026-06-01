@@ -20,7 +20,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
   const { tokenExpiringSoon } = useAuth()
   const [activeTab, setActiveTab] = React.useState("Activity")
-  const ReportComponent = TAB_MAP[activeTab] || ActivityReport
+  const ReportComponent = TAB_MAP[activeTab]
   const { HelpModal } = useKeyboardShortcuts({
     tabNames: TAB_NAMES,
     onTabChange: setActiveTab,
@@ -35,12 +35,25 @@ const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
     >
       {tokenExpiringSoon && (
         <div style={styles.tokenWarning}>
-          Your session will expire soon. Please save your work and log in again if needed.
+          Your session will expire soon. Please save your work and log in again if
+          needed.
         </div>
       )}
-      <React.Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Loading report...</div>}>
-        <ReportComponent />
-      </React.Suspense>
+      {ReportComponent ? (
+        <React.Suspense
+          fallback={
+            <div style={{ padding: "2rem", textAlign: "center" }}>
+              Loading report...
+            </div>
+          }
+        >
+          <ReportComponent />
+        </React.Suspense>
+      ) : (
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          Select a report tab to view data.
+        </div>
+      )}
       {HelpModal && <HelpModal />}
     </AdminLayout>
   )

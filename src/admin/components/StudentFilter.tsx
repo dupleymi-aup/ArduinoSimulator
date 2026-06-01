@@ -9,7 +9,7 @@ interface Student {
 
 interface StudentFilterProps {
   value: string
-  onChange: (studentId: string) => void
+  onChange: (_studentId: string) => void
 }
 
 const StudentFilter = ({ value, onChange }: StudentFilterProps) => {
@@ -26,7 +26,9 @@ const StudentFilter = ({ value, onChange }: StudentFilterProps) => {
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   if (loading) {
@@ -45,7 +47,7 @@ const StudentFilter = ({ value, onChange }: StudentFilterProps) => {
       aria-label="Filter by student"
     >
       <option value="">All students</option>
-      {students.map((s) => (
+      {students.map((s, _index) => (
         <option key={s.id} value={s.id}>
           {s.identifier} ({s.sessionCount} sessions)
         </option>

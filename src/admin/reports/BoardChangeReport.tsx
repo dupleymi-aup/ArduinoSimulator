@@ -18,33 +18,11 @@ import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
 import { formatDuration } from "../utils/formatDuration"
 
-interface BoardTypeEntry {
-  boardType: string
-  count: number
-}
-
-interface SwitcherEntry {
-  identifier: string
-  switchCount: number
-  avgSessionDurationMs: number
-}
-
-interface SwitchingVsDuration {
-  highSwitchers: { avgDurationMs: number; avgSwitches: number }
-  lowSwitchers: { avgDurationMs: number; avgSwitches: number }
-}
-
-interface BoardChangeData {
-  totalBoardChanges: number
-  uniqueStudentsSwitching: number
-  byBoardType: BoardTypeEntry[]
-  topSwitchers: SwitcherEntry[]
-  switchingVsDuration: SwitchingVsDuration
-}
-
 const BoardChangeReport = () => {
   const { dateRange, setDateRange, fetchBoardChanges } = useReports()
-  const { data, loading, error, reload } = useReportData(fetchBoardChanges, [dateRange])
+  const { data, loading, error, reload } = useReportData(fetchBoardChanges, [
+    dateRange,
+  ])
 
   if (loading) return <LoadingState />
   if (error) return <ErrorDisplay message={error} onRetry={reload} />
@@ -130,7 +108,7 @@ const BoardChangeReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topSwitchers.map((s) => (
+              {data.topSwitchers.map((s, _index) => (
                 <SwitcherRow
                   key={s.identifier}
                   identifier={s.identifier}

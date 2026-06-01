@@ -63,7 +63,9 @@ const StudentEngagementReport = () => {
           setDetailLoading(false)
         })
         .catch((err) => {
-          setDetailError(err instanceof Error ? err.message : "Failed to load student details")
+          setDetailError(
+            err instanceof Error ? err.message : "Failed to load student details"
+          )
           setDetailLoading(false)
         })
     },
@@ -90,7 +92,10 @@ const StudentEngagementReport = () => {
       <div style={reportStyles.headerRow}>
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
         {data.students.length > 0 && (
-          <ExportButton data={data.students as unknown as Record<string, unknown>[]} filename="student-engagement" />
+          <ExportButton
+            data={data.students as unknown as Record<string, unknown>[]}
+            filename="student-engagement"
+          />
         )}
       </div>
       <div style={reportStyles.statsRow}>
@@ -169,9 +174,9 @@ const StudentEngagementReport = () => {
               </tr>
             </thead>
             <tbody>
-              {data.atRiskStudents.map((s) => (
+              {data.atRiskStudents.map((s, index) => (
                 <AtRiskRow
-                  key={s.studentId}
+                  key={`${s.studentId}-${index}`}
                   student={s}
                   onClick={handleStudentClick}
                 />
@@ -193,13 +198,13 @@ const StudentEngagementReport = () => {
             </tr>
           </thead>
           <tbody>
-            {data.students.map((s) => (
+            {data.students.map((s, index) => (
               <StudentRow
-                key={s.studentId}
+                key={`${s.studentId}-${index}`}
                 student={s}
                 selected={selectedStudent === s.studentId}
                 onClick={handleStudentClick}
-                formatDuration={formatDuration}
+                formatDur={formatDuration}
               />
             ))}
           </tbody>
@@ -210,7 +215,10 @@ const StudentEngagementReport = () => {
         <div style={reportStyles.detailPanel}>
           <h3 style={reportStyles.detailTitle}>
             Student Detail{" "}
-            <button style={reportStyles.closeBtn} onClick={() => setSelectedStudent(null)}>
+            <button
+              style={reportStyles.closeBtn}
+              onClick={() => setSelectedStudent(null)}
+            >
               &times;
             </button>
           </h3>
@@ -219,10 +227,7 @@ const StudentEngagementReport = () => {
           ) : detailError ? (
             <p style={{ color: "#e74c3c" }}>{detailError}</p>
           ) : studentDetail ? (
-            <StudentDetailTable
-              data={studentDetail}
-              formatDuration={formatDuration}
-            />
+            <StudentDetailTable data={studentDetail} formatDur={formatDuration} />
           ) : (
             <p>No detail data available.</p>
           )}
@@ -241,8 +246,12 @@ const AtRiskRow = ({
 }) => (
   <tr style={reportStyles.clickableRow} onClick={() => onClick(student.studentId)}>
     <td style={reportStyles.td}>{(student.identifier || "").slice(0, 12)}...</td>
-    <td style={{ ...reportStyles.td, textAlign: "center" }}>{student.totalSessions}</td>
-    <td style={reportStyles.td}>{new Date(student.lastSessionAt).toLocaleDateString()}</td>
+    <td style={{ ...reportStyles.td, textAlign: "center" }}>
+      {student.totalSessions}
+    </td>
+    <td style={reportStyles.td}>
+      {new Date(student.lastSessionAt).toLocaleDateString()}
+    </td>
   </tr>
 )
 
@@ -250,12 +259,12 @@ const StudentRow = ({
   student,
   selected,
   onClick,
-  formatDuration,
+  formatDur,
 }: {
   student: StudentEntry
   selected: boolean
   onClick: (_id: string) => void
-  formatDuration: (_ms: number) => string
+  formatDur: (_ms: number) => string
 }) => (
   <tr
     style={{
@@ -265,18 +274,22 @@ const StudentRow = ({
     onClick={() => onClick(student.studentId)}
   >
     <td style={reportStyles.td}>{(student.identifier || "").slice(0, 12)}...</td>
-    <td style={{ ...reportStyles.td, textAlign: "center" }}>{student.totalSessions}</td>
-    <td style={reportStyles.td}>{formatDuration(student.avgDurationMs)}</td>
-    <td style={reportStyles.td}>{new Date(student.lastSessionAt).toLocaleDateString()}</td>
+    <td style={{ ...reportStyles.td, textAlign: "center" }}>
+      {student.totalSessions}
+    </td>
+    <td style={reportStyles.td}>{formatDur(student.avgDurationMs)}</td>
+    <td style={reportStyles.td}>
+      {new Date(student.lastSessionAt).toLocaleDateString()}
+    </td>
   </tr>
 )
 
 const StudentDetailTable = ({
   data,
-  formatDuration,
+  formatDur,
 }: {
   data: Record<string, unknown>
-  formatDuration: (_ms: number) => string
+  formatDur: (_ms: number) => string
 }) => {
   const student = data.student as Record<string, unknown> | undefined
   const sessions = (data.sessions as Record<string, unknown>[]) || []
@@ -301,7 +314,8 @@ const StudentDetailTable = ({
       }
       return v
     }
-    const rows = sessions.map((s) => [
+    const rows = sessions.map((s, index) => [
+      index,
       escapeCsv(new Date(s.startedAt as string).toLocaleString()),
       escapeCsv((s.sketchName as string) || "N/A"),
       escapeCsv((s.boardType as string) || "N/A"),
@@ -310,7 +324,7 @@ const StudentDetailTable = ({
       String(s.simCompleted),
       String(s.errorCount ?? 0),
     ])
-    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n")
+    const csv = [headers, ...rows].map((r, _i) => r.join(",")).join("\n")
     const blob = new Blob([csv], { type: "text/csv" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -326,7 +340,7 @@ const StudentDetailTable = ({
         <StatCard title="Sessions" value={totalSessions} color="#0066cc" />
         <StatCard
           title="Total Time"
-          value={formatDuration(totalDurationMs)}
+          value={formatDur(totalDurationMs)}
           color="#27ae60"
         />
         <StatCard
@@ -352,11 +366,11 @@ const StudentDetailTable = ({
             </tr>
           </thead>
           <tbody>
-            {sessions.map((s) => (
+            {sessions.map((s, index) => (
               <SessionRow
-                key={s.id as string}
+                key={`${(s.id as string) || index}`}
                 session={s}
-                formatDuration={formatDuration}
+                formatDur={formatDur}
               />
             ))}
           </tbody>
@@ -368,10 +382,10 @@ const StudentDetailTable = ({
 
 const SessionRow = ({
   session,
-  formatDuration,
+  formatDur,
 }: {
   session: Record<string, unknown>
-  formatDuration: (_ms: number) => string
+  formatDur: (_ms: number) => string
 }) => (
   <tr>
     <td style={reportStyles.td}>
@@ -380,7 +394,7 @@ const SessionRow = ({
     <td style={reportStyles.td}>{(session.sketchName as string) || "N/A"}</td>
     <td style={reportStyles.td}>{(session.boardType as string) || "N/A"}</td>
     <td style={reportStyles.td}>
-      {session.durationMs ? formatDuration(session.durationMs as number) : "N/A"}
+      {session.durationMs ? formatDur(session.durationMs as number) : "N/A"}
     </td>
     <td style={reportStyles.td}>
       {session.simCompleted
@@ -389,7 +403,9 @@ const SessionRow = ({
           ? "Started"
           : "Not started"}
     </td>
-    <td style={{ ...reportStyles.td, textAlign: "center" }}>{(session.errorCount as number) ?? 0}</td>
+    <td style={{ ...reportStyles.td, textAlign: "center" }}>
+      {(session.errorCount as number) ?? 0}
+    </td>
   </tr>
 )
 
