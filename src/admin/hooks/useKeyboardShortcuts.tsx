@@ -34,6 +34,13 @@ export function useKeyboardShortcuts({
 
   React.useEffect(() => {
     function handler(e: KeyboardEvent) {
+      // Close help with Escape
+      if (e.key === "Escape" && help.visible) {
+        e.preventDefault()
+        setHelp({ visible: false })
+        return
+      }
+
       // Toggle help
       if (e.key === "?" || (e.shiftKey && e.key === "/")) {
         e.preventDefault()
@@ -82,7 +89,7 @@ export function useKeyboardShortcuts({
 
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [tabNames, onTabChange, onLogout])
+  }, [tabNames, onTabChange, onLogout, help.visible])
 
   const HelpModal = () => {
     if (!help.visible) return null

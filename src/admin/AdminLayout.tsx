@@ -1,25 +1,5 @@
 import React from "react"
-
-const TABS = [
-  "Activity",
-  "Performance",
-  "Progress",
-  "Pin Usage",
-  "Student Engagement",
-  "Sketch Difficulty",
-  "Error Trends",
-  "Board Usage",
-  "Session End",
-  "File Workflow",
-  "Serial Usage",
-  "Student Cohort",
-  "Board Changes",
-  "Student Scorecard",
-  "Learning Path",
-  "Error Impact",
-  "Comparative",
-  "Skills Mastery",
-]
+import { TAB_NAMES } from "./config/tabs"
 
 interface AdminLayoutProps {
   activeTab: string
@@ -47,7 +27,7 @@ const AdminLayout = ({
         </button>
       </header>
       <nav style={styles.nav} role="tablist" aria-label="Admin reports">
-        {TABS.map((tab, _index) => (
+        {TAB_NAMES.map((tab) => (
           <button
             key={tab}
             role="tab"

@@ -68,29 +68,6 @@ export function useReports() {
     saveFilters(filters)
   }, [filters])
 
-  const setFilters = React.useCallback(
-    (next: FilterState) => {
-      setDateRange(next.dateRange)
-      setStudentId(next.studentId)
-      setSketchName(next.sketchName)
-      setBoardType(next.boardType)
-    },
-    []
-  )
-
-  const clearFilters = React.useCallback(() => {
-    const defaults: FilterState = {
-      dateRange: { start: "", end: "" },
-      studentId: "",
-      sketchName: "",
-      boardType: "",
-    }
-    setDateRange(defaults.dateRange)
-    setStudentId(defaults.studentId)
-    setSketchName(defaults.sketchName)
-    setBoardType(defaults.boardType)
-  }, [])
-
   const fetchActivity = React.useCallback(async (signal?: AbortSignal) => {
     return apiFetch(`/api/admin/reports/activity?${buildParams(dateRange)}`, { signal })
   }, [dateRange])
@@ -262,7 +239,6 @@ export function useReports() {
     boardType,
     setBoardType,
     filters,
-    setFilters,
     fetchActivity,
     fetchPerformance,
     fetchProgress,

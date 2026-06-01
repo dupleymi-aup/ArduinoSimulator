@@ -14,7 +14,10 @@ import ErrorDisplay from "../components/ErrorDisplay"
 import LoadingState from "../components/LoadingState"
 import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
+import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { reportStyles } from "../styles/reportStyles"
+import { formatDuration } from "../utils/formatDuration"
 
 interface StudentEntry {
   studentId: string
@@ -36,9 +39,10 @@ interface StudentEngagementData {
 const StudentEngagementReport = () => {
   const { dateRange, setDateRange, fetchStudentEngagement, fetchStudentDetail } =
     useReports()
-  const [data, setData] = React.useState<StudentEngagementData | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
+  const { data, loading, error, reload } = useReportData<StudentEngagementData>(
+    (signal) => fetchStudentEngagement(signal),
+    [dateRange]
+  )
   const [selectedStudent, setSelectedStudent] = React.useState<string | null>(null)
   const [studentDetail, setStudentDetail] = React.useState<Record<
     string,
@@ -46,30 +50,6 @@ const StudentEngagementReport = () => {
   > | null>(null)
   const [detailLoading, setDetailLoading] = React.useState(false)
   const [detailError, setDetailError] = React.useState<string | null>(null)
-
-  const loadData = React.useCallback(() => {
-    setLoading(true)
-    setError(null)
-    setSelectedStudent(null)
-    setStudentDetail(null)
-    fetchStudentEngagement()
-      .then((d) => {
-        setData(d as StudentEngagementData)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load student engagement data"
-        )
-        setLoading(false)
-      })
-  }, [fetchStudentEngagement])
-
-  React.useEffect(() => {
-    loadData()
-  }, [loadData])
 
   const handleStudentClick = React.useCallback(
     (studentId: string) => {
@@ -91,14 +71,8 @@ const StudentEngagementReport = () => {
   )
 
   if (loading) return <LoadingState />
-  if (error) return <ErrorDisplay message={error} onRetry={loadData} />
+  if (error) return <ErrorDisplay message={error} onRetry={reload} />
   if (!data) return <p>No data available.</p>
-
-  const formatDuration = (ms: number) => {
-    const mins = Math.floor(ms / 60000)
-    const hours = Math.floor(mins / 60)
-    return hours > 0 ? `${hours}h ${mins % 60}m` : `${mins}m`
-  }
 
   const totalSessions = data.students.reduce((s, st) => s + st.totalSessions, 0)
   const avgDuration =
@@ -113,13 +87,13 @@ const StudentEngagementReport = () => {
 
   return (
     <div>
-      <div style={styles.headerRow}>
+      <div style={reportStyles.headerRow}>
         <DateRangeFilter value={dateRange} onChange={setDateRange} />
         {data.students.length > 0 && (
           <ExportButton data={data.students as unknown as Record<string, unknown>[]} filename="student-engagement" />
         )}
       </div>
-      <div style={styles.statsRow}>
+      <div style={reportStyles.statsRow}>
         <StatCard
           title="Active Students"
           value={data.totalActiveStudents}
@@ -134,8 +108,8 @@ const StudentEngagementReport = () => {
       </div>
 
       {leaderboard.length > 0 && (
-        <div style={styles.chartContainer}>
-          <h3 style={styles.chartTitle}>Top Students by Sessions</h3>
+        <div style={reportStyles.chartContainer}>
+          <h3 style={reportStyles.chartTitle}>Top Students by Sessions</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={leaderboard}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -150,8 +124,8 @@ const StudentEngagementReport = () => {
       )}
 
       {data.heatmapByDay.length > 0 && (
-        <div style={styles.chartContainer}>
-          <h3 style={styles.chartTitle}>Activity by Day of Week</h3>
+        <div style={reportStyles.chartContainer}>
+          <h3 style={reportStyles.chartTitle}>Activity by Day of Week</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={data.heatmapByDay}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -166,8 +140,8 @@ const StudentEngagementReport = () => {
       )}
 
       {data.heatmapByHour.length > 0 && (
-        <div style={styles.chartContainer}>
-          <h3 style={styles.chartTitle}>Activity by Hour of Day</h3>
+        <div style={reportStyles.chartContainer}>
+          <h3 style={reportStyles.chartTitle}>Activity by Hour of Day</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={data.heatmapByHour}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -182,20 +156,20 @@ const StudentEngagementReport = () => {
       )}
 
       {data.atRiskStudents.length > 0 && (
-        <div style={styles.tableContainer}>
-          <h3 style={styles.tableTitle}>
+        <div style={reportStyles.tableContainer}>
+          <h3 style={reportStyles.tableTitle}>
             At-Risk Students (No Activity &gt;14 Days)
           </h3>
-          <table style={styles.table}>
+          <table style={reportStyles.table}>
             <thead>
               <tr>
-                <th style={styles.th}>Student</th>
-                <th style={styles.th}>Sessions</th>
-                <th style={styles.th}>Last Active</th>
+                <th style={reportStyles.th}>Student</th>
+                <th style={reportStyles.th}>Sessions</th>
+                <th style={reportStyles.th}>Last Active</th>
               </tr>
             </thead>
             <tbody>
-              {data.atRiskStudents.map((s, _i) => (
+              {data.atRiskStudents.map((s) => (
                 <AtRiskRow
                   key={s.studentId}
                   student={s}
@@ -207,19 +181,19 @@ const StudentEngagementReport = () => {
         </div>
       )}
 
-      <div style={styles.tableContainer}>
-        <h3 style={styles.tableTitle}>All Students (click for details)</h3>
-        <table style={styles.table}>
+      <div style={reportStyles.tableContainer}>
+        <h3 style={reportStyles.tableTitle}>All Students (click for details)</h3>
+        <table style={reportStyles.table}>
           <thead>
             <tr>
-              <th style={styles.th}>Student</th>
-              <th style={styles.th}>Sessions</th>
-              <th style={styles.th}>Avg Duration</th>
-              <th style={styles.th}>Last Active</th>
+              <th style={reportStyles.th}>Student</th>
+              <th style={reportStyles.th}>Sessions</th>
+              <th style={reportStyles.th}>Avg Duration</th>
+              <th style={reportStyles.th}>Last Active</th>
             </tr>
           </thead>
           <tbody>
-            {data.students.map((s, _i) => (
+            {data.students.map((s) => (
               <StudentRow
                 key={s.studentId}
                 student={s}
@@ -233,10 +207,10 @@ const StudentEngagementReport = () => {
       </div>
 
       {selectedStudent && (
-        <div style={styles.detailPanel}>
-          <h3 style={styles.detailTitle}>
+        <div style={reportStyles.detailPanel}>
+          <h3 style={reportStyles.detailTitle}>
             Student Detail{" "}
-            <button style={styles.closeBtn} onClick={() => setSelectedStudent(null)}>
+            <button style={reportStyles.closeBtn} onClick={() => setSelectedStudent(null)}>
               &times;
             </button>
           </h3>
@@ -265,10 +239,10 @@ const AtRiskRow = ({
   student: StudentEntry
   onClick: (_id: string) => void
 }) => (
-  <tr style={styles.clickableRow} onClick={() => onClick(student.studentId)}>
-    <td style={styles.td}>{student.identifier.slice(0, 12)}...</td>
-    <td style={{ ...styles.td, textAlign: "center" }}>{student.totalSessions}</td>
-    <td style={styles.td}>{new Date(student.lastSessionAt).toLocaleDateString()}</td>
+  <tr style={reportStyles.clickableRow} onClick={() => onClick(student.studentId)}>
+    <td style={reportStyles.td}>{(student.identifier || "").slice(0, 12)}...</td>
+    <td style={{ ...reportStyles.td, textAlign: "center" }}>{student.totalSessions}</td>
+    <td style={reportStyles.td}>{new Date(student.lastSessionAt).toLocaleDateString()}</td>
   </tr>
 )
 
@@ -285,15 +259,15 @@ const StudentRow = ({
 }) => (
   <tr
     style={{
-      ...styles.clickableRow,
+      ...reportStyles.clickableRow,
       backgroundColor: selected ? "#e8f0fe" : "transparent",
     }}
     onClick={() => onClick(student.studentId)}
   >
-    <td style={styles.td}>{student.identifier.slice(0, 12)}...</td>
-    <td style={{ ...styles.td, textAlign: "center" }}>{student.totalSessions}</td>
-    <td style={styles.td}>{formatDuration(student.avgDurationMs)}</td>
-    <td style={styles.td}>{new Date(student.lastSessionAt).toLocaleDateString()}</td>
+    <td style={reportStyles.td}>{(student.identifier || "").slice(0, 12)}...</td>
+    <td style={{ ...reportStyles.td, textAlign: "center" }}>{student.totalSessions}</td>
+    <td style={reportStyles.td}>{formatDuration(student.avgDurationMs)}</td>
+    <td style={reportStyles.td}>{new Date(student.lastSessionAt).toLocaleDateString()}</td>
   </tr>
 )
 
@@ -329,8 +303,8 @@ const StudentDetailTable = ({
     }
     const rows = sessions.map((s) => [
       escapeCsv(new Date(s.startedAt as string).toLocaleString()),
-      escapeCsv(s.sketchName || "N/A"),
-      escapeCsv(s.boardType || "N/A"),
+      escapeCsv((s.sketchName as string) || "N/A"),
+      escapeCsv((s.boardType as string) || "N/A"),
       String(s.durationMs ?? 0),
       String(s.simStarted),
       String(s.simCompleted),
@@ -348,7 +322,7 @@ const StudentDetailTable = ({
 
   return (
     <div>
-      <div style={styles.statsRow}>
+      <div style={reportStyles.statsRow}>
         <StatCard title="Sessions" value={totalSessions} color="#0066cc" />
         <StatCard
           title="Total Time"
@@ -362,23 +336,23 @@ const StudentDetailTable = ({
         />
         <StatCard title="Unique Sketches" value={uniqueSketches} color="#e67e22" />
       </div>
-      <button style={styles.exportBtn} onClick={handleExport}>
+      <button style={reportStyles.exportBtn} onClick={handleExport}>
         Export CSV
       </button>
       {sessions.length > 0 && (
-        <table style={styles.table}>
+        <table style={reportStyles.table}>
           <thead>
             <tr>
-              <th style={styles.th}>Date</th>
-              <th style={styles.th}>Sketch</th>
-              <th style={styles.th}>Board</th>
-              <th style={styles.th}>Duration</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Errors</th>
+              <th style={reportStyles.th}>Date</th>
+              <th style={reportStyles.th}>Sketch</th>
+              <th style={reportStyles.th}>Board</th>
+              <th style={reportStyles.th}>Duration</th>
+              <th style={reportStyles.th}>Status</th>
+              <th style={reportStyles.th}>Errors</th>
             </tr>
           </thead>
           <tbody>
-            {sessions.map((s, _i) => (
+            {sessions.map((s) => (
               <SessionRow
                 key={s.id as string}
                 session={s}
@@ -400,117 +374,23 @@ const SessionRow = ({
   formatDuration: (_ms: number) => string
 }) => (
   <tr>
-    <td style={styles.td}>
+    <td style={reportStyles.td}>
       {new Date(session.startedAt as string).toLocaleDateString()}
     </td>
-    <td style={styles.td}>{(session.sketchName as string) || "N/A"}</td>
-    <td style={styles.td}>{(session.boardType as string) || "N/A"}</td>
-    <td style={styles.td}>
+    <td style={reportStyles.td}>{(session.sketchName as string) || "N/A"}</td>
+    <td style={reportStyles.td}>{(session.boardType as string) || "N/A"}</td>
+    <td style={reportStyles.td}>
       {session.durationMs ? formatDuration(session.durationMs as number) : "N/A"}
     </td>
-    <td style={styles.td}>
+    <td style={reportStyles.td}>
       {session.simCompleted
         ? "Completed"
         : session.simStarted
           ? "Started"
           : "Not started"}
     </td>
-    <td style={{ ...styles.td, textAlign: "center" }}>{(session.errorCount as number) ?? 0}</td>
+    <td style={{ ...reportStyles.td, textAlign: "center" }}>{(session.errorCount as number) ?? 0}</td>
   </tr>
 )
-
-const styles: { [key: string]: React.CSSProperties } = {
-  headerRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  statsRow: {
-    display: "flex",
-    gap: 16,
-    marginBottom: 24,
-    flexWrap: "wrap",
-  },
-  chartContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 20,
-    marginBottom: 16,
-    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-  },
-  chartTitle: {
-    margin: "0 0 16px",
-    fontSize: 16,
-    color: "#333",
-  },
-  tableContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 20,
-    marginBottom: 16,
-    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-  },
-  tableTitle: {
-    margin: "0 0 16px",
-    fontSize: 16,
-    color: "#333",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    fontSize: 14,
-  },
-  th: {
-    textAlign: "left",
-    padding: "8px 12px",
-    borderBottom: "2px solid #e0e0e0",
-    color: "#666",
-    fontWeight: 600,
-  },
-  td: {
-    padding: "8px 12px",
-    borderBottom: "1px solid #f0f0f0",
-  },
-  clickableRow: {
-    cursor: "pointer",
-    transition: "background-color 0.15s",
-  },
-  detailPanel: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 20,
-    marginTop: 16,
-    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-    border: "2px solid #0066cc",
-  },
-  detailTitle: {
-    margin: "0 0 16px",
-    fontSize: 16,
-    color: "#333",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  closeBtn: {
-    background: "none",
-    border: "none",
-    fontSize: 22,
-    cursor: "pointer",
-    color: "#666",
-    lineHeight: 1,
-  },
-  exportBtn: {
-    padding: "8px 16px",
-    backgroundColor: "#27ae60",
-    color: "#fff",
-    border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
-    fontSize: 14,
-    marginBottom: 16,
-  },
-}
 
 export default StudentEngagementReport
