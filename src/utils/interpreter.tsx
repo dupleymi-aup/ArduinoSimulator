@@ -337,16 +337,11 @@ const convertSketch = (sketch: string) => {
       if(digitalpin >= 0 && digitalpin < 54) {
         if (_digital_pins_active[digitalpin]) {
           _digital_pins_state[digitalpin] = signal;
-          char payload[30];
-
-          char pinStr[3];
+          char payload[64];
+          char pinStr[12];
           intToCharArray(digitalpin, pinStr);
-
-          strcpy(payload, "_DIGITAL_PIN_STATUS_");
-          strcat(payload, pinStr);
-          strcat(payload, "_");
-          strcat(payload, signal ? "TRUE" : "FALSE");
-
+          pinStr[11] = '\0';
+          snprintf(payload, sizeof(payload), "_DIGITAL_PIN_STATUS_%s_%s", pinStr, signal ? "TRUE" : "FALSE");
           cout << payload;
         }
       }
@@ -365,21 +360,15 @@ const convertSketch = (sketch: string) => {
     void analogWrite(int analogpin, int duty);
     void analogWrite(int analogpin, int duty) {
       if(analogpin >= 0 && analogpin < 14) {
-        char payload[30];
-
-        char pinStr[3];
+        char payload[64];
+        char pinStr[12];
+        char dutyStr[12];
         intToCharArray(analogpin, pinStr);
-
-        char dutyString[4];
-        intToCharArray(duty, dutyString);
-
-        strcpy(payload, "_ANALOG_PIN_STATUS_");
-        strcat(payload, pinStr);
-        strcat(payload, "_");
-        strcat(payload, dutyString);
-
+        intToCharArray(duty, dutyStr);
+        pinStr[11] = '\0';
+        dutyStr[11] = '\0';
+        snprintf(payload, sizeof(payload), "_ANALOG_PIN_STATUS_%s_%s", pinStr, dutyStr);
         cout << payload;
-        return;
       }
     }
 
@@ -438,49 +427,42 @@ const convertSketch = (sketch: string) => {
       }
     }
 
-    // INT TO CHAR IMPLEMENTATION
+    // INT TO CHAR IMPLEMENTATION (uses static buffer to avoid returning pointer to local variable)
     char* _intToChar(int a) {
-      const int BUFFERSIZE = 9;
-      char answer[BUFFERSIZE];
-      char answer2[BUFFERSIZE];
-      int counter = 0;while (a > 0) {
-        answer[counter] = (a % 10 + '0');
-        counter = counter + 1;a = a / 10;
-      }
-      int x = 0;int y = BUFFERSIZE - 1;while(y>-1) {
-        answer2[x] = answer[y];x = x + 1;y = y - 1;
-      }
+      static char answer2[12];
+      if (a == 0) { answer2[0] = '0'; answer2[1] = '\0'; return answer2; }
+      int i = 0;
+      bool neg = false;
+      if (a < 0) { neg = true; a = -a; }
+      char tmp[12];
+      while (a > 0) { tmp[i++] = (a % 10 + '0'); a /= 10; }
+      int pos = 0;
+      if (neg) answer2[pos++] = '-';
+      for (int j = i - 1; j >= 0; j--) answer2[pos++] = tmp[j];
+      answer2[pos] = '\0';
       return answer2;
     }
 
-    // FRACTION TO CHAR IMPLEMENTATION
+    // FRACTION TO CHAR IMPLEMENTATION (uses static buffer to avoid returning pointer to local variable)
     char* _fractionToChar(double a) {
-      int b = a;
-      const int BUFFERSIZE = 9;
-      char answer[BUFFERSIZE];
-      char answer2[BUFFERSIZE];
-      int counter = 0;
-      cout << fixed << setprecision(2);
-      int toAdd = (a - floor(a)) * 100;
-      if (toAdd>0){while (toAdd > 0)
-      {answer[counter] = (toAdd % 10 + '0');
-      counter = counter + 1;toAdd = toAdd / 10;}
-      answer[counter] = '.';
-      counter = counter + 1;}
-
-      while (b > 0) {
-        answer[counter] = (b % 10 + '0');
-        counter = counter + 1;b = b / 10;
+      static char answer2[20];
+      int b = (int)a;
+      int frac = (int)((a - (double)b) * 100 + 0.5);
+      if (frac < 0) frac = -frac;
+      if (b < 0) { int t = b; b = -b; }
+      int i = 0;
+      char tmp[20];
+      if (frac > 0) {
+        while (frac > 0) { tmp[i++] = (frac % 10 + '0'); frac /= 10; }
+        tmp[i++] = '.';
       }
-      int x = 0;int y = BUFFERSIZE - 1;
-
-      while(y>-1) {
-        answer2[x] = answer[y];x = x + 1;y = y - 1;
-      }
-
-      cout << fixed << setprecision(10);
+      if (b == 0) { tmp[i++] = '0'; }
+      else { while (b > 0) { tmp[i++] = (b % 10 + '0'); b /= 10; } }
+      int pos = 0;
+      for (int j = i - 1; j >= 0; j--) answer2[pos++] = tmp[j];
+      answer2[pos] = '\0';
       return answer2;
-      }
+    }
 
      // THE FOLLOWING BREAKLINES ARE NEED IN ORDER TO PREVENT JSCPP TO SHOW ANY OF THE PREVIOUS CODE IF THE USER CODE FAILS
      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`

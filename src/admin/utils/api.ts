@@ -1,12 +1,11 @@
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:3001"
 
 export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-  ) {
+  public status: number
+  constructor(message: string, status: number) {
     super(message)
     this.name = "ApiError"
+    this.status = status
   }
 }
 
@@ -41,14 +40,20 @@ export async function apiFetch<T = unknown>(
     }
 
     if (!res.ok) {
-      const body = await res.json().catch(() => null) as { error?: string } | null
-      throw new ApiError(body?.error || `Request failed with status ${res.status}`, res.status)
+      const body = (await res.json().catch(() => null)) as { error?: string } | null
+      throw new ApiError(
+        body?.error || `Request failed with status ${res.status}`,
+        res.status
+      )
     }
 
     if (res.status === 204) return null
     return (await res.json()) as T
   } catch (err) {
     if (err instanceof ApiError) throw err
-    throw new ApiError(err instanceof Error ? err.message : "Network request failed", 0)
+    throw new ApiError(
+      err instanceof Error ? err.message : "Network request failed",
+      0
+    )
   }
 }

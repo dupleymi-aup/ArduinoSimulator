@@ -4,8 +4,14 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "^7.15.1",
+    "react-scripts": "5.0.1",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
     "@awmottaz/prettier-plugin-void-html": "1.5.0",
-    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@babel/preset-typescript": "7.23.3",
     "@types/react": "18.2.55",
     "@types/react-dom": "18.2.19",
@@ -21,12 +27,7 @@
     "pre-commit": "1.2.2",
     "prettier": "3.2.5",
     "puppeteer": "22.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-router-dom": "^7.15.1",
-    "react-scripts": "5.0.1",
     "react-test-renderer": "18.2.0",
-    "recharts": "^3.8.1",
     "typescript": "4.9.5"
   },
   "overrides": {
@@ -152,10 +153,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 50,
-        "functions": 50,
-        "lines": 50,
-        "statements": 50
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
       }
     },
     "coverageReporters": [
