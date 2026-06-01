@@ -6,12 +6,12 @@ exports[`PinsDigitalLabel Rendering 1 1`] = `
     {
       "cursor": "default",
       "float": "left",
-      "fontFamily": "Arial",
+      "fontFamily": "Arial, sans-serif",
       "fontSize": "13px",
       "fontWeight": "bold",
       "lineHeight": 2,
-      "marginLeft": "7px",
-      "marginRight": "1px",
+      "marginLeft": "6px",
+      "marginRight": "2px",
     }
   }
 >

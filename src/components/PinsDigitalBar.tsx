@@ -3,51 +3,33 @@ import PinsDigitalLabel from "./PinsDigitalLabel"
 import PinsDigitalItem from "./PinsDigitalItem"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
 import { isMega } from "../utils/service"
+import { scrollableBar } from "../styles"
 
 const PinsDigitalBar = () => {
   const { digitalPins, boardType } = useSimulatorContext()
   const isMegaBoard = isMega(boardType)
 
   return (
-    <div style={styles.container}>
-      <div style={styles.noScrollbar}>
+    <div style={scrollableBar.container}>
+      <div style={scrollableBar.noScrollbar}>
         <div
           style={{
             width: isMegaBoard ? "1250px" : "550px",
-            ...styles.wrapper,
+            ...scrollableBar.wrapper,
           }}
         >
           <PinsDigitalLabel />
           {digitalPins.slice(0, 14).map((pin, _i) => (
             <PinsDigitalItem key={pin.pinNumber} gpio={pin} />
           ))}
-          {isMegaBoard && (
-            <>
-              {digitalPins.slice(14, 54).map((pin, _i) => (
-                <PinsDigitalItem key={pin.pinNumber} gpio={pin} />
-              ))}
-            </>
-          )}
+          {isMegaBoard &&
+            digitalPins
+              .slice(14, 54)
+              .map((pin, _i) => <PinsDigitalItem key={pin.pinNumber} gpio={pin} />)}
         </div>
       </div>
     </div>
   )
-}
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    height: "26px",
-    overflowY: "hidden",
-  },
-  noScrollbar: {
-    overflowX: "scroll",
-    overflowY: "hidden",
-    outline: "none",
-    height: "80px",
-  },
-  wrapper: {
-    float: "left",
-  },
 }
 
 export default PinsDigitalBar

@@ -3,6 +3,7 @@ import PinsAnalogLabel from "./PinsAnalogLabel"
 import PinsAnalogItem from "./PinsAnalogItem"
 import { useSimulatorContext } from "../contexts/SimulatorContext"
 import { isMega, isNano } from "../utils/service"
+import { scrollableBar } from "../styles"
 
 const PinsAnalogBar = () => {
   const { analogPins, boardType } = useSimulatorContext()
@@ -11,47 +12,34 @@ const PinsAnalogBar = () => {
   const isNanoBoard = isNano(boardType)
 
   return (
-    <div style={styles.container}>
-      <div style={styles.noScrollbar}>
-        <div style={{ width: isMegaBoard ? "850px" : "550px", ...styles.wrapper }}>
+    <div style={scrollableBar.container}>
+      <div style={scrollableBar.noScrollbar}>
+        <div
+          style={{
+            width: isMegaBoard ? "850px" : "550px",
+            ...scrollableBar.wrapper,
+          }}
+        >
           <PinsAnalogLabel />
           {analogPins.slice(0, 6).map((pin, _i) => (
             <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
           ))}
-          {(isMegaBoard || isNanoBoard) && (
-            <>
-              {analogPins.slice(6, 8).map((pin, _i) => (
+          {(isMegaBoard || isNanoBoard) &&
+            analogPins
+              .slice(6, 8)
+              .map((pin, _i) => (
                 <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
               ))}
-            </>
-          )}
-          {isMegaBoard && (
-            <>
-              {analogPins.slice(8, 14).map((pin, _i) => (
+          {isMegaBoard &&
+            analogPins
+              .slice(8, 14)
+              .map((pin, _i) => (
                 <PinsAnalogItem key={pin.pinNumber} gpioAnalog={pin} />
               ))}
-            </>
-          )}
         </div>
       </div>
     </div>
   )
-}
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    height: "26px",
-    overflowY: "hidden",
-  },
-  noScrollbar: {
-    overflowX: "scroll",
-    overflowY: "hidden",
-    outline: "none",
-    height: "80px",
-  },
-  wrapper: {
-    float: "left",
-  },
 }
 
 export default PinsAnalogBar
