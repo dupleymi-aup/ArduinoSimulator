@@ -9,24 +9,64 @@ function isTokenExpired(token: string): boolean {
   }
 }
 
+function getTokenExpiry(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]))
+    return payload.exp ? payload.exp * 1000 : null
+  } catch {
+    return null
+  }
+}
+
 export function useAuth() {
   const [token, setToken] = React.useState<string | null>(
     localStorage.getItem("arduino-sim-admin-token")
   )
   const [loginError, setLoginError] = React.useState<string | null>(null)
+  const [tokenExpiringSoon, setTokenExpiringSoon] = React.useState(false)
+  const tokenRef = React.useRef(token)
+  tokenRef.current = token
 
+  const logoutRef = React.useRef<() => void>(() => {})
   const logout = React.useCallback(() => {
     localStorage.removeItem("arduino-sim-admin-token")
     setToken(null)
     setLoginError(null)
+    setTokenExpiringSoon(false)
     window.location.href = "/admin/login"
   }, [])
 
+  logoutRef.current = logout
+
+  // Check token expiry on mount and when token changes
   React.useEffect(() => {
-    if (token && isTokenExpired(token)) {
-      logout()
+    const currentToken = tokenRef.current
+    if (!currentToken) {
+      setTokenExpiringSoon(false)
+      return
     }
-  }, [token, logout])
+
+    if (isTokenExpired(currentToken)) {
+      logoutRef.current()
+      return
+    }
+
+    const expiryTime = getTokenExpiry(currentToken)
+    if (expiryTime) {
+      const timeUntilExpiry = expiryTime - Date.now()
+      const warningThreshold = 2 * 60 * 1000 // 2 minutes
+
+      if (timeUntilExpiry <= warningThreshold) {
+        setTokenExpiringSoon(true)
+      } else {
+        setTokenExpiringSoon(false)
+        const warningTimer = setTimeout(() => {
+          setTokenExpiringSoon(true)
+        }, timeUntilExpiry - warningThreshold)
+        return () => clearTimeout(warningTimer)
+      }
+    }
+  }, [token])
 
   const login = async (username: string, password: string): Promise<boolean> => {
     setLoginError(null)
@@ -60,5 +100,5 @@ export function useAuth() {
     }
   }
 
-  return { token, login, logout, loginError, isAuthenticated: !!token }
+  return { token, login, logout, loginError, isAuthenticated: !!token, tokenExpiringSoon }
 }

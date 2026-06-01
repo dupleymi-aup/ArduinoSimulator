@@ -1,6 +1,7 @@
 import React from "react"
 import AdminLayout from "./AdminLayout"
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts"
+import { useAuth } from "./hooks/useAuth"
 
 const ActivityReport = React.lazy(() => import("./reports/ActivityReport"))
 const PerformanceReport = React.lazy(() => import("./reports/PerformanceReport"))
@@ -44,7 +45,21 @@ const TAB_MAP: Record<string, React.ComponentType> = {
 
 const TAB_NAMES = Object.keys(TAB_MAP)
 
+const styles: { [key: string]: React.CSSProperties } = {
+  tokenWarning: {
+    backgroundColor: "#fef3c7",
+    border: "1px solid #f59e0b",
+    color: "#92400e",
+    padding: "10px 16px",
+    borderRadius: "4px",
+    margin: "12px 16px",
+    fontSize: "14px",
+    textAlign: "center",
+  },
+}
+
 const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
+  const { tokenExpiringSoon } = useAuth()
   const [activeTab, setActiveTab] = React.useState("Activity")
   const ReportComponent = TAB_MAP[activeTab] || ActivityReport
   const { HelpModal } = useKeyboardShortcuts({
@@ -59,6 +74,11 @@ const AdminDashboard = ({ onLogout }: { onLogout: () => void }) => {
       onTabChange={setActiveTab}
       onLogout={onLogout}
     >
+      {tokenExpiringSoon && (
+        <div style={styles.tokenWarning}>
+          Your session will expire soon. Please save your work and log in again if needed.
+        </div>
+      )}
       <React.Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Loading report...</div>}>
         <ReportComponent />
       </React.Suspense>

@@ -9,7 +9,7 @@ const ErrorDisplay = ({
   message = "Failed to load data.",
   onRetry,
 }: ErrorDisplayProps) => (
-  <div style={styles.container}>
+  <div style={styles.container} role="alert" aria-live="assertive">
     <p style={styles.message}>{message}</p>
     {onRetry && (
       <button style={styles.button} onClick={onRetry}>

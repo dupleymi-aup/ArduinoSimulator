@@ -5,12 +5,18 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const { login, loginError } = useAuth()
   const [username, setUsername] = React.useState("")
   const [password, setPassword] = React.useState("")
+  const [submitting, setSubmitting] = React.useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const ok = await login(username, password)
-    if (ok) {
-      onLogin()
+    setSubmitting(true)
+    try {
+      const ok = await login(username, password)
+      if (ok) {
+        onLogin()
+      }
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -51,8 +57,8 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
               {loginError}
             </p>
           )}
-          <button type="submit" style={styles.button}>
-            Login
+          <button type="submit" style={{ ...styles.button, ...(submitting ? styles.buttonDisabled : {}) }} disabled={submitting}>
+            {submitting ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
@@ -112,6 +118,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: 4,
     fontSize: 15,
     cursor: "pointer",
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+    cursor: "not-allowed",
   },
 }
 

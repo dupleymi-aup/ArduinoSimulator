@@ -6,14 +6,9 @@ import AdminErrorBoundary from "./AdminErrorBoundary"
 
 const AdminApp = () => {
   const { isAuthenticated, logout } = useAuth()
-  const [, forceUpdate] = React.useState(0)
-
-  const handleLogin = () => {
-    forceUpdate((n) => n + 1)
-  }
 
   if (!isAuthenticated) {
-    return <AdminLogin onLogin={handleLogin} />
+    return <AdminLogin onLogin={() => {}} />
   }
 
   return (

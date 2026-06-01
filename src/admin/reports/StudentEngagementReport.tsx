@@ -45,6 +45,7 @@ const StudentEngagementReport = () => {
     unknown
   > | null>(null)
   const [detailLoading, setDetailLoading] = React.useState(false)
+  const [detailError, setDetailError] = React.useState<string | null>(null)
 
   const loadData = React.useCallback(() => {
     setLoading(true)
@@ -75,12 +76,14 @@ const StudentEngagementReport = () => {
       setSelectedStudent(studentId)
       setDetailLoading(true)
       setStudentDetail(null)
+      setDetailError(null)
       fetchStudentDetail(studentId)
         .then((d) => {
           setStudentDetail(d as Record<string, unknown> | null)
           setDetailLoading(false)
         })
-        .catch(() => {
+        .catch((err) => {
+          setDetailError(err instanceof Error ? err.message : "Failed to load student details")
           setDetailLoading(false)
         })
     },
@@ -239,6 +242,8 @@ const StudentEngagementReport = () => {
           </h3>
           {detailLoading ? (
             <p>Loading detail...</p>
+          ) : detailError ? (
+            <p style={{ color: "#e74c3c" }}>{detailError}</p>
           ) : studentDetail ? (
             <StudentDetailTable
               data={studentDetail}
@@ -316,16 +321,22 @@ const StudentDetailTable = ({
       "Completed",
       "Errors",
     ]
-    const rows = sessions.map((s, _i) => [
-      new Date(s.startedAt as string).toLocaleString(),
-      s.sketchName || "N/A",
-      s.boardType || "N/A",
+    const escapeCsv = (v: string) => {
+      if (v.includes(",") || v.includes('"') || v.includes("\n")) {
+        return `"${v.replace(/"/g, '""')}"`
+      }
+      return v
+    }
+    const rows = sessions.map((s) => [
+      escapeCsv(new Date(s.startedAt as string).toLocaleString()),
+      escapeCsv(s.sketchName || "N/A"),
+      escapeCsv(s.boardType || "N/A"),
       String(s.durationMs ?? 0),
       String(s.simStarted),
       String(s.simCompleted),
       String(s.errorCount ?? 0),
     ])
-    const csv = [headers, ...rows].map((r, _j) => r.join(",")).join("\n")
+    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n")
     const blob = new Blob([csv], { type: "text/csv" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")

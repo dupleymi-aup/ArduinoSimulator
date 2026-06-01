@@ -91,150 +91,164 @@ export function useReports() {
     setBoardType(defaults.boardType)
   }, [])
 
-  const fetchActivity = React.useCallback(async () => {
-    return apiFetch(`/api/admin/reports/activity?${buildParams(dateRange)}`)
+  const fetchActivity = React.useCallback(async (signal?: AbortSignal) => {
+    return apiFetch(`/api/admin/reports/activity?${buildParams(dateRange)}`, { signal })
   }, [dateRange])
 
-  const fetchPerformance = React.useCallback(async () => {
-    return apiFetch(`/api/admin/reports/performance?${buildParams(dateRange)}`)
+  const fetchPerformance = React.useCallback(async (signal?: AbortSignal) => {
+    return apiFetch(`/api/admin/reports/performance?${buildParams(dateRange)}`, { signal })
   }, [dateRange])
 
-  const fetchProgress = React.useCallback(async () => {
-    return apiFetch("/api/admin/reports/progress")
+  const fetchProgress = React.useCallback(async (signal?: AbortSignal) => {
+    return apiFetch("/api/admin/reports/progress", { signal })
   }, [])
 
-  const fetchPinUsage = React.useCallback(async () => {
-    return apiFetch("/api/admin/reports/pins")
+  const fetchPinUsage = React.useCallback(async (signal?: AbortSignal) => {
+    return apiFetch("/api/admin/reports/pins", { signal })
   }, [])
 
   const fetchSessions = React.useCallback(
-    async (page = 1, limit = 20) => {
+    async (page = 1, limit = 20, signal?: AbortSignal) => {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(limit),
       })
       if (dateRange.start) params.set("start", dateRange.start)
       if (dateRange.end) params.set("end", dateRange.end)
-      return apiFetch(`/api/admin/sessions?${params}`)
+      return apiFetch(`/api/admin/sessions?${params}`, { signal })
     },
     [dateRange]
   )
 
-  const fetchStudents = React.useCallback(async () => {
-    return apiFetch("/api/admin/students")
+  const fetchStudents = React.useCallback(async (signal?: AbortSignal) => {
+    return apiFetch("/api/admin/students", { signal })
   }, [])
 
-  const fetchStudentEngagement = React.useCallback(async () => {
+  const fetchStudentEngagement = React.useCallback(async (signal?: AbortSignal) => {
     const extra = studentId ? { studentId } : undefined
     return apiFetch(
-      `/api/admin/reports/student-engagement?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/student-engagement?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, studentId])
 
-  const fetchSketchDifficulty = React.useCallback(async () => {
+  const fetchSketchDifficulty = React.useCallback(async (signal?: AbortSignal) => {
     const extra = sketchName ? { sketchName } : undefined
     return apiFetch(
-      `/api/admin/reports/sketch-difficulty?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/sketch-difficulty?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, sketchName])
 
-  const fetchErrorTrends = React.useCallback(async () => {
+  const fetchErrorTrends = React.useCallback(async (signal?: AbortSignal) => {
     const extra = boardType ? { boardType } : undefined
     return apiFetch(
-      `/api/admin/reports/error-trends?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/error-trend?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, boardType])
 
-  const fetchBoardUsage = React.useCallback(async () => {
+  const fetchBoardUsage = React.useCallback(async (signal?: AbortSignal) => {
     const extra = boardType ? { boardType } : undefined
     return apiFetch(
-      `/api/admin/reports/board-usage?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/board-usage?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, boardType])
 
   const fetchStudentDetail = React.useCallback(
-    async (sid: string) => {
+    async (sid: string, signal?: AbortSignal) => {
       const params = new URLSearchParams()
       if (dateRange.start) params.set("start", dateRange.start)
       if (dateRange.end) params.set("end", dateRange.end)
-      return apiFetch(`/api/admin/students/${sid}?${params}`)
+      return apiFetch(`/api/admin/students/${sid}?${params}`, { signal })
     },
     [dateRange]
   )
 
-  const fetchSessionEnd = React.useCallback(async () => {
+  const fetchSessionEnd = React.useCallback(async (signal?: AbortSignal) => {
     const extra = boardType ? { boardType } : undefined
     return apiFetch(
-      `/api/admin/reports/session-end?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/session-end?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, boardType])
 
-  const fetchFileWorkflow = React.useCallback(async () => {
+  const fetchFileWorkflow = React.useCallback(async (signal?: AbortSignal) => {
     const extra = studentId ? { studentId } : undefined
     return apiFetch(
-      `/api/admin/reports/file-workflow?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/file-workflow?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, studentId])
 
-  const fetchSerialUsage = React.useCallback(async () => {
+  const fetchSerialUsage = React.useCallback(async (signal?: AbortSignal) => {
     const extra = sketchName ? { sketchName } : undefined
     return apiFetch(
-      `/api/admin/reports/serial-usage?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/serial-usage?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, sketchName])
 
-  const fetchStudentCohort = React.useCallback(async () => {
+  const fetchStudentCohort = React.useCallback(async (signal?: AbortSignal) => {
     return apiFetch(
-      `/api/admin/reports/student-cohort?${buildParams(dateRange)}`
+      `/api/admin/reports/student-cohort?${buildParams(dateRange)}`,
+      { signal }
     )
   }, [dateRange])
 
-  const fetchBoardChanges = React.useCallback(async () => {
+  const fetchBoardChanges = React.useCallback(async (signal?: AbortSignal) => {
     return apiFetch(
-      `/api/admin/reports/board-changes?${buildParams(dateRange)}`
+      `/api/admin/reports/board-changes?${buildParams(dateRange)}`,
+      { signal }
     )
   }, [dateRange])
 
   // New report fetch functions
-  const fetchStudentScorecard = React.useCallback(async () => {
+  const fetchStudentScorecard = React.useCallback(async (signal?: AbortSignal) => {
     const extra: Record<string, string> = {}
     if (studentId) extra.studentId = studentId
     if (sketchName) extra.sketchName = sketchName
     return apiFetch(
-      `/api/admin/reports/student-scorecard?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/student-scorecard?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, studentId, sketchName])
 
-  const fetchLearningPath = React.useCallback(async () => {
+  const fetchLearningPath = React.useCallback(async (signal?: AbortSignal) => {
     const extra: Record<string, string> = {}
     if (studentId) extra.studentId = studentId
     if (sketchName) extra.sketchName = sketchName
     return apiFetch(
-      `/api/admin/reports/learning-path?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/learning-path?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, studentId, sketchName])
 
-  const fetchErrorImpact = React.useCallback(async () => {
+  const fetchErrorImpact = React.useCallback(async (signal?: AbortSignal) => {
     const extra: Record<string, string> = {}
     if (studentId) extra.studentId = studentId
     if (boardType) extra.boardType = boardType
     return apiFetch(
-      `/api/admin/reports/error-impact?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/error-impact?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, studentId, boardType])
 
-  const fetchComparative = React.useCallback(async () => {
+  const fetchComparative = React.useCallback(async (signal?: AbortSignal) => {
     return apiFetch(
-      `/api/admin/reports/comparative?${buildParams(dateRange)}`
+      `/api/admin/reports/comparative?${buildParams(dateRange)}`,
+      { signal }
     )
   }, [dateRange])
 
-  const fetchSkillsMastery = React.useCallback(async () => {
+  const fetchSkillsMastery = React.useCallback(async (signal?: AbortSignal) => {
     const extra: Record<string, string> = {}
     if (studentId) extra.studentId = studentId
     if (sketchName) extra.sketchName = sketchName
     return apiFetch(
-      `/api/admin/reports/skills-mastery?${buildParams(dateRange, extra)}`
+      `/api/admin/reports/skills-mastery?${buildParams(dateRange, extra)}`,
+      { signal }
     )
   }, [dateRange, studentId, sketchName])
 

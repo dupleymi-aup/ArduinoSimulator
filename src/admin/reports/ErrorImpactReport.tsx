@@ -114,8 +114,8 @@ const ErrorImpactReport = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.toxicErrors.slice(0, 10).map((e, i) => (
-                  <tr key={i}>
+                {data.toxicErrors.slice(0, 10).map((e) => (
+                  <tr key={e.errorType}>
                     <td style={styles.td}>{e.errorType}</td>
                     <td style={styles.td}>{e.totalCount}</td>
                     <td style={{ ...styles.td, color: "#e74c3c", fontWeight: 600 }}>
