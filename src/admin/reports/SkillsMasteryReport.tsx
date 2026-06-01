@@ -18,6 +18,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { colors } from "../styles/colors"
 
 interface Skill {
   skill: string
@@ -59,21 +60,21 @@ const SkillsMasteryReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Skills" value={data.totalSkills} color="#0066cc" />
+        <StatCard title="Total Skills" value={data.totalSkills} color={colors.primary} />
         <StatCard
           title="Avg Mastery"
           value={`${data.avgMasteryRate}%`}
-          color="#27ae60"
+          color={colors.success}
         />
         <StatCard
           title="Mastered"
           value={data.masteredSkills.length}
-          color="#27ae60"
+          color={colors.success}
         />
         <StatCard
           title="Struggling"
           value={data.strugglingSkills.length}
-          color="#e74c3c"
+          color={colors.error}
         />
       </div>
 
@@ -87,8 +88,8 @@ const SkillsMasteryReport = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="masteryRate" fill="#27ae60" name="Mastery Rate (%)" />
-              <Bar dataKey="errorRate" fill="#e74c3c" name="Error Rate (%)" />
+              <Bar dataKey="masteryRate" fill={colors.success} name="Mastery Rate (%)" />
+              <Bar dataKey="errorRate" fill={colors.error} name="Error Rate (%)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -129,7 +130,7 @@ const SkillsMasteryReport = () => {
                 {data.strugglingSkills.map((s) => (
                   <tr key={s.skill}>
                     <td style={styles.td}>{s.skill}</td>
-                    <td style={{ ...styles.td, color: "#e74c3c", fontWeight: 600 }}>
+                    <td style={{ ...styles.td, color: colors.error, fontWeight: 600 }}>
                       {s.masteryRate}%
                     </td>
                     <td style={styles.td}>{s.errorRate}%</td>
@@ -236,16 +237,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   table: {
     width: "100%",
-    borderCollapse: "collapse" as const,
+    borderCollapse: "collapse",
     fontSize: 13,
   },
   th: {
     padding: "8px 12px",
-    textAlign: "left" as const,
+    textAlign: "left",
     borderBottom: "2px solid #e0e0e0",
     fontWeight: 600,
     color: "#333",
-    whiteSpace: "nowrap" as const,
+    whiteSpace: "nowrap",
   },
   td: {
     padding: "8px 12px",

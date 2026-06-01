@@ -20,6 +20,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { colors } from "../styles/colors"
 
 interface ErrorImpactData {
   errorVsSuccess: { errors: number; completionRate: number }[]
@@ -46,16 +47,16 @@ const ErrorImpactReport = () => {
         )}
       </div>
       <div style={styles.statsRow}>
-        <StatCard title="Total Errors" value={data.totalErrors} color="#e74c3c" />
+        <StatCard title="Total Errors" value={data.totalErrors} color={colors.error} />
         <StatCard
           title="Avg Errors/Session"
           value={data.avgErrorsPerSession}
-          color="#f39c12"
+          color={colors.warning}
         />
         <StatCard
           title="Toxic Errors"
           value={data.toxicErrors.filter((e) => e.abandonmentCount > 0).length}
-          color="#c0392b"
+          color={colors.errorDark}
         />
       </div>
 
@@ -72,7 +73,7 @@ const ErrorImpactReport = () => {
               <Scatter
                 name="Completion Rate"
                 data={data.errorVsSuccess}
-                fill="#0066cc"
+                fill={colors.primary}
               />
             </ScatterChart>
           </ResponsiveContainer>
@@ -92,7 +93,7 @@ const ErrorImpactReport = () => {
               <Line
                 type="monotone"
                 dataKey="count"
-                stroke="#e74c3c"
+                stroke={colors.error}
                 name="Errors"
               />
             </LineChart>
@@ -118,7 +119,7 @@ const ErrorImpactReport = () => {
                   <tr key={e.errorType}>
                     <td style={styles.td}>{e.errorType}</td>
                     <td style={styles.td}>{e.totalCount}</td>
-                    <td style={{ ...styles.td, color: "#e74c3c", fontWeight: 600 }}>
+                    <td style={{ ...styles.td, color: colors.error, fontWeight: 600 }}>
                       {e.abandonmentCount}
                     </td>
                     <td style={styles.td}>
@@ -169,16 +170,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   table: {
     width: "100%",
-    borderCollapse: "collapse" as const,
+    borderCollapse: "collapse",
     fontSize: 13,
   },
   th: {
     padding: "8px 12px",
-    textAlign: "left" as const,
+    textAlign: "left",
     borderBottom: "2px solid #e0e0e0",
     fontWeight: 600,
     color: "#333",
-    whiteSpace: "nowrap" as const,
+    whiteSpace: "nowrap",
   },
   td: {
     padding: "8px 12px",

@@ -78,7 +78,7 @@ const PinUsageReport = () => {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Digital Pins (0-53)</h3>
         <div style={styles.pinGrid}>
-          {DIGITAL_PINS.map((i, _idx) => {
+          {DIGITAL_PINS.map((i) => {
             const count = data.digitalPins[i] || 0
             return (
               <div
@@ -101,7 +101,7 @@ const PinUsageReport = () => {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Analog Pins (A0-A15)</h3>
         <div style={styles.pinGrid}>
-          {ANALOG_PINS.map((i, _idx) => {
+          {ANALOG_PINS.map((i) => {
             const count = data.analogPins[i] || 0
             return (
               <div

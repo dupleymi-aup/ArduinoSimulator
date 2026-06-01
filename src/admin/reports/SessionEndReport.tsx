@@ -18,6 +18,7 @@ import ExportButton from "../components/ExportButton"
 import { useReports } from "../hooks/useReports"
 import { useReportData } from "../hooks/useReportData"
 import { DateRangeFilter } from "../components/DateRangeFilter"
+import { colors } from "../styles/colors"
 
 interface EndReasonEntry {
   reason: string
@@ -62,22 +63,22 @@ const SessionEndReport = () => {
         <StatCard
           title="Total Sessions"
           value={data.totalSessions}
-          color="#0066cc"
+          color={colors.primary}
         />
         <StatCard
           title="Completion Rate"
           value={`${data.completionRate}%`}
-          color="#27ae60"
+          color={colors.success}
         />
         <StatCard
           title="Crash Rate"
           value={`${data.crashRate}%`}
-          color="#e74c3c"
+          color={colors.error}
         />
         <StatCard
           title="Abandoned"
           value={data.incompleteCount}
-          color="#f39c12"
+          color={colors.warning}
         />
       </div>
 
@@ -91,7 +92,7 @@ const SessionEndReport = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#0066cc" name="Sessions" />
+              <Bar dataKey="count" fill={colors.primary} name="Sessions" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -110,25 +111,25 @@ const SessionEndReport = () => {
               <Line
                 type="monotone"
                 dataKey="user_stop"
-                stroke="#27ae60"
+                stroke={colors.success}
                 name="User Stop"
               />
               <Line
                 type="monotone"
                 dataKey="sim_crash"
-                stroke="#e74c3c"
+                stroke={colors.error}
                 name="Crash"
               />
               <Line
                 type="monotone"
                 dataKey="page_unload"
-                stroke="#f39c12"
+                stroke={colors.warning}
                 name="Page Unload"
               />
               <Line
                 type="monotone"
                 dataKey="other"
-                stroke="#95a5a6"
+                stroke={colors.gray}
                 name="Other"
               />
             </LineChart>

@@ -179,16 +179,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   table: {
     width: "100%",
-    borderCollapse: "collapse" as const,
+    borderCollapse: "collapse",
     fontSize: 13,
   },
   th: {
     padding: "8px 12px",
-    textAlign: "left" as const,
+    textAlign: "left",
     borderBottom: "2px solid #e0e0e0",
     fontWeight: 600,
     color: "#333",
-    whiteSpace: "nowrap" as const,
+    whiteSpace: "nowrap",
   },
   td: {
     padding: "8px 12px",
